@@ -6,11 +6,11 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 
 - Humano conduz o fluxo. O processo nao tem engine, state machine, auto-handoff ou dependencia externa.
 - Projeto autocontido: sem heranca de outros frameworks; o que for util de fora, copia-se para dentro.
-- Cada POC mora em `up-docs/<slug>/` e contem `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md` e `YYYY-MM-DD-qa-verdict.md`.
+- Cada POC mora em `sdd-docs/<slug>/` e contem `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md` e `YYYY-MM-DD-qa-verdict.md`.
 - `up-discovery` escreve o proposal somente quando o usuario pedir explicitamente.
 - `up-spec` possui o artefato `spec.md` e decide, por gap, entre perguntar ao usuario, chamar uma lente isolada ou assumir registrando a assuncao.
 - Spawns sao fechados: `@up-spec` so pode chamar `up-architect` ou `up-qa`.
-- QA e gate, nao conselho opcional. O `up-qa` escreve seu veredito em `up-docs/<slug>/qa-verdict.md` (fonte de verdade); o `@up-spec` o copia verbatim para o `spec.md` mas nao pode edita-lo.
+- QA e gate, nao conselho opcional. O `up-qa` escreve seu veredito em `sdd-docs/<slug>/qa-verdict.md` (fonte de verdade); o `@up-spec` o copia verbatim para o `spec.md` mas nao pode edita-lo.
 - Down-QA e pos-implementacao e manual. `down-qa` valida o produto contra o
   spec com evidencia de execucao e escreve `YYYY-MM-DD-down-qa-report.md`.
 
@@ -18,9 +18,9 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 
 | Fase | Agente | Entrada | Saida | Gate humano |
 | --- | --- | --- | --- | --- |
-| 1. Discovery | `@up-discovery` | Ideia, contexto e respostas do usuario | `up-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
-| 2. Spec | `@up-spec` | `up-docs/<slug>/YYYY-MM-DD-proposal.md` | `up-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
-| 3. Down-QA | `@down-qa` ou skill Codex `down-qa` | `up-docs/<slug>/YYYY-MM-DD-spec.md` + implementacao | `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md` | Usuario decide corrigir, aceitar risco ou bloquear entrega |
+| 1. Discovery | `@up-discovery` | Ideia, contexto e respostas do usuario | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
+| 2. Spec | `@up-spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
+| 3. Down-QA | `@down-qa` ou skill Codex `down-qa` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` + implementacao | `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md` | Usuario decide corrigir, aceitar risco ou bloquear entrega |
 
 ## Fase 1: Discovery
 
@@ -34,22 +34,22 @@ Operacao:
 4. Desafiar propostas sem evidencia, escopo largo demais ou sucesso impossivel de verificar.
 5. Sinalizar quando ha contexto suficiente, mas nao escrever arquivo sem comando claro do usuario.
 
-O `up-docs/<slug>/YYYY-MM-DD-proposal.md` deve caber aproximadamente em uma pagina. Ele registra problema/oportunidade, contexto, evidencia, opcoes consideradas, proposta recomendada, riscos e assuncoes abertas.
+O `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` deve caber aproximadamente em uma pagina. Ele registra problema/oportunidade, contexto, evidencia, opcoes consideradas, proposta recomendada, riscos e assuncoes abertas.
 
 ## Fase 2: Spec
 
-Objetivo: transformar `up-docs/<slug>/proposal.md` em um `up-docs/<slug>/spec.md` implementavel, com JTBD, user stories, features numeradas e criterios de aceite testaveis.
+Objetivo: transformar `sdd-docs/<slug>/proposal.md` em um `sdd-docs/<slug>/spec.md` implementavel, com JTBD, user stories, features numeradas e criterios de aceite testaveis.
 
 Operacao do `@up-spec`:
 
-1. Ler `up-docs/<slug>/YYYY-MM-DD-proposal.md`.
+1. Ler `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
 2. Fazer um gap scan de intencao, prioridade, escopo, viabilidade tecnica, riscos e testabilidade.
 3. Para cada gap, escolher um movimento:
    - perguntar ao usuario quando o gap for de intencao, prioridade ou escopo;
    - chamar `up-architect` quando a viabilidade tecnica exigir ler codigo, stack ou restricoes de implementacao;
    - assumir e sinalizar quando a assuncao for pequena, reversivel e nao bloquear o spec.
-4. Rascunhar `up-docs/<slug>/YYYY-MM-DD-spec.md`.
-5. Chamar `up-qa` passando somente `YYYY-MM-DD-proposal.md` e o draft de `YYYY-MM-DD-spec.md`. O `up-qa` escreve o veredito em `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
+4. Rascunhar `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
+5. Chamar `up-qa` passando somente `YYYY-MM-DD-proposal.md` e o draft de `YYYY-MM-DD-spec.md`. O `up-qa` escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
 6. Ler `YYYY-MM-DD-qa-verdict.md` e copiar o veredito verbatim na secao fixa de QA-gate do spec.
 7. Finalizar apenas se o gate permitir.
 
@@ -65,10 +65,10 @@ Operacao do `@up-spec`:
 
 O `up-qa` recebe apenas:
 
-- `up-docs/<slug>/YYYY-MM-DD-proposal.md`;
-- draft atual de `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`;
+- draft atual de `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 
-Ele nao recebe a deliberacao do `@up-spec`, historico interno ou justificativas adicionais. **O proprio `up-qa` escreve o veredito em `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — esse arquivo existe independente do `@up-spec`, que nao pode edita-lo.
+Ele nao recebe a deliberacao do `@up-spec`, historico interno ou justificativas adicionais. **O proprio `up-qa` escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — esse arquivo existe independente do `@up-spec`, que nao pode edita-lo.
 
 Vereditos:
 
@@ -86,13 +86,13 @@ Playwright, browser CLI ou ferramenta equivalente.
 
 Operacao:
 
-1. Ler `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+1. Ler `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 2. Extrair checklist por feature numerada e criterios de aceite.
 3. Descobrir URL inicial, comando de dev server, dados de teste e credenciais
    necessarias.
 4. Rodar o Browser Capability Check descrito em `down-qa/PROCESS.md`.
 5. Navegar como usuario real e comparar comportamento observado contra o spec.
-6. Escrever `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+6. Escrever `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
 
 Regras:
 
@@ -105,11 +105,11 @@ Regras:
 
 ## Artefatos
 
-- Diretorio de cada POC: `up-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`.
-- Down-QA report: `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
-- Template de proposta: `templates/proposal.md`.
-- Template de spec: `templates/spec.md`.
-- Template de down-qa: `templates/down-qa-report.md`.
+- Diretorio de cada POC: `sdd-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`.
+- Down-QA report: `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+- Template de proposta: `sdd-templates/proposal.md`.
+- Template de spec: `sdd-templates/spec.md`.
+- Template de down-qa: `sdd-templates/down-qa-report.md`.
 - Agentes de menu: `.claude/agents/up-discovery.md` e `.claude/agents/up-spec.md`.
 - Alvos internos de spawn: `.claude/agents/up-architect.md` e `.claude/agents/up-qa.md`.
 - QA pos-implementacao: `.claude/agents/down-qa.md` e skill Codex
@@ -118,10 +118,10 @@ Regras:
 ## Dry-Run De Validacao
 
 1. Invocar `@up-discovery` com uma ideia pequena e definir o `<slug>`.
-2. Confirmar que ele conversa primeiro e so escreve `up-docs/<slug>/YYYY-MM-DD-proposal.md` quando o usuario pedir.
+2. Confirmar que ele conversa primeiro e so escreve `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` quando o usuario pedir.
 3. Invocar `@up-spec`.
-4. Confirmar que ele pergunta ao usuario em gaps de escopo/intencao, nao spawna sem necessidade, roda `up-qa` e gera `up-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
-5. Confirmar que `up-qa` escreveu `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, que o veredito esta copiado verbatim no spec e que `FAIL` bloqueia a finalizacao.
+4. Confirmar que ele pergunta ao usuario em gaps de escopo/intencao, nao spawna sem necessidade, roda `up-qa` e gera `sdd-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
+5. Confirmar que `up-qa` escreveu `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, que o veredito esta copiado verbatim no spec e que `FAIL` bloqueia a finalizacao.
 6. Apos uma implementacao pequena, invocar `@down-qa` ou a skill Codex
    `down-qa`.
 7. Confirmar que o relatorio registra spec coverage, browser harness, evidencia

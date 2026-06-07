@@ -16,7 +16,7 @@ preferencia via navegador real.
 
 ## Entradas
 
-- Obrigatoria: `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+- Obrigatoria: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 - Obrigatoria para web: URL inicial ou comando para subir o app.
 - Opcional: escopo de features, por exemplo "teste F1 e F3".
 - Opcional: dados de teste e credenciais fornecidos pelo usuario.
@@ -50,7 +50,7 @@ de fato exercitado.
 3. Suba ou localize o app sem mudar configuracoes permanentes.
 4. Execute os fluxos no navegador como usuario real.
 5. Compare comportamento observado contra cada criterio.
-6. Grave `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+6. Grave `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
 7. Se houver bloqueio, registre exatamente o que falta para destravar.
 
 ## Vereditos
@@ -69,5 +69,5 @@ de fato exercitado.
 
 ## Saida
 
-Use `templates/down-qa-report.md`. O relatorio e um artefato de
+Use `sdd-templates/down-qa-report.md`. O relatorio e um artefato de
 evidencia; nao edite `spec.md` nem arquivos de implementacao durante esta fase.

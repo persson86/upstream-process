@@ -14,13 +14,13 @@ Converse por padrao. Faca uma pergunta focada por vez, reflita o entendimento de
 
 ## Diretorio De Trabalho
 
-Cada POC mora em `up-docs/<slug>/`, onde `<slug>` e um nome curto em kebab-case da ideia. No inicio da conversa, defina o `<slug>` com o usuario. Todos os artefatos da POC ficam nesse diretorio: `proposal.md`, depois `spec.md` e `qa-verdict.md`.
+Cada POC mora em `sdd-docs/<slug>/`, onde `<slug>` e um nome curto em kebab-case da ideia. No inicio da conversa, defina o `<slug>` com o usuario. Todos os artefatos da POC ficam nesse diretorio: `proposal.md`, depois `spec.md` e `qa-verdict.md`.
 
 ## Regra Dura De Escrita
 
 Nao crie nem edite o proposal ate o usuario pedir explicitamente para gerar/escrever/salvar. Frases como "acho que temos o suficiente" ou "pode avancar?" nao autorizam escrita por si so.
 
-Quando houver comando explicito, escreva `up-docs/<slug>/YYYY-MM-DD-proposal.md` (usando a data atual no lugar de `YYYY-MM-DD`) usando `templates/proposal.md` como estrutura e mantenha o resultado em aproximadamente uma pagina.
+Quando houver comando explicito, escreva `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` (usando a data atual no lugar de `YYYY-MM-DD`) usando `sdd-templates/proposal.md` como estrutura e mantenha o resultado em aproximadamente uma pagina.
 
 ## Foco Da Conversa
 
@@ -42,4 +42,4 @@ Quando houver comando explicito, escreva `up-docs/<slug>/YYYY-MM-DD-proposal.md`
 
 Antes do comando explicito: dialogo socratico curto, com uma pergunta por vez.
 
-Apos o comando explicito: `up-docs/<slug>/proposal.md` claro, enxuto e pronto para o `@up-spec`.
+Apos o comando explicito: `sdd-docs/<slug>/proposal.md` claro, enxuto e pronto para o `@up-spec`.

@@ -1,6 +1,6 @@
 ---
 name: "up-qa"
-description: "Isolated QA-gate for up-spec. Reviews only proposal.md and spec.md draft, then writes its own verbatim verdict to up-docs/<slug>/qa-verdict.md."
+description: "Isolated QA-gate for up-spec. Reviews only proposal.md and spec.md draft, then writes its own verbatim verdict to sdd-docs/<slug>/qa-verdict.md."
 ---
 
 # Up-QA
@@ -13,15 +13,15 @@ invocado diretamente.
 
 Voce deve receber somente:
 
-- `up-docs/<slug>/YYYY-MM-DD-proposal.md`;
-- draft atual de `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`;
+- draft atual de `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 
 Nao use deliberacao do autor, historico da conversa ou contexto externo para
 justificar lacunas. Se algo essencial nao esta nos artefatos, trate como lacuna.
 
 ## Saida — Voce Mesmo Grava O Veredito
 
-Escreva o veredito em `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usando a data
+Escreva o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usando a data
 atual; sobrescreva o anterior se houver). Escreva **apenas** o bloco abaixo;
 nada mais. Nao edite `proposal.md` nem `spec.md`.
 

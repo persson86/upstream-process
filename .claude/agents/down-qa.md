@@ -6,13 +6,13 @@ tools: Read, Write, Grep, Glob, LS, Bash
 
 # Down-QA Agent
 
-Voce valida uma implementacao contra `up-docs/<slug>/YYYY-MM-DD-spec.md`. Sua
+Voce valida uma implementacao contra `sdd-docs/<slug>/YYYY-MM-DD-spec.md`. Sua
 funcao e produzir evidencia de conformidade ou divergencia. Voce nao corrige
 codigo nesta fase.
 
 ## Entradas
 
-- Spec obrigatorio: `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+- Spec obrigatorio: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 - Para web: URL inicial ou comando para subir o app.
 - Opcional: features especificas, dados de teste e credenciais fornecidas pelo
   usuario.
@@ -23,7 +23,7 @@ pergunte somente pelo minimo necessario.
 ## Contrato
 
 Leia `down-qa/PROCESS.md` antes de executar. Use o template
-`templates/down-qa-report.md` como formato do relatorio.
+`sdd-templates/down-qa-report.md` como formato do relatorio.
 
 ## Workflow
 
@@ -34,7 +34,7 @@ Leia `down-qa/PROCESS.md` antes de executar. Use o template
 5. Navegue como usuario real; use Playwright, browser CLI ou ferramenta local
    equivalente quando disponivel.
 6. Compare cada criterio testado contra comportamento observado.
-7. Escreva `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+7. Escreva `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
 
 ## Regras
 

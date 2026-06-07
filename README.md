@@ -58,14 +58,14 @@ O que e criado no alvo:
 ├── sdd-lite/                # arquivos do framework (nao editar)
 │   ├── PROCESS.md
 │   ├── down-qa/PROCESS.md
-│   └── templates/{proposal,spec,down-qa-report}.md
-└── up-docs/                         # SEUS outputs: cada POC em up-docs/<slug>/
+│   └── sdd-templates/{proposal,spec,down-qa-report}.md
+└── sdd-docs/                         # SEUS outputs: cada POC em sdd-docs/<slug>/
 ```
 
 Os outputs (`YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`,
-`YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-down-qa-report.md`) ficam em `up-docs/<slug>/`
+`YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-down-qa-report.md`) ficam em `sdd-docs/<slug>/`
 na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
-apenas o path de `templates/` dos agentes para `sdd-lite/templates/`, de
+apenas o path de `sdd-templates/` dos agentes para `sdd-lite/sdd-templates/`, de
 modo que resolva a partir da raiz do projeto-alvo.
 
 ## Versao e atualizacao
@@ -158,9 +158,9 @@ Dentro do projeto onde foi instalado:
 Cada fase tem agente Claude Code (`@nome`) e skill Codex equivalente (`/nome`):
 
 1. `@up-discovery` / `/up-discovery` — dialogo socratico; ao seu comando
-   explicito, gera `up-docs/<slug>/YYYY-MM-DD-proposal.md`.
+   explicito, gera `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
 2. `@up-spec` / `/up-spec` — le o proposal, pergunta nos gaps de escopo, roda o
-   QA-gate e emite `up-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
+   QA-gate e emite `sdd-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
 3. Depois da implementacao, `@down-qa` / `/down-qa` — le o spec, testa os fluxos
    implementados com navegador quando aplicavel e emite
-   `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+   `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.

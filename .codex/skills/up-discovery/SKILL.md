@@ -18,9 +18,9 @@ de verificar.
 
 ## Diretorio De Trabalho
 
-Cada POC mora em `up-docs/<slug>/`. Defina o `<slug>` com o usuario no inicio.
-Escreva `up-docs/<slug>/YYYY-MM-DD-proposal.md` usando a data atual e
-`templates/proposal.md` como estrutura.
+Cada POC mora em `sdd-docs/<slug>/`. Defina o `<slug>` com o usuario no inicio.
+Escreva `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` usando a data atual e
+`sdd-templates/proposal.md` como estrutura.
 
 ## Regra Dura De Escrita
 

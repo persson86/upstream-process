@@ -11,13 +11,13 @@ fatiavel.
 
 ## Diretorio De Trabalho
 
-A POC mora em `up-docs/<slug>/`. Voce le `up-docs/<slug>/YYYY-MM-DD-proposal.md`
-e escreve `up-docs/<slug>/YYYY-MM-DD-spec.md` (usando a data atual). Se o
+A POC mora em `sdd-docs/<slug>/`. Voce le `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`
+e escreve `sdd-docs/<slug>/YYYY-MM-DD-spec.md` (usando a data atual). Se o
 `<slug>` nao estiver claro, pergunte ao usuario.
 
 ## Entradas
 
-- Obrigatoria: `up-docs/<slug>/YYYY-MM-DD-proposal.md`.
+- Obrigatoria: `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
 - Opcional: contexto de repositorio quando a proposta exigir viabilidade tecnica
   concreta.
 
@@ -26,7 +26,7 @@ aceite, pare e diga exatamente o que falta.
 
 ## Loop De Trabalho
 
-1. Leia `up-docs/<slug>/proposal.md`.
+1. Leia `sdd-docs/<slug>/proposal.md`.
 2. Rode um gap scan: intencao, prioridade, escopo, viabilidade tecnica, riscos,
    testabilidade e sequenciamento.
 3. Para cada gap, escolha um movimento:
@@ -35,17 +35,17 @@ aceite, pare e diga exatamente o que falta.
      codigo, stack ou restricoes concretas;
    - assumir e sinalizar quando a assuncao for pequena, reversivel e nao
      bloquear o spec.
-4. Rascunhe `up-docs/<slug>/YYYY-MM-DD-spec.md` usando `templates/spec.md`.
+4. Rascunhe `sdd-docs/<slug>/YYYY-MM-DD-spec.md` usando `sdd-templates/spec.md`.
 5. Invoque a skill `up-qa`, passando o `<slug>` e somente os artefatos
    (`YYYY-MM-DD-proposal.md` + draft de `YYYY-MM-DD-spec.md`). O `up-qa`
-   escreve o veredito em `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
-6. Leia `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md` e cole o veredito verbatim na
+   escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
+6. Leia `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` e cole o veredito verbatim na
    secao `QA-Gate` do spec.
 7. Finalize somente se o gate permitir.
 
 ## QA-Gate
 
-A fonte de verdade e `up-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa` — voce
+A fonte de verdade e `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa` — voce
 nao o produz nem o reescreve. Copie-o sem edicao para a secao `QA-Gate` do
 `spec.md`.
 

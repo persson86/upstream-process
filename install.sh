@@ -7,13 +7,13 @@
 #   - <target>/.claude/agents/down-qa.md   (QA pos-implementacao)
 #   - <target>/.codex/skills/*/            (skills Codex: up-discovery, up-spec, up-architect, up-qa, down-qa)
 #   - <target>/sdd-lite/PROCESS.md (a espinha do processo)
-#   - <target>/sdd-lite/templates/ (proposal.md, spec.md, down-qa-report.md)
+#   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, down-qa-report.md)
 #   - <target>/sdd-lite/down-qa/   (contrato de processo do down-qa)
-#   - <target>/up-docs/                     (SEUS outputs: cada POC em up-docs/<slug>/)
+#   - <target>/sdd-docs/                     (SEUS outputs: cada POC em sdd-docs/<slug>/)
 #
-# Outputs ficam em up-docs/ na raiz do projeto (separados do framework) e
+# Outputs ficam em sdd-docs/ na raiz do projeto (separados do framework) e
 # resolvem do mesmo jeito standalone ou instalado, sem rewrite. Apenas o path
-# de templates/ dos agentes e reescrito para sdd-lite/templates/ (o
+# de sdd-templates/ dos agentes e reescrito para sdd-lite/sdd-templates/ (o
 # conteudo do framework vive sob sdd-lite/ no alvo). O rewrite e
 # idempotente: nao re-prefixa paths que ja tem o prefixo.
 #
@@ -100,7 +100,7 @@ if [ "$FORCE" -eq 0 ]; then
   for s in up-discovery up-spec up-architect up-qa down-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
-  for f in PROCESS.md templates/proposal.md templates/spec.md templates/down-qa-report.md down-qa/PROCESS.md .version; do
+  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/down-qa-report.md down-qa/PROCESS.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -110,20 +110,20 @@ if [ "$FORCE" -eq 0 ]; then
   fi
 fi
 
-# reescreve `templates/ (precedido por backtick ou espaco) para o prefixo do
+# reescreve `sdd-templates/ (precedido por backtick ou espaco) para o prefixo do
 # pacote. Paths ja prefixados (precedidos por /) nao casam (idempotente).
 rewrite() {
   sed \
-    -e "s#\([\` ]\)templates/#\1$PKG/templates/#g" \
+    -e "s#\([\` ]\)sdd-templates/#\1$PKG/sdd-templates/#g" \
     -e "s#\([\` ]\)down-qa/#\1$PKG/down-qa/#g"
 }
 
 # --- instalacao ------------------------------------------------------------
 mkdir -p \
   "$TARGET/.claude/agents" \
-  "$TARGET/$PKG/templates" \
+  "$TARGET/$PKG/sdd-templates" \
   "$TARGET/$PKG/down-qa" \
-  "$TARGET/up-docs"
+  "$TARGET/sdd-docs"
 for s in up-discovery up-spec up-architect up-qa down-qa; do
   mkdir -p "$TARGET/.codex/skills/$s"
 done
@@ -136,10 +136,10 @@ done
 fetch "PROCESS.md" | rewrite > "$TARGET/$PKG/PROCESS.md"
 echo "  + $PKG/PROCESS.md"
 
-fetch "templates/proposal.md"        > "$TARGET/$PKG/templates/proposal.md"
-fetch "templates/spec.md"            > "$TARGET/$PKG/templates/spec.md"
-fetch "templates/down-qa-report.md"  > "$TARGET/$PKG/templates/down-qa-report.md"
-echo "  + $PKG/templates/{proposal,spec,down-qa-report}.md"
+fetch "sdd-templates/proposal.md"        > "$TARGET/$PKG/sdd-templates/proposal.md"
+fetch "sdd-templates/spec.md"            > "$TARGET/$PKG/sdd-templates/spec.md"
+fetch "sdd-templates/down-qa-report.md"  > "$TARGET/$PKG/sdd-templates/down-qa-report.md"
+echo "  + $PKG/sdd-templates/{proposal,spec,down-qa-report}.md"
 
 fetch "down-qa/PROCESS.md" | rewrite > "$TARGET/$PKG/down-qa/PROCESS.md"
 echo "  + $PKG/down-qa/PROCESS.md"
@@ -152,7 +152,7 @@ done
 printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
 echo "  + $PKG/.version  ($VERSION)"
 
-echo "  + up-docs/  (seus outputs vao aqui)"
+echo "  + sdd-docs/  (seus outputs vao aqui)"
 
 echo
 echo "sdd-lite v$VERSION instalado em: $TARGET"

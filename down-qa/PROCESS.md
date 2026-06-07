@@ -1,6 +1,6 @@
 # Down-QA
 
-`down-qa` e a fase pos-implementacao do upstream-process. Ela valida se o
+`down-qa` e a fase pos-implementacao do sdd-lite. Ela valida se o
 produto implementado cumpre o `spec.md` usando evidencia de execucao, de
 preferencia via navegador real.
 

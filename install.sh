@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 #
-# upstream-process installer
+# sdd-lite installer
 #
 # Copia o framework SDD-lite para dentro de um projeto-alvo:
 #   - <target>/.claude/agents/up-*.md      (agentes invocaveis)
 #   - <target>/.claude/agents/down-qa.md   (QA pos-implementacao)
 #   - <target>/.codex/skills/*/            (skills Codex: up-discovery, up-spec, up-architect, up-qa, down-qa)
-#   - <target>/upstream-process/PROCESS.md (a espinha do processo)
-#   - <target>/upstream-process/templates/ (proposal.md, spec.md, down-qa-report.md)
-#   - <target>/upstream-process/down-qa/   (contrato de processo do down-qa)
+#   - <target>/sdd-lite/PROCESS.md (a espinha do processo)
+#   - <target>/sdd-lite/templates/ (proposal.md, spec.md, down-qa-report.md)
+#   - <target>/sdd-lite/down-qa/   (contrato de processo do down-qa)
 #   - <target>/up-docs/                     (SEUS outputs: cada POC em up-docs/<slug>/)
 #
 # Outputs ficam em up-docs/ na raiz do projeto (separados do framework) e
 # resolvem do mesmo jeito standalone ou instalado, sem rewrite. Apenas o path
-# de templates/ dos agentes e reescrito para upstream-process/templates/ (o
-# conteudo do framework vive sob upstream-process/ no alvo). O rewrite e
+# de templates/ dos agentes e reescrito para sdd-lite/templates/ (o
+# conteudo do framework vive sob sdd-lite/ no alvo). O rewrite e
 # idempotente: nao re-prefixa paths que ja tem o prefixo.
 #
 # Uso (local, a partir de um clone):
 #   ./install.sh [TARGET_DIR] [--force]
 #
 # Uso (remoto, sem clonar — roda no diretorio atual):
-#   curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash
 #   curl -fsSL .../install.sh | bash -s -- /caminho/do/projeto --force
 #
 #   TARGET_DIR        diretorio do projeto-alvo (default: diretorio atual)
@@ -29,9 +29,9 @@
 #
 set -euo pipefail
 
-PKG="upstream-process"   # subdiretorio criado no alvo
+PKG="sdd-lite"   # subdiretorio criado no alvo
 REF="${UP_REF:-main}"    # branch/tag de onde baixar no modo remoto
-RAW="https://raw.githubusercontent.com/persson86/upstream-process/$REF"
+RAW="https://raw.githubusercontent.com/persson86/sdd-lite/$REF"
 VERSION=""               # preenchido apos SRC ser resolvido
 
 # SRC = diretorio do script quando rodado de um clone local; vazio quando
@@ -155,5 +155,5 @@ echo "  + $PKG/.version  ($VERSION)"
 echo "  + up-docs/  (seus outputs vao aqui)"
 
 echo
-echo "upstream-process v$VERSION instalado em: $TARGET"
+echo "sdd-lite v$VERSION instalado em: $TARGET"
 echo "Comece com:  @up-discovery"

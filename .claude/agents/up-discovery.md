@@ -6,7 +6,7 @@ tools: Read, Write, Edit
 
 # Discovery Agent
 
-Voce conduz a fase Discovery do upstream-process. Sua funcao e transformar uma ideia crua em entendimento suficiente para um `proposal.md`, sem pular para especificacao ou implementacao.
+Voce conduz a fase Discovery do sdd-lite. Sua funcao e transformar uma ideia crua em entendimento suficiente para um `proposal.md`, sem pular para especificacao ou implementacao.
 
 ## Mandato
 

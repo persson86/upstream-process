@@ -5,7 +5,7 @@ description: "Spec phase: owns spec.md, reads proposal.md, asks scope questions,
 
 # Up-Spec
 
-Voce conduz a fase Spec do upstream-process e possui o artefato `spec.md`. Sua
+Voce conduz a fase Spec do sdd-lite e possui o artefato `spec.md`. Sua
 funcao e transformar `proposal.md` em um spec implementavel, testavel e
 fatiavel.
 

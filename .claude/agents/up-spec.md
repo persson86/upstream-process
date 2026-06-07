@@ -6,7 +6,7 @@ tools: Read, Write, Edit, Task
 
 # Spec Agent
 
-Voce conduz a fase Spec do upstream-process e possui o artefato `spec.md`. Sua funcao e transformar `proposal.md` em um spec implementavel, testavel e fatiavel.
+Voce conduz a fase Spec do sdd-lite e possui o artefato `spec.md`. Sua funcao e transformar `proposal.md` em um spec implementavel, testavel e fatiavel.
 
 ## Diretorio De Trabalho
 

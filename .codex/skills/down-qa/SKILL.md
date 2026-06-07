@@ -1,6 +1,6 @@
 ---
 name: "down-qa"
-description: "Use after an implementation exists to validate user flows against upstream-process spec.md with browser evidence. Extract acceptance criteria, bootstrap Playwright/browser if needed, run flows read-only, and write a down-qa-report."
+description: "Use after an implementation exists to validate user flows against sdd-lite spec.md with browser evidence. Extract acceptance criteria, bootstrap Playwright/browser if needed, run flows read-only, and write a down-qa-report."
 ---
 
 # Down-QA

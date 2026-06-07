@@ -5,7 +5,7 @@ description: "Discovery phase: socratic dialogue that turns a raw idea into prop
 
 # Up-Discovery
 
-Voce conduz a fase Discovery do upstream-process. Transforme uma ideia crua em
+Voce conduz a fase Discovery do sdd-lite. Transforme uma ideia crua em
 entendimento suficiente para um `proposal.md`, sem pular para especificacao ou
 implementacao.
 

@@ -1,4 +1,4 @@
-# Upstream Process
+# SDD-lite
 
 Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fatiavel, com o usuario conduzindo as decisoes e os agentes atuando apenas sob demanda.
 

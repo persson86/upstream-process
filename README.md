@@ -1,4 +1,4 @@
-# upstream-process
+# sdd-lite
 
 Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e
 fatiavel, com o humano conduzindo as decisoes e os agentes atuando sob demanda.
@@ -14,22 +14,22 @@ Detalhes do processo: [`PROCESS.md`](PROCESS.md).
 De dentro da pasta do projeto-alvo, rode:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash
 ```
 
 Variantes:
 
 ```bash
 # alvo especifico em vez do diretorio atual
-curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- /caminho/do/projeto
+curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash -s -- /caminho/do/projeto
 
 # sobrescrever instalacao existente
-curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- . --force
+curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash -s -- . --force
 ```
 
 > Prefere inspecionar antes de executar? Baixe e leia o script primeiro:
 > ```bash
-> curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh -o install.sh
+> curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh -o install.sh
 > less install.sh && bash install.sh
 > ```
 
@@ -55,7 +55,7 @@ O que e criado no alvo:
 ├── .codex/skills/up-architect/      #  dos agentes Claude Code
 ├── .codex/skills/up-qa/             #
 ├── .codex/skills/down-qa/SKILL.md   #
-├── upstream-process/                # arquivos do framework (nao editar)
+├── sdd-lite/                # arquivos do framework (nao editar)
 │   ├── PROCESS.md
 │   ├── down-qa/PROCESS.md
 │   └── templates/{proposal,spec,down-qa-report}.md
@@ -65,7 +65,7 @@ O que e criado no alvo:
 Os outputs (`YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`,
 `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-down-qa-report.md`) ficam em `up-docs/<slug>/`
 na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
-apenas o path de `templates/` dos agentes para `upstream-process/templates/`, de
+apenas o path de `templates/` dos agentes para `sdd-lite/templates/`, de
 modo que resolva a partir da raiz do projeto-alvo.
 
 ## Versao e atualizacao
@@ -73,7 +73,7 @@ modo que resolva a partir da raiz do projeto-alvo.
 ### Verificar versao instalada
 
 ```bash
-cat upstream-process/.version
+cat sdd-lite/.version
 ```
 
 ### Atualizar para a versao mais recente
@@ -81,7 +81,7 @@ cat upstream-process/.version
 Dentro da pasta do projeto-alvo:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- . --update
+curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash -s -- . --update
 ```
 
 ### Fixar uma versao especifica
@@ -89,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/ins
 Use a variavel `UP_REF` para apontar para um commit, branch ou tag:
 
 ```bash
-UP_REF=v0.3.0 curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/v0.3.0/install.sh | bash -s -- . --update
+UP_REF=v0.3.0 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/v0.3.0/install.sh | bash -s -- . --update
 ```
 
 ---
@@ -135,7 +135,7 @@ claude "edite .claude/agents/up-discovery.md, up-spec.md e up-qa.md para que os 
 Se quiser delegar a edicao ao Codex:
 
 ```bash
-claude "/codex:rescue edite os agentes do upstream-process para nomear arquivos com YYYY-MM-DD-<doctype>.md"
+claude "/codex:rescue edite os agentes do sdd-lite para nomear arquivos com YYYY-MM-DD-<doctype>.md"
 ```
 
 ### Via editor direto

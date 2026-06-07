@@ -8,7 +8,31 @@ Detalhes do processo: [`PROCESS.md`](PROCESS.md).
 
 ## Instalacao em outro projeto
 
-A partir deste repo, rode o instalador apontando para o projeto-alvo:
+### Via linha de comando (recomendado)
+
+De dentro da pasta do projeto-alvo, rode:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash
+```
+
+Variantes:
+
+```bash
+# alvo especifico em vez do diretorio atual
+curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- /caminho/do/projeto
+
+# sobrescrever instalacao existente
+curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- . --force
+```
+
+> Prefere inspecionar antes de executar? Baixe e leia o script primeiro:
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh -o install.sh
+> less install.sh && bash install.sh
+> ```
+
+### A partir de um clone local
 
 ```bash
 ./install.sh /caminho/do/projeto          # instala no projeto

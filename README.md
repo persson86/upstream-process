@@ -59,9 +59,35 @@ na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
 apenas o path de `templates/` dos agentes para `upstream-process/templates/`, de
 modo que resolva a partir da raiz do projeto-alvo.
 
-## Atualizando o framework
+## Versao e atualizacao
 
-O comportamento dos agentes e controlado pelos arquivos em `.claude/agents/` — Markdown puro, sem engine nem dependencia. Atualizar o framework e editar esses arquivos.
+### Verificar versao instalada
+
+```bash
+cat upstream-process/.version
+```
+
+### Atualizar para a versao mais recente
+
+Dentro da pasta do projeto-alvo:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- . --update
+```
+
+### Fixar uma versao especifica
+
+Use a variavel `UP_REF` para apontar para um commit, branch ou tag:
+
+```bash
+UP_REF=v0.2.0 curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/v0.2.0/install.sh | bash -s -- . --update
+```
+
+---
+
+## Customizando o framework
+
+O comportamento dos agentes e controlado pelos arquivos em `.claude/agents/` — Markdown puro, sem engine nem dependencia. Customizar o framework e editar esses arquivos.
 
 ### Via Claude Code (conversa)
 
@@ -103,15 +129,7 @@ vim .claude/agents/up-discovery.md
 
 ### Propagando para projetos ja instalados
 
-O `install.sh` copia os agentes no momento da instalacao. Projetos existentes **nao recebem atualizacoes automaticas**.
-
-Para atualizar um projeto ja instalado, re-rode o installer com `--force` dentro da pasta do projeto-alvo:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash -s -- . --force
-```
-
-Ou copie manualmente os arquivos alterados de `.claude/agents/` para o projeto-alvo.
+O `install.sh` copia os agentes no momento da instalacao. Projetos existentes **nao recebem atualizacoes automaticas** — veja a secao "Versao e atualizacao" acima.
 
 ---
 

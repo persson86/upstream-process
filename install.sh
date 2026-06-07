@@ -21,14 +21,15 @@
 #   curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash
 #   curl -fsSL .../install.sh | bash -s -- /caminho/do/projeto --force
 #
-#   TARGET_DIR   diretorio do projeto-alvo (default: diretorio atual)
-#   --force      sobrescreve arquivos existentes sem abortar
+#   TARGET_DIR        diretorio do projeto-alvo (default: diretorio atual)
+#   --force|--update  sobrescreve arquivos existentes sem abortar
 #
 set -euo pipefail
 
 PKG="upstream-process"   # subdiretorio criado no alvo
 REF="${UP_REF:-main}"    # branch/tag de onde baixar no modo remoto
 RAW="https://raw.githubusercontent.com/persson86/upstream-process/$REF"
+VERSION=""               # preenchido apos SRC ser resolvido
 
 # SRC = diretorio do script quando rodado de um clone local; vazio quando
 # piped (curl | bash), pois BASH_SOURCE fica indefinido sob `set -u`.
@@ -40,10 +41,13 @@ fi
 # Modo local quando o script esta ao lado dos arquivos do pacote; senao remoto.
 if [ -n "$SRC" ] && [ -f "$SRC/PROCESS.md" ]; then
   MODE="local"
+  VERSION="$(cat "$SRC/VERSION" 2>/dev/null || echo "unknown")"
 else
   MODE="remote"
   command -v curl >/dev/null 2>&1 || { echo "erro: curl e necessario no modo remoto." >&2; exit 1; }
+  VERSION="$(curl -fsSL "$RAW/VERSION" 2>/dev/null || echo "unknown")"
 fi
+VERSION="${VERSION// /}"   # strip whitespace
 
 # fetch <relpath>: emite o conteudo do arquivo do pacote em stdout.
 fetch() {
@@ -59,9 +63,9 @@ TARGET=""
 FORCE=0
 for arg in "$@"; do
   case "$arg" in
-    --force) FORCE=1 ;;
-    -*)      echo "erro: flag desconhecida: $arg" >&2; exit 2 ;;
-    *)       TARGET="$arg" ;;
+    --force|--update) FORCE=1 ;;
+    -*)               echo "erro: flag desconhecida: $arg" >&2; exit 2 ;;
+    *)                TARGET="$arg" ;;
   esac
 done
 TARGET="${TARGET:-.}"
@@ -90,7 +94,7 @@ if [ "$FORCE" -eq 0 ]; then
   for a in "${AGENTS[@]}"; do
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
-  for f in PROCESS.md templates/proposal.md templates/spec.md; do
+  for f in PROCESS.md templates/proposal.md templates/spec.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -121,8 +125,11 @@ fetch "templates/proposal.md" > "$TARGET/$PKG/templates/proposal.md"
 fetch "templates/spec.md"     > "$TARGET/$PKG/templates/spec.md"
 echo "  + $PKG/templates/{proposal,spec}.md"
 
+printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
+echo "  + $PKG/.version  ($VERSION)"
+
 echo "  + up-docs/  (seus outputs vao aqui)"
 
 echo
-echo "upstream-process instalado em: $TARGET"
+echo "upstream-process v$VERSION instalado em: $TARGET"
 echo "Comece com:  @up-discovery"

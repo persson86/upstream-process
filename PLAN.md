@@ -101,12 +101,14 @@ Ops/projetos/upstream-process/
 ├── CLAUDE.md                   # reset de escopo: ignora regras AIOX do diretório-pai
 ├── PLAN.md                     # este documento
 ├── PROCESS.md                  # espinha: 2 fases, artefatos, gates
+├── README.md                   # o que é + instalação em outros projetos
+├── install.sh                  # instala o framework num projeto-alvo
 ├── templates/
 │   ├── proposal.md
 │   └── spec.md
-├── runs/                       # cada POC mora em runs/<slug>/ (proposal.md, spec.md, qa-verdict.md)
+├── up-docs/                    # cada POC mora em up-docs/<slug>/ (proposal.md, spec.md, qa-verdict.md)
 └── .claude/agents/
-    ├── up-discovery.md         # [menu] socrático → runs/<slug>/proposal.md (sob comando)
+    ├── up-discovery.md         # [menu] socrático → up-docs/<slug>/proposal.md (sob comando)
     ├── up-spec.md              # [menu] líder: lê proposal, pergunta/spawna/valida → spec.md
     ├── up-architect.md         # [spawn] lente de viabilidade técnica p/ @up-spec
     └── up-qa.md                # [spawn] validador isolado; grava o próprio veredito em qa-verdict.md
@@ -116,15 +118,15 @@ Ops/projetos/upstream-process/
 **Decisões de design pós-revisão (Opus s/ implementação do Codex):**
 - **Namespacing `up-*`** + `CLAUDE.md` de reset → mata colisão de nomes e o vazamento das regras AIOX do diretório-pai.
 - **`up-qa` grava o próprio `qa-verdict.md`** (não o `@up-spec`) → o veredito existe independente do autor; fecha o furo de o réu transcrever a própria sentença.
-- **Convenção `runs/<slug>/`** → isola POCs e elimina a colisão dos três `spec.md`.
+- **Convenção `up-docs/<slug>/`** → isola POCs e elimina a colisão dos três `spec.md`.
 - **Vocabulário do gate alinhado** (resolver é padrão, waiver é exceção).
 
 ---
 
 ## Verificação (como saberemos que funciona)
 
-**Dry-run end-to-end** numa POC real pequena (em `runs/<slug>/`):
-1. `@up-discovery` conduz o diálogo socrático; define o `<slug>`; ao seu comando, gera `runs/<slug>/proposal.md`.
-2. `@up-spec` lê o proposal, te faz ao menos uma pergunta de escopo, roda o `up-qa` (que grava `qa-verdict.md`) e emite `runs/<slug>/spec.md` com itens numerados. (Spawn de `up-architect` é **opcional** — só se houver viabilidade técnica que exija ler código.)
+**Dry-run end-to-end** numa POC real pequena (em `up-docs/<slug>/`):
+1. `@up-discovery` conduz o diálogo socrático; define o `<slug>`; ao seu comando, gera `up-docs/<slug>/proposal.md`.
+2. `@up-spec` lê o proposal, te faz ao menos uma pergunta de escopo, roda o `up-qa` (que grava `qa-verdict.md`) e emite `up-docs/<slug>/spec.md` com itens numerados. (Spawn de `up-architect` é **opcional** — só se houver viabilidade técnica que exija ler código.)
 
 **Critério de sucesso:** uma ideia crua atravessou as 2 fases; o `proposal.md` saiu apenas quando você pediu; o `@up-spec` perguntou em vez de assumir nos gaps de intenção e **não** spawnou sem necessidade; o `up-qa` gravou `qa-verdict.md` independente, copiado verbatim no spec, e `FAIL` bloqueou; o `spec.md` saiu com itens numerados/fatiáveis — tudo sem engine de orquestração.

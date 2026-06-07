@@ -6,12 +6,13 @@
 #   - <target>/.claude/agents/up-*.md      (agentes invocaveis)
 #   - <target>/upstream-process/PROCESS.md (a espinha do processo)
 #   - <target>/upstream-process/templates/ (proposal.md, spec.md)
-#   - <target>/upstream-process/runs/      (onde cada POC vive)
+#   - <target>/up-docs/                     (SEUS outputs: cada POC em up-docs/<slug>/)
 #
-# Os agentes referenciam templates/ e runs/ por path relativo ao repo do
-# pacote. No alvo o conteudo fica sob upstream-process/, entao os paths sao
-# reescritos para upstream-process/templates/ e upstream-process/runs/. O
-# rewrite e idempotente: nao re-prefixa paths que ja tem o prefixo.
+# Outputs ficam em up-docs/ na raiz do projeto (separados do framework) e
+# resolvem do mesmo jeito standalone ou instalado, sem rewrite. Apenas o path
+# de templates/ dos agentes e reescrito para upstream-process/templates/ (o
+# conteudo do framework vive sob upstream-process/ no alvo). O rewrite e
+# idempotente: nao re-prefixa paths que ja tem o prefixo.
 #
 # Uso:
 #   ./install.sh [TARGET_DIR] [--force]
@@ -70,15 +71,14 @@ if [ "$FORCE" -eq 0 ]; then
   fi
 fi
 
-# reescreve `templates/ e `runs/ (precedidos por backtick ou espaco) para o
-# prefixo do pacote. Paths ja prefixados (precedidos por /) nao casam.
+# reescreve `templates/ (precedido por backtick ou espaco) para o prefixo do
+# pacote. Paths ja prefixados (precedidos por /) nao casam (idempotente).
 rewrite() {
-  sed -e "s#\([\` ]\)templates/#\1$PKG/templates/#g" \
-      -e "s#\([\` ]\)runs/#\1$PKG/runs/#g"
+  sed -e "s#\([\` ]\)templates/#\1$PKG/templates/#g"
 }
 
 # --- instalacao ------------------------------------------------------------
-mkdir -p "$TARGET/.claude/agents" "$TARGET/$PKG/templates" "$TARGET/$PKG/runs"
+mkdir -p "$TARGET/.claude/agents" "$TARGET/$PKG/templates" "$TARGET/up-docs"
 
 for a in "${AGENTS[@]}"; do
   rewrite < "$SRC/.claude/agents/$a.md" > "$TARGET/.claude/agents/$a.md"
@@ -92,8 +92,7 @@ cp "$SRC/templates/proposal.md" "$TARGET/$PKG/templates/proposal.md"
 cp "$SRC/templates/spec.md"     "$TARGET/$PKG/templates/spec.md"
 echo "  + $PKG/templates/{proposal,spec}.md"
 
-[ -f "$TARGET/$PKG/runs/.gitkeep" ] || touch "$TARGET/$PKG/runs/.gitkeep"
-echo "  + $PKG/runs/"
+echo "  + up-docs/  (seus outputs vao aqui)"
 
 echo
 echo "upstream-process instalado em: $TARGET"

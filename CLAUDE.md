@@ -12,8 +12,8 @@ Este projeto é **independente e autocontido**. Apesar de morar fisicamente em `
 
 A única fonte de processo é o **`PROCESS.md`** deste diretório. Os únicos agentes são os deste projeto, prefixados `up-` para evitar colisão de nomes com o AIOX:
 
-- `@up-discovery` — fase Discovery (socrático → `runs/<slug>/proposal.md`).
-- `@up-spec` — fase Spec (líder; possui `runs/<slug>/spec.md`).
+- `@up-discovery` — fase Discovery (socrático → `up-docs/<slug>/proposal.md`).
+- `@up-spec` — fase Spec (líder; possui `up-docs/<slug>/spec.md`).
 - `up-architect`, `up-qa` — alvos internos de spawn do `@up-spec` (não são de menu).
 
-Cada POC vive em `runs/<slug>/`. Sem engine, sem state machine, sem dependência externa.
+Cada POC vive em `up-docs/<slug>/`. Sem engine, sem state machine, sem dependência externa.

@@ -10,26 +10,26 @@ Voce conduz a fase Spec do upstream-process e possui o artefato `spec.md`. Sua f
 
 ## Diretorio De Trabalho
 
-A POC mora em `runs/<slug>/`. Voce le `runs/<slug>/proposal.md` e escreve `runs/<slug>/spec.md`. O `up-qa` escreve `runs/<slug>/qa-verdict.md`. Se o `<slug>` nao estiver claro, pergunte ao usuario.
+A POC mora em `up-docs/<slug>/`. Voce le `up-docs/<slug>/proposal.md` e escreve `up-docs/<slug>/spec.md`. O `up-qa` escreve `up-docs/<slug>/qa-verdict.md`. Se o `<slug>` nao estiver claro, pergunte ao usuario.
 
 ## Entradas
 
-- Obrigatoria: `runs/<slug>/proposal.md`.
+- Obrigatoria: `up-docs/<slug>/proposal.md`.
 - Opcional: contexto de repositorio quando a proposta exigir viabilidade tecnica concreta.
 
 Se o proposal nao existir ou estiver incompleto demais para gerar criterios de aceite, pare e diga exatamente o que falta.
 
 ## Loop De Trabalho
 
-1. Leia `runs/<slug>/proposal.md`.
+1. Leia `up-docs/<slug>/proposal.md`.
 2. Rode um gap scan: intencao, prioridade, escopo, viabilidade tecnica, riscos, testabilidade e sequenciamento.
 3. Para cada gap, escolha um movimento:
    - perguntar ao usuario quando o gap for de intencao, prioridade ou escopo;
    - spawnar `up-architect` quando a viabilidade tecnica exigir ler codigo, stack ou restricoes concretas;
    - assumir e sinalizar quando a assuncao for pequena, reversivel e nao bloquear o spec.
-4. Rascunhe `runs/<slug>/spec.md` usando `templates/spec.md`.
-5. Spawne `up-qa`, passando o `<slug>` e somente os artefatos (`proposal.md` + draft de `spec.md`). O `up-qa` escreve o veredito em `runs/<slug>/qa-verdict.md`.
-6. Leia `runs/<slug>/qa-verdict.md` e cole o veredito verbatim na secao `QA-Gate` do spec, referenciando o arquivo como fonte de verdade.
+4. Rascunhe `up-docs/<slug>/spec.md` usando `templates/spec.md`.
+5. Spawne `up-qa`, passando o `<slug>` e somente os artefatos (`proposal.md` + draft de `spec.md`). O `up-qa` escreve o veredito em `up-docs/<slug>/qa-verdict.md`.
+6. Leia `up-docs/<slug>/qa-verdict.md` e cole o veredito verbatim na secao `QA-Gate` do spec, referenciando o arquivo como fonte de verdade.
 7. Finalize somente se o gate permitir.
 
 ## Regras De Spawn
@@ -42,7 +42,7 @@ Use `up-qa` obrigatoriamente antes de finalizar qualquer `spec.md`. Passe apenas
 
 ## QA-Gate
 
-A fonte de verdade do veredito e `runs/<slug>/qa-verdict.md`, escrito pelo proprio `up-qa` — voce nao o produz nem o reescreve. Copie-o sem edicao, resumo ou suavizacao para a secao `QA-Gate` do `spec.md`.
+A fonte de verdade do veredito e `up-docs/<slug>/qa-verdict.md`, escrito pelo proprio `up-qa` — voce nao o produz nem o reescreve. Copie-o sem edicao, resumo ou suavizacao para a secao `QA-Gate` do `spec.md`.
 
 - `PASS`: pode finalizar.
 - `CONCERNS`: resolva os achados ou obtenha waiver explicito do usuario e registre na secao `QA-Gate`.

@@ -16,7 +16,7 @@ A partir deste repo, rode o instalador apontando para o projeto-alvo:
 ./install.sh                              # instala no diretorio atual
 ```
 
-O que e copiado para o alvo:
+O que e criado no alvo:
 
 ```
 <projeto>/
@@ -24,21 +24,23 @@ O que e copiado para o alvo:
 ├── .claude/agents/up-spec.md        # [menu] lider: possui o spec.md
 ├── .claude/agents/up-architect.md   # [spawn] viabilidade tecnica
 ├── .claude/agents/up-qa.md          # [spawn] QA-gate isolado
-└── upstream-process/
-    ├── PROCESS.md
-    ├── templates/{proposal,spec}.md
-    └── runs/                        # cada POC vive em runs/<slug>/
+├── upstream-process/                # arquivos do framework (nao editar)
+│   ├── PROCESS.md
+│   └── templates/{proposal,spec}.md
+└── up-docs/                         # SEUS outputs: cada POC em up-docs/<slug>/
 ```
 
-O instalador ajusta os paths dos agentes (`templates/`, `runs/`) para o prefixo
-`upstream-process/`, de modo que resolvam a partir da raiz do projeto-alvo. Nao
-copia `CLAUDE.md` (reset de escopo especifico do Ops/AIOX) nem `PLAN.md`.
+Os outputs (`proposal.md`, `spec.md`, `qa-verdict.md`) ficam em `up-docs/<slug>/`
+na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
+apenas o path de `templates/` dos agentes para `upstream-process/templates/`, de
+modo que resolva a partir da raiz do projeto-alvo. Nao copia `CLAUDE.md` (reset
+de escopo especifico do Ops/AIOX) nem `PLAN.md`.
 
 ## Uso
 
 Dentro do projeto onde foi instalado:
 
 1. `@up-discovery` — dialogo socratico; ao seu comando explicito, gera
-   `upstream-process/runs/<slug>/proposal.md`.
+   `up-docs/<slug>/proposal.md`.
 2. `@up-spec` — le o proposal, pergunta nos gaps de escopo, roda o QA-gate e
-   emite `upstream-process/runs/<slug>/spec.md` com features numeradas.
+   emite `up-docs/<slug>/spec.md` com features numeradas.

@@ -76,7 +76,7 @@ Store local em arquivo JSON unico (`~/.bm.json`). Sem rede, sem backend. Volume 
 
 ## QA-Gate
 
-Fonte de verdade: `runs/<slug>/qa-verdict.md`, escrito pelo up-qa.
+Fonte de verdade: `up-docs/<slug>/qa-verdict.md`, escrito pelo up-qa.
 
 ### Veredito Verbatim Do `up-qa`
 

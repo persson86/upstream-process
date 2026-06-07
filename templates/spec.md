@@ -59,7 +59,7 @@ Registre restricoes tecnicas, decisoes relevantes, integracoes, dados, riscos de
 
 ## QA-Gate
 
-Fonte de verdade: `runs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
+Fonte de verdade: `up-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
 
 ### Veredito Verbatim Do `up-qa`
 

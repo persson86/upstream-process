@@ -5,7 +5,7 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 ## Principios
 
 - Humano conduz o fluxo. O processo nao tem engine, state machine, auto-handoff ou dependencia externa.
-- Projeto autocontido: ignora as regras AIOX do diretorio-pai (`projetos/.claude/`). Ver `CLAUDE.md`.
+- Projeto autocontido: sem heranca de outros frameworks; o que for util de fora, copia-se para dentro.
 - Cada POC mora em `up-docs/<slug>/` e contem `proposal.md`, `spec.md` e `qa-verdict.md`.
 - `up-discovery` escreve o proposal somente quando o usuario pedir explicitamente.
 - `up-spec` possui o artefato `spec.md` e decide, por gap, entre perguntar ao usuario, chamar uma lente isolada ou assumir registrando a assuncao.

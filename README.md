@@ -33,8 +33,7 @@ O que e criado no alvo:
 Os outputs (`proposal.md`, `spec.md`, `qa-verdict.md`) ficam em `up-docs/<slug>/`
 na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
 apenas o path de `templates/` dos agentes para `upstream-process/templates/`, de
-modo que resolva a partir da raiz do projeto-alvo. Nao copia `CLAUDE.md` (reset
-de escopo especifico do Ops/AIOX) nem `PLAN.md`.
+modo que resolva a partir da raiz do projeto-alvo.
 
 ## Uso
 

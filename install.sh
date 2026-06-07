@@ -4,8 +4,11 @@
 #
 # Copia o framework SDD-lite para dentro de um projeto-alvo:
 #   - <target>/.claude/agents/up-*.md      (agentes invocaveis)
+#   - <target>/.claude/agents/down-qa.md   (QA pos-implementacao)
+#   - <target>/.codex/skills/*/            (skills Codex: up-discovery, up-spec, up-architect, up-qa, down-qa)
 #   - <target>/upstream-process/PROCESS.md (a espinha do processo)
-#   - <target>/upstream-process/templates/ (proposal.md, spec.md)
+#   - <target>/upstream-process/templates/ (proposal.md, spec.md, down-qa-report.md)
+#   - <target>/upstream-process/down-qa/   (contrato de processo do down-qa)
 #   - <target>/up-docs/                     (SEUS outputs: cada POC em up-docs/<slug>/)
 #
 # Outputs ficam em up-docs/ na raiz do projeto (separados do framework) e
@@ -86,7 +89,7 @@ if [ ! -d "$TARGET/.git" ]; then
   echo "aviso: $TARGET nao parece um repo git (sem .git)."
 fi
 
-AGENTS=(up-discovery up-spec up-architect up-qa)
+AGENTS=(up-discovery up-spec up-architect up-qa down-qa)
 
 # --- checagem de colisao ---------------------------------------------------
 if [ "$FORCE" -eq 0 ]; then
@@ -94,7 +97,10 @@ if [ "$FORCE" -eq 0 ]; then
   for a in "${AGENTS[@]}"; do
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
-  for f in PROCESS.md templates/proposal.md templates/spec.md .version; do
+  for s in up-discovery up-spec up-architect up-qa down-qa; do
+    [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
+  done
+  for f in PROCESS.md templates/proposal.md templates/spec.md templates/down-qa-report.md down-qa/PROCESS.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -107,11 +113,20 @@ fi
 # reescreve `templates/ (precedido por backtick ou espaco) para o prefixo do
 # pacote. Paths ja prefixados (precedidos por /) nao casam (idempotente).
 rewrite() {
-  sed -e "s#\([\` ]\)templates/#\1$PKG/templates/#g"
+  sed \
+    -e "s#\([\` ]\)templates/#\1$PKG/templates/#g" \
+    -e "s#\([\` ]\)down-qa/#\1$PKG/down-qa/#g"
 }
 
 # --- instalacao ------------------------------------------------------------
-mkdir -p "$TARGET/.claude/agents" "$TARGET/$PKG/templates" "$TARGET/up-docs"
+mkdir -p \
+  "$TARGET/.claude/agents" \
+  "$TARGET/$PKG/templates" \
+  "$TARGET/$PKG/down-qa" \
+  "$TARGET/up-docs"
+for s in up-discovery up-spec up-architect up-qa down-qa; do
+  mkdir -p "$TARGET/.codex/skills/$s"
+done
 
 for a in "${AGENTS[@]}"; do
   fetch ".claude/agents/$a.md" | rewrite > "$TARGET/.claude/agents/$a.md"
@@ -121,9 +136,18 @@ done
 fetch "PROCESS.md" | rewrite > "$TARGET/$PKG/PROCESS.md"
 echo "  + $PKG/PROCESS.md"
 
-fetch "templates/proposal.md" > "$TARGET/$PKG/templates/proposal.md"
-fetch "templates/spec.md"     > "$TARGET/$PKG/templates/spec.md"
-echo "  + $PKG/templates/{proposal,spec}.md"
+fetch "templates/proposal.md"        > "$TARGET/$PKG/templates/proposal.md"
+fetch "templates/spec.md"            > "$TARGET/$PKG/templates/spec.md"
+fetch "templates/down-qa-report.md"  > "$TARGET/$PKG/templates/down-qa-report.md"
+echo "  + $PKG/templates/{proposal,spec,down-qa-report}.md"
+
+fetch "down-qa/PROCESS.md" | rewrite > "$TARGET/$PKG/down-qa/PROCESS.md"
+echo "  + $PKG/down-qa/PROCESS.md"
+
+for s in up-discovery up-spec up-architect up-qa down-qa; do
+  fetch ".codex/skills/$s/SKILL.md" | rewrite > "$TARGET/.codex/skills/$s/SKILL.md"
+  echo "  + .codex/skills/$s/SKILL.md"
+done
 
 printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
 echo "  + $PKG/.version  ($VERSION)"

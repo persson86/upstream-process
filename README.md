@@ -2,7 +2,8 @@
 
 Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e
 fatiavel, com o humano conduzindo as decisoes e os agentes atuando sob demanda.
-Sem engine, sem state machine, sem dependencia externa.
+Inclui `down-qa` para validar a implementacao contra o spec com evidencia de
+fluxo real. Sem engine, sem state machine, sem dependencia externa.
 
 Detalhes do processo: [`PROCESS.md`](PROCESS.md).
 
@@ -48,13 +49,21 @@ O que e criado no alvo:
 ├── .claude/agents/up-spec.md        # [menu] lider: possui o spec.md
 ├── .claude/agents/up-architect.md   # [spawn] viabilidade tecnica
 ├── .claude/agents/up-qa.md          # [spawn] QA-gate isolado
+├── .claude/agents/down-qa.md        # [menu] QA pos-implementacao
+├── .codex/skills/up-discovery/      #
+├── .codex/skills/up-spec/           # skills Codex — mesma cobertura
+├── .codex/skills/up-architect/      #  dos agentes Claude Code
+├── .codex/skills/up-qa/             #
+├── .codex/skills/down-qa/SKILL.md   #
 ├── upstream-process/                # arquivos do framework (nao editar)
 │   ├── PROCESS.md
-│   └── templates/{proposal,spec}.md
+│   ├── down-qa/PROCESS.md
+│   └── templates/{proposal,spec,down-qa-report}.md
 └── up-docs/                         # SEUS outputs: cada POC em up-docs/<slug>/
 ```
 
-Os outputs (`YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`) ficam em `up-docs/<slug>/`
+Os outputs (`YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`,
+`YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-down-qa-report.md`) ficam em `up-docs/<slug>/`
 na raiz do projeto — separados dos arquivos do framework. O instalador ajusta
 apenas o path de `templates/` dos agentes para `upstream-process/templates/`, de
 modo que resolva a partir da raiz do projeto-alvo.
@@ -80,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/ins
 Use a variavel `UP_REF` para apontar para um commit, branch ou tag:
 
 ```bash
-UP_REF=v0.2.0 curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/v0.2.0/install.sh | bash -s -- . --update
+UP_REF=v0.3.0 curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/v0.3.0/install.sh | bash -s -- . --update
 ```
 
 ---
@@ -98,10 +107,19 @@ Descreva a mudanca no chat. Exemplo:
 Claude localiza os arquivos de agentes relevantes e aplica a mudanca. Os arquivos que controlam o comportamento sao:
 
 ```
+# agentes Claude Code
 .claude/agents/up-discovery.md   # controla proposal.md
 .claude/agents/up-spec.md        # controla spec.md e handoff para up-qa
 .claude/agents/up-qa.md          # controla qa-verdict.md
 .claude/agents/up-architect.md   # controla analise de viabilidade tecnica
+.claude/agents/down-qa.md        # controla down-qa-report.md
+
+# skills Codex (mesma cobertura)
+.codex/skills/up-discovery/SKILL.md
+.codex/skills/up-spec/SKILL.md
+.codex/skills/up-architect/SKILL.md
+.codex/skills/up-qa/SKILL.md
+.codex/skills/down-qa/SKILL.md
 ```
 
 ### Via Claude Code CLI (linha de comando)
@@ -137,7 +155,12 @@ O `install.sh` copia os agentes no momento da instalacao. Projetos existentes **
 
 Dentro do projeto onde foi instalado:
 
-1. `@up-discovery` — dialogo socratico; ao seu comando explicito, gera
-   `up-docs/<slug>/proposal.md`.
-2. `@up-spec` — le o proposal, pergunta nos gaps de escopo, roda o QA-gate e
-   emite `up-docs/<slug>/spec.md` com features numeradas.
+Cada fase tem agente Claude Code (`@nome`) e skill Codex equivalente (`/nome`):
+
+1. `@up-discovery` / `/up-discovery` — dialogo socratico; ao seu comando
+   explicito, gera `up-docs/<slug>/YYYY-MM-DD-proposal.md`.
+2. `@up-spec` / `/up-spec` — le o proposal, pergunta nos gaps de escopo, roda o
+   QA-gate e emite `up-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
+3. Depois da implementacao, `@down-qa` / `/down-qa` — le o spec, testa os fluxos
+   implementados com navegador quando aplicavel e emite
+   `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.

@@ -11,6 +11,8 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 - `up-spec` possui o artefato `spec.md` e decide, por gap, entre perguntar ao usuario, chamar uma lente isolada ou assumir registrando a assuncao.
 - Spawns sao fechados: `@up-spec` so pode chamar `up-architect` ou `up-qa`.
 - QA e gate, nao conselho opcional. O `up-qa` escreve seu veredito em `up-docs/<slug>/qa-verdict.md` (fonte de verdade); o `@up-spec` o copia verbatim para o `spec.md` mas nao pode edita-lo.
+- Down-QA e pos-implementacao e manual. `down-qa` valida o produto contra o
+  spec com evidencia de execucao e escreve `YYYY-MM-DD-down-qa-report.md`.
 
 ## Fases
 
@@ -18,6 +20,7 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 | --- | --- | --- | --- | --- |
 | 1. Discovery | `@up-discovery` | Ideia, contexto e respostas do usuario | `up-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
 | 2. Spec | `@up-spec` | `up-docs/<slug>/YYYY-MM-DD-proposal.md` | `up-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
+| 3. Down-QA | `@down-qa` ou skill Codex `down-qa` | `up-docs/<slug>/YYYY-MM-DD-spec.md` + implementacao | `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md` | Usuario decide corrigir, aceitar risco ou bloquear entrega |
 
 ## Fase 1: Discovery
 
@@ -75,13 +78,42 @@ Vereditos:
 
 O `@up-spec` nao pode editar, resumir ou descartar o veredito. Deve copia-lo verbatim de `qa-verdict.md` para a secao `QA-Gate` do `spec.md`.
 
+## Fase 3: Down-QA
+
+Objetivo: validar a implementacao pronta contra o `spec.md` usando fluxo real e
+evidencia observavel. Para web, o caminho preferencial e navegador real com
+Playwright, browser CLI ou ferramenta equivalente.
+
+Operacao:
+
+1. Ler `up-docs/<slug>/YYYY-MM-DD-spec.md`.
+2. Extrair checklist por feature numerada e criterios de aceite.
+3. Descobrir URL inicial, comando de dev server, dados de teste e credenciais
+   necessarias.
+4. Rodar o Browser Capability Check descrito em `down-qa/PROCESS.md`.
+5. Navegar como usuario real e comparar comportamento observado contra o spec.
+6. Escrever `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+
+Regras:
+
+- Read-only por padrao; nao corrigir codigo durante o down-qa.
+- Nao marcar PASS para fluxo web sem exercitar browser.
+- Se Playwright/browser nao estiver pronto, tentar bootstrap ou fallback antes
+  de declarar bloqueio.
+- Registrar `Browser Harness: READY | DEGRADED | BLOCKED`.
+- `BLOCKED` e aceitavel quando faltam auth, dados, permissao, rede ou browser.
+
 ## Artefatos
 
 - Diretorio de cada POC: `up-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`.
+- Down-QA report: `up-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
 - Template de proposta: `templates/proposal.md`.
 - Template de spec: `templates/spec.md`.
+- Template de down-qa: `templates/down-qa-report.md`.
 - Agentes de menu: `.claude/agents/up-discovery.md` e `.claude/agents/up-spec.md`.
 - Alvos internos de spawn: `.claude/agents/up-architect.md` e `.claude/agents/up-qa.md`.
+- QA pos-implementacao: `.claude/agents/down-qa.md` e skill Codex
+  `.codex/skills/down-qa/SKILL.md`.
 
 ## Dry-Run De Validacao
 
@@ -90,3 +122,7 @@ O `@up-spec` nao pode editar, resumir ou descartar o veredito. Deve copia-lo ver
 3. Invocar `@up-spec`.
 4. Confirmar que ele pergunta ao usuario em gaps de escopo/intencao, nao spawna sem necessidade, roda `up-qa` e gera `up-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
 5. Confirmar que `up-qa` escreveu `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, que o veredito esta copiado verbatim no spec e que `FAIL` bloqueia a finalizacao.
+6. Apos uma implementacao pequena, invocar `@down-qa` ou a skill Codex
+   `down-qa`.
+7. Confirmar que o relatorio registra spec coverage, browser harness, evidencia
+   e `PASS | PARTIAL | FAIL | BLOCKED`.

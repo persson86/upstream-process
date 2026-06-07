@@ -14,16 +14,40 @@
 # conteudo do framework vive sob upstream-process/ no alvo). O rewrite e
 # idempotente: nao re-prefixa paths que ja tem o prefixo.
 #
-# Uso:
+# Uso (local, a partir de um clone):
 #   ./install.sh [TARGET_DIR] [--force]
+#
+# Uso (remoto, sem clonar — roda no diretorio atual):
+#   curl -fsSL https://raw.githubusercontent.com/persson86/upstream-process/main/install.sh | bash
+#   curl -fsSL .../install.sh | bash -s -- /caminho/do/projeto --force
 #
 #   TARGET_DIR   diretorio do projeto-alvo (default: diretorio atual)
 #   --force      sobrescreve arquivos existentes sem abortar
 #
 set -euo pipefail
 
-SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG="upstream-process"   # subdiretorio criado no alvo
+REF="${UP_REF:-main}"    # branch/tag de onde baixar no modo remoto
+RAW="https://raw.githubusercontent.com/persson86/upstream-process/$REF"
+
+SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+
+# Modo local quando o script esta ao lado dos arquivos do pacote; senao remoto.
+if [ -n "$SRC" ] && [ -f "$SRC/PROCESS.md" ]; then
+  MODE="local"
+else
+  MODE="remote"
+  command -v curl >/dev/null 2>&1 || { echo "erro: curl e necessario no modo remoto." >&2; exit 1; }
+fi
+
+# fetch <relpath>: emite o conteudo do arquivo do pacote em stdout.
+fetch() {
+  if [ "$MODE" = "local" ]; then
+    cat "$SRC/$1"
+  else
+    curl -fsSL "$RAW/$1"
+  fi
+}
 
 # --- parse de argumentos ---------------------------------------------------
 TARGET=""
@@ -44,7 +68,7 @@ if [ ! -d "$TARGET" ]; then
 fi
 TARGET="$(cd "$TARGET" && pwd)"
 
-if [ "$TARGET" = "$SRC" ]; then
+if [ "$MODE" = "local" ] && [ "$TARGET" = "$SRC" ]; then
   echo "erro: o alvo e o proprio repo do pacote; instale em outro projeto." >&2
   exit 1
 fi
@@ -81,15 +105,15 @@ rewrite() {
 mkdir -p "$TARGET/.claude/agents" "$TARGET/$PKG/templates" "$TARGET/up-docs"
 
 for a in "${AGENTS[@]}"; do
-  rewrite < "$SRC/.claude/agents/$a.md" > "$TARGET/.claude/agents/$a.md"
+  fetch ".claude/agents/$a.md" | rewrite > "$TARGET/.claude/agents/$a.md"
   echo "  + .claude/agents/$a.md"
 done
 
-rewrite < "$SRC/PROCESS.md" > "$TARGET/$PKG/PROCESS.md"
+fetch "PROCESS.md" | rewrite > "$TARGET/$PKG/PROCESS.md"
 echo "  + $PKG/PROCESS.md"
 
-cp "$SRC/templates/proposal.md" "$TARGET/$PKG/templates/proposal.md"
-cp "$SRC/templates/spec.md"     "$TARGET/$PKG/templates/spec.md"
+fetch "templates/proposal.md" > "$TARGET/$PKG/templates/proposal.md"
+fetch "templates/spec.md"     > "$TARGET/$PKG/templates/spec.md"
 echo "  + $PKG/templates/{proposal,spec}.md"
 
 echo "  + up-docs/  (seus outputs vao aqui)"

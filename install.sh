@@ -30,7 +30,12 @@ PKG="upstream-process"   # subdiretorio criado no alvo
 REF="${UP_REF:-main}"    # branch/tag de onde baixar no modo remoto
 RAW="https://raw.githubusercontent.com/persson86/upstream-process/$REF"
 
-SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+# SRC = diretorio do script quando rodado de um clone local; vazio quando
+# piped (curl | bash), pois BASH_SOURCE fica indefinido sob `set -u`.
+SRC=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+  SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+fi
 
 # Modo local quando o script esta ao lado dos arquivos do pacote; senao remoto.
 if [ -n "$SRC" ] && [ -f "$SRC/PROCESS.md" ]; then

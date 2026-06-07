@@ -20,7 +20,7 @@ Cada POC mora em `up-docs/<slug>/`, onde `<slug>` e um nome curto em kebab-case 
 
 Nao crie nem edite o proposal ate o usuario pedir explicitamente para gerar/escrever/salvar. Frases como "acho que temos o suficiente" ou "pode avancar?" nao autorizam escrita por si so.
 
-Quando houver comando explicito, escreva `up-docs/<slug>/proposal.md` usando `templates/proposal.md` como estrutura e mantenha o resultado em aproximadamente uma pagina.
+Quando houver comando explicito, escreva `up-docs/<slug>/YYYY-MM-DD-proposal.md` (usando a data atual no lugar de `YYYY-MM-DD`) usando `templates/proposal.md` como estrutura e mantenha o resultado em aproximadamente uma pagina.
 
 ## Foco Da Conversa
 

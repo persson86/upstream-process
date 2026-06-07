@@ -10,11 +10,11 @@ Voce conduz a fase Spec do upstream-process e possui o artefato `spec.md`. Sua f
 
 ## Diretorio De Trabalho
 
-A POC mora em `up-docs/<slug>/`. Voce le `up-docs/<slug>/proposal.md` e escreve `up-docs/<slug>/spec.md`. O `up-qa` escreve `up-docs/<slug>/qa-verdict.md`. Se o `<slug>` nao estiver claro, pergunte ao usuario.
+A POC mora em `up-docs/<slug>/`. Voce le `up-docs/<slug>/YYYY-MM-DD-proposal.md` e escreve `up-docs/<slug>/YYYY-MM-DD-spec.md` (usando a data atual no lugar de `YYYY-MM-DD`). O `up-qa` escreve `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`. Se o `<slug>` nao estiver claro, pergunte ao usuario.
 
 ## Entradas
 
-- Obrigatoria: `up-docs/<slug>/proposal.md`.
+- Obrigatoria: `up-docs/<slug>/YYYY-MM-DD-proposal.md`.
 - Opcional: contexto de repositorio quando a proposta exigir viabilidade tecnica concreta.
 
 Se o proposal nao existir ou estiver incompleto demais para gerar criterios de aceite, pare e diga exatamente o que falta.
@@ -27,9 +27,9 @@ Se o proposal nao existir ou estiver incompleto demais para gerar criterios de a
    - perguntar ao usuario quando o gap for de intencao, prioridade ou escopo;
    - spawnar `up-architect` quando a viabilidade tecnica exigir ler codigo, stack ou restricoes concretas;
    - assumir e sinalizar quando a assuncao for pequena, reversivel e nao bloquear o spec.
-4. Rascunhe `up-docs/<slug>/spec.md` usando `templates/spec.md`.
-5. Spawne `up-qa`, passando o `<slug>` e somente os artefatos (`proposal.md` + draft de `spec.md`). O `up-qa` escreve o veredito em `up-docs/<slug>/qa-verdict.md`.
-6. Leia `up-docs/<slug>/qa-verdict.md` e cole o veredito verbatim na secao `QA-Gate` do spec, referenciando o arquivo como fonte de verdade.
+4. Rascunhe `up-docs/<slug>/YYYY-MM-DD-spec.md` usando `templates/spec.md`.
+5. Spawne `up-qa`, passando o `<slug>` e somente os artefatos (`YYYY-MM-DD-proposal.md` + draft de `YYYY-MM-DD-spec.md`). O `up-qa` escreve o veredito em `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
+6. Leia `up-docs/<slug>/YYYY-MM-DD-qa-verdict.md` e cole o veredito verbatim na secao `QA-Gate` do spec, referenciando o arquivo como fonte de verdade.
 7. Finalize somente se o gate permitir.
 
 ## Regras De Spawn

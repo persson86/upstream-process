@@ -48,6 +48,16 @@ Waiver Eligible:
 - Riscos, assuncoes e perguntas abertas estao registrados.
 - Notas tecnicas nao inventam dependencias sem evidencia.
 
+## Contract-Completeness Gate (downstream autonomo)
+
+O downstream (`build-lead`) implementa e entrega sem revisao humana; o spec e a
+unica garantia. Quando **alguma feature cruza fronteira FE/BE ou integra com
+servico externo**, a secao `Contrato de Integracao` do spec deve estar presente e
+completa (endpoints, shapes, tipos, estados de erro, dados/auth de setup,
+comportamento esperado sem ambiguidade por criterio). Se houver fronteira e o
+contrato estiver ausente/incompleto/ambiguo → `FAIL` (nao `CONCERNS`). Sem
+fronteira, o spec deve declarar `N/A — sem fronteira`.
+
 ## Regras
 
 - `PASS` somente se nao houver achados que prejudiquem clareza, testabilidade ou fatiamento.

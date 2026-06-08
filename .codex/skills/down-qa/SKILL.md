@@ -9,18 +9,24 @@ Use esta skill para validar uma implementacao contra
 `sdd-docs/<slug>/YYYY-MM-DD-spec.md`. O objetivo e testar fluxo real, nao revisar
 codigo.
 
-## Required Context
+## Required Context (fixed allowlist)
 
-- Spec: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
-- For web flows: initial URL or dev-server command.
-- Optional: feature scope, test data, credentials supplied by the user.
+Read **only** two artifacts:
 
-If essential input is missing, ask for the smallest missing piece.
+- `sdd-docs/<slug>/YYYY-MM-DD-spec.md` — source of the **expected** behavior.
+- `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — source of **execution** (how to
+  run, URL, test data, credentials).
+
+**Creator/verifier isolation:** never read, request, or accept `build-report.md`,
+the builder's rationale, claimed contract, assumptions, or iteration history. Derive
+the expected behavior from `spec.md` only; use `run-manifest.md` solely to locate and
+run the app. When invoked standalone without a run-manifest, ask the user only for
+the minimal execution detail (URL/command/data) — never the builder's rationale.
 
 ## Shared Contract
 
-Read `down-qa/PROCESS.md` and use `sdd-templates/down-qa-report.md` as the
-report template.
+Read the `Fase 4: Down-QA` section of `PROCESS.md` (it includes the Browser
+Capability Check) and use `sdd-templates/down-qa-report.md` as the report template.
 
 ## Workflow
 
@@ -50,6 +56,16 @@ report template.
   exact error.
 - If the user asks to fix findings, treat that as a separate implementation task.
 
+## Coverage And Verdict
+
+- `PASS` only when **every** acceptance criterion of **every** numbered feature was
+  tested with evidence, or marked `N/A` anchored to the spec. Partial coverage,
+  missing data, or an untested criterion => `PARTIAL` or `BLOCKED`, never `PASS`.
+- Each finding gets a **stable ID** `DQ-NN`, the affected feature/criterion, and a
+  **category**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
+  Keep IDs stable across runs for the same problem so `build-lead` can detect
+  no-progress.
+
 ## Output
 
 Report:
@@ -57,10 +73,10 @@ Report:
 ```md
 Verdict: PASS | PARTIAL | FAIL | BLOCKED
 Browser Harness: READY | DEGRADED | BLOCKED
-Spec Coverage:
-- F1: PASS | FAIL | BLOCKED - <evidence>
+Spec Coverage (one row per criterion):
+- F1 / <criterio>: PASS | FAIL | BLOCKED | N/A - <evidence>
 Findings:
-- [severity: high|medium|low] <finding>
+- DQ-01 | F1 / <criterio> | bug|missing-coverage|missing-spec-field|env-blocked | high|medium|low - <finding>
 ```
 
 Final chat response should summarize the verdict, highest-impact findings, and

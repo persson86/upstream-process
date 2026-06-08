@@ -32,6 +32,22 @@ Voce **escreve** o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usand
 - Notas tecnicas nao inventam dependencias sem evidencia.
 - O QA-gate esta presente e pronto para registrar o veredito.
 
+## Contract-Completeness Gate (downstream autonomo)
+
+O downstream (`build-lead`) implementa e entrega **sem revisao humana**: o spec e a
+unica garantia. Por isso, quando **alguma feature cruza fronteira FE/BE ou integra
+com servico externo**, a secao `Contrato de Integracao` do spec deve estar presente
+e completa o suficiente para implementar sem inventar:
+
+- endpoints/rotas, shapes de request/response, tipos/modelos compartilhados;
+- estados de erro e dados/auth de setup;
+- comportamento esperado, sem ambiguidade, para cada criterio que cruza fronteira.
+
+Se houver fronteira e o contrato estiver **ausente, incompleto ou ambiguo**, o
+veredito e `FAIL` (nao `CONCERNS`): a lacuna deve ser resolvida no Spec, nao
+empurrada para o downstream travar. Se nenhuma feature cruza fronteira, o spec deve
+declarar `N/A — sem fronteira`.
+
 ## Veredito
 
 Use exatamente este formato:

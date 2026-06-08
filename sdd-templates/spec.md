@@ -48,6 +48,19 @@ Quando <situacao>, quero <motivacao/necessidade>, para <resultado mensuravel ou 
 
 **Dependencias/ordem:** <por que esta feature vem nesta posicao>
 
+## Contrato De Integracao
+
+Preencha **quando alguma feature cruza fronteira FE/BE ou integra com servico externo**. Este contrato e o que o downstream autonomo (`build-lead`) deriva e os helpers implementam verbatim — se faltar aqui, o `up-qa` bloqueia o spec (nao se deixa a lacuna para o downstream travar).
+
+Se nenhuma feature cruza fronteira, escreva: `N/A — sem fronteira FE/BE nem integracao externa.`
+
+- **Endpoints/rotas:** metodo, caminho, proposito.
+- **Request/Response:** shape de payload por endpoint (campos e tipos).
+- **Tipos/modelos compartilhados:** entidades e campos usados por FE e BE.
+- **Estados de erro:** codigos/condicoes e como o cliente reage.
+- **Dados/auth de setup:** o que precisa existir para exercitar o fluxo.
+- **Comportamento esperado por criterio:** para cada criterio de aceite que cruza fronteira, o resultado observavel sem ambiguidade.
+
 ## Notas De Arquitetura
 
 Registre restricoes tecnicas, decisoes relevantes, integracoes, dados, riscos de implementacao e achados do `architect` quando ele for chamado.
@@ -59,7 +72,7 @@ Registre restricoes tecnicas, decisoes relevantes, integracoes, dados, riscos de
 
 ## QA-Gate
 
-Fonte de verdade: `up-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
+Fonte de verdade: `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
 
 ### Veredito Verbatim Do `up-qa`
 

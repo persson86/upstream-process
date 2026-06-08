@@ -4,23 +4,33 @@ Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fa
 
 ## Principios
 
-- Humano conduz o fluxo. O processo nao tem engine, state machine, auto-handoff ou dependencia externa.
+O fluxo tem **dois regimes**, com a linha tracada no `spec.md`:
+
+- **Upstream (Discovery, Spec): humano conduz**, passo a passo. Sem auto-handoff;
+  cada fase avanca por decisao do usuario.
+- **Downstream (Build, Down-QA): autonomo** a partir do spec aprovado. O humano
+  aciona uma vez; o `build-lead` constroi, valida via `down-qa` e entrega sem gate
+  humano, escalando so pelo disjuntor. Auto-handoff build↔down-qa existe **apenas
+  aqui**, e ainda sem engine/state machine (o loop roda na invocacao do lider).
+
+Demais principios:
+
 - Projeto autocontido: sem heranca de outros frameworks; o que for util de fora, copia-se para dentro.
-- Cada POC mora em `sdd-docs/<slug>/` e contem `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md` e `YYYY-MM-DD-qa-verdict.md`.
+- Cada POC mora em `sdd-docs/<slug>/` e contem `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md` e `YYYY-MM-DD-down-qa-report.md`.
 - `up-discovery` escreve o proposal somente quando o usuario pedir explicitamente.
 - `up-spec` possui o artefato `spec.md` e decide, por gap, entre perguntar ao usuario, chamar uma lente isolada ou assumir registrando a assuncao.
-- Spawns sao fechados: `@up-spec` so pode chamar `up-architect` ou `up-qa`.
-- QA e gate, nao conselho opcional. O `up-qa` escreve seu veredito em `sdd-docs/<slug>/qa-verdict.md` (fonte de verdade); o `@up-spec` o copia verbatim para o `spec.md` mas nao pode edita-lo.
-- Down-QA e pos-implementacao e manual. `down-qa` valida o produto contra o
-  spec com evidencia de execucao e escreve `YYYY-MM-DD-down-qa-report.md`.
+- Spawns sao fechados: `@up-spec` so chama `up-architect`/`up-qa`; `@build-lead` so chama `build-frontend`, `build-backend` ou `down-qa`.
+- **O gate `up-qa` e load-bearing.** Como o downstream entrega sem revisao humana, o spec e a unica garantia: o `up-qa` da `FAIL` se uma feature cruza fronteira FE/BE e o `Contrato de Integracao` esta ausente/ambiguo. QA e gate, nao conselho opcional; o `up-qa` escreve `qa-verdict.md` (fonte de verdade) e o `@up-spec` o copia verbatim, sem editar.
+- **Isolamento creator/verifier no downstream:** o `build-lead` constroi e corrige; o `down-qa` so le `spec.md` + `run-manifest.md` (nunca o `build-report.md`) e julga. PASS exige cobertura total dos criterios.
 
 ## Fases
 
-| Fase | Agente | Entrada | Saida | Gate humano |
-| --- | --- | --- | --- | --- |
-| 1. Discovery | `@up-discovery` | Ideia, contexto e respostas do usuario | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
-| 2. Spec | `@up-spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
-| 3. Down-QA | `@down-qa` ou skill Codex `down-qa` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` + implementacao | `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md` | Usuario decide corrigir, aceitar risco ou bloquear entrega |
+| Fase | Regime | Agente | Entrada | Saida | Gate humano |
+| --- | --- | --- | --- | --- | --- |
+| 1. Discovery | upstream | `@up-discovery` | Ideia, contexto e respostas do usuario | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
+| 2. Spec | upstream | `@up-spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
+| 3. Build | downstream | `@build-lead` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` aprovado | `run-manifest.md` + `build-report.md` (`DELIVERED`/`ESCALATED`) | Apenas aciona; sem gate ate `DELIVERED` ou disjuntor escalar |
+| 4. Down-QA | downstream | `@down-qa` (spawn do `build-lead` ou standalone) | `spec.md` + `run-manifest.md` | `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md` | Nenhum no loop autonomo; standalone, o usuario decide |
 
 ## Fase 1: Discovery
 
@@ -56,10 +66,12 @@ Operacao do `@up-spec`:
 ## Regras De Spawn
 
 - `@up-spec` pode spawnar somente `up-architect` e `up-qa`.
+- `@build-lead` pode spawnar somente `build-frontend`, `build-backend` e `down-qa`.
 - `up-architect` e opcional e usado apenas para viabilidade tecnica que depende de ler codigo, stack ou restricoes concretas.
 - `up-qa` e obrigatorio antes de finalizar qualquer `spec.md`.
-- Helpers independentes podem rodar em paralelo quando a ferramenta suportar.
-- Helpers nao possuem o artefato final. Eles retornam pareceres; `@up-spec` incorpora ou responde aos achados.
+- `down-qa` e obrigatorio em cada iteracao do downstream; roda fresh com a allowlist `{spec.md, run-manifest.md}`.
+- Helpers independentes podem rodar em paralelo quando a ferramenta suportar (ex.: `build-frontend ‖ build-backend`).
+- Helpers nao possuem o artefato final. Eles retornam pareceres/codigo; `@up-spec`/`@build-lead` incorpora ou responde aos achados.
 
 ## QA-Gate
 
@@ -76,44 +88,98 @@ Vereditos:
 - `CONCERNS`: caminho padrao e resolver os achados (re-rodar `up-qa` ate `PASS`); waiver e excecao e exige pedido explicito do usuario, registrado no `spec.md`.
 - `FAIL`: bloqueia a finalizacao. O `@up-spec` deve revisar o draft e rodar novo QA-gate (o `up-qa` reescreve `qa-verdict.md`).
 
-O `@up-spec` nao pode editar, resumir ou descartar o veredito. Deve copia-lo verbatim de `qa-verdict.md` para a secao `QA-Gate` do `spec.md`.
+O `@up-spec` nao pode editar, resumir ou descartar o veredito. Deve copia-lo verbatim de `qa-verdict.md` para a secao `QA-Gate` do `spec.md`. Alem dos vereditos acima, o `up-qa` da `FAIL` quando uma feature cruza fronteira FE/BE ou integracao externa e o `Contrato de Integracao` do spec esta ausente, incompleto ou ambiguo (contract-completeness gate) — a lacuna se resolve no Spec, nao no downstream.
 
-## Fase 3: Down-QA
+## Fase 3: Build
 
-Objetivo: validar a implementacao pronta contra o `spec.md` usando fluxo real e
+Objetivo: transformar o `spec.md` aprovado em implementacao entregue, de forma
+**autonoma**. O humano aciona `@build-lead` uma vez; nao ha gate humano ate
+`DELIVERED` ou ate o disjuntor escalar.
+
+Operacao do `@build-lead`:
+
+1. Ler o spec; montar o grafo de features e escolher o modo: **DIRETO** (pequeno/
+   acoplado, o lider implementa) ou **PARALELO** (UI e servidor independentes).
+2. Derivar o contrato da secao `Contrato de Integracao` do spec (nao inventar). Se
+   faltar para feature que cruza fronteira → escalar `lacuna-spec`.
+3. Implementar direto, ou spawnar `build-frontend ‖ build-backend` contra o
+   contrato verbatim, e integrar.
+4. Rodar `build`/`lint`/`test` e escrever `run-manifest.md` (neutro: como rodar).
+5. Spawnar `down-qa` (allowlist `{spec.md, run-manifest.md}`) e tratar o veredito:
+   - `PASS` (cobertura total) → `DELIVERED` no `build-report.md`. Fim.
+   - `PARTIAL`/`FAIL` → corrigir a causa raiz pelos findings `DQ-NN` e re-rodar.
+6. Registrar cada iteracao no `build-report.md`.
+
+Disjuntor (na primeira condicao → `ESCALATED` com gatilho):
+
+- `teto-de-iteracoes`: 3 ciclos build↔down-qa sem `PASS`.
+- `BLOCKED`: o down-qa retornou `BLOCKED` (`env-blocked`).
+- `sem-progresso`: o mesmo `DQ-NN` persiste apos uma tentativa de fix.
+- `lacuna-spec`: finding `missing-spec-field` ou o contrato exige definicao ausente.
+
+O `build-lead` e o unico que corrige codigo e escreve o `build-report.md` (auditoria,
+nao visto pelo down-qa). Isolamento creator/verifier preservado.
+
+## Fase 4: Down-QA
+
+Objetivo: validar a implementacao contra o `spec.md` usando fluxo real e
 evidencia observavel. Para web, o caminho preferencial e navegador real com
-Playwright, browser CLI ou ferramenta equivalente.
+Playwright, browser CLI ou ferramenta equivalente. Roda como spawn do `build-lead`
+no loop autonomo, ou standalone por invocacao humana.
 
 Operacao:
 
-1. Ler `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
-2. Extrair checklist por feature numerada e criterios de aceite.
-3. Descobrir URL inicial, comando de dev server, dados de teste e credenciais
-   necessarias.
-4. Rodar o Browser Capability Check descrito em `down-qa/PROCESS.md`.
-5. Navegar como usuario real e comparar comportamento observado contra o spec.
-6. Escrever `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+1. Ler `sdd-docs/<slug>/YYYY-MM-DD-spec.md` (esperado) e
+   `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` (execucao). Nunca o `build-report.md`.
+2. Extrair **todos** os criterios de aceite de **todas** as features.
+3. Localizar/subir o app pelo run-manifest, sem alteracoes permanentes.
+4. Rodar o Browser Capability Check (subsecao abaixo).
+5. Navegar como usuario real e comparar cada criterio contra o observado.
+6. Escrever `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md` com tabela de cobertura e
+   findings `DQ-NN`.
 
 Regras:
 
 - Read-only por padrao; nao corrigir codigo durante o down-qa.
+- `PASS` so com cobertura total (todo criterio testado ou `N/A` ancorado).
 - Nao marcar PASS para fluxo web sem exercitar browser.
 - Se Playwright/browser nao estiver pronto, tentar bootstrap ou fallback antes
   de declarar bloqueio.
 - Registrar `Browser Harness: READY | DEGRADED | BLOCKED`.
-- `BLOCKED` e aceitavel quando faltam auth, dados, permissao, rede ou browser.
+- `BLOCKED` (`env-blocked`) e aceitavel quando faltam auth, dados, permissao, rede ou browser.
+
+### Browser Capability Check
+
+Antes de testar fluxo web, o down-qa diagnostica o harness:
+
+1. Procurar setup existente do projeto: `package.json`, scripts, Playwright,
+   framework de teste ou docs locais.
+2. Verificar runtime: `node --version`, `npm --version`, `command -v npx`.
+3. Tentar Playwright do projeto ou runtime bundled quando existir.
+4. Se browsers do Playwright faltarem, rodar ou solicitar permissao para
+   `npx playwright install` quando apropriado.
+5. Se download nao for possivel, tentar Chrome/Edge do sistema por canal.
+6. Se GUI for bloqueada, tentar headless; se headed for essencial, pedir permissao.
+7. Se nada funcionar, emitir `Browser Harness: BLOCKED` com comando e erro.
+
+Nunca marcar teste de browser como concluido se o browser nao foi de fato exercitado.
+
+### Browser Harness
+
+- `READY`: automacao de browser funcionou normalmente.
+- `DEGRADED`: teste executado com fallback (ex.: Chrome do sistema em vez de
+  Chromium bundled).
+- `BLOCKED`: nao foi possivel lancar, navegar ou interagir; incluir o erro.
 
 ## Artefatos
 
-- Diretorio de cada POC: `sdd-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`.
+- Diretorio de cada POC: `sdd-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`.
 - Down-QA report: `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
-- Template de proposta: `sdd-templates/proposal.md`.
-- Template de spec: `sdd-templates/spec.md`.
-- Template de down-qa: `sdd-templates/down-qa-report.md`.
-- Agentes de menu: `.claude/agents/up-discovery.md` e `.claude/agents/up-spec.md`.
-- Alvos internos de spawn: `.claude/agents/up-architect.md` e `.claude/agents/up-qa.md`.
-- QA pos-implementacao: `.claude/agents/down-qa.md` e skill Codex
-  `.codex/skills/down-qa/SKILL.md`.
+- Templates: `sdd-templates/proposal.md`, `sdd-templates/spec.md`, `sdd-templates/run-manifest.md`, `sdd-templates/build-report.md`, `sdd-templates/down-qa-report.md`.
+- Agentes de menu: `.claude/agents/up-discovery.md`, `.claude/agents/up-spec.md`, `.claude/agents/build-lead.md`.
+- Alvos internos de spawn: `.claude/agents/up-architect.md`, `.claude/agents/up-qa.md`, `.claude/agents/build-frontend.md`, `.claude/agents/build-backend.md`.
+- QA pos-implementacao: `.claude/agents/down-qa.md` e skill Codex `.codex/skills/down-qa/SKILL.md`.
+- Skills Codex equivalentes para cada agente em `.codex/skills/<nome>/SKILL.md`.
 
 ## Dry-Run De Validacao
 
@@ -122,7 +188,7 @@ Regras:
 3. Invocar `@up-spec`.
 4. Confirmar que ele pergunta ao usuario em gaps de escopo/intencao, nao spawna sem necessidade, roda `up-qa` e gera `sdd-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
 5. Confirmar que `up-qa` escreveu `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, que o veredito esta copiado verbatim no spec e que `FAIL` bloqueia a finalizacao.
-6. Apos uma implementacao pequena, invocar `@down-qa` ou a skill Codex
-   `down-qa`.
-7. Confirmar que o relatorio registra spec coverage, browser harness, evidencia
-   e `PASS | PARTIAL | FAIL | BLOCKED`.
+6. Confirmar que, se uma feature cruza fronteira FE/BE sem `Contrato de Integracao`, o `up-qa` retorna `FAIL`.
+7. Invocar `@build-lead` com o spec aprovado.
+8. Confirmar que ele escolhe o modo (DIRETO/PARALELO), deriva o contrato, escreve `run-manifest.md` e spawna `down-qa` so com `{spec.md, run-manifest.md}`.
+9. Confirmar que `PASS` exige cobertura total e gera `build-report.md` com status `DELIVERED`; e que `teto=3`/`BLOCKED`/`sem-progresso`/`lacuna-spec` geram `ESCALATED` com o gatilho.

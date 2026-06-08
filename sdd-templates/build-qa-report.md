@@ -1,11 +1,11 @@
-# Build-QA Report: <titulo curto>
+# Build-QA Report: <short title>
 
-## Origem
+## Origin
 
 - Spec: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`
-- Data:
+- Date:
 - Executor:
-- Escopo testado:
+- Tested scope:
 
 ## Verdict
 
@@ -13,15 +13,15 @@ Verdict: PASS | PARTIAL | FAIL | BLOCKED
 
 Browser Harness: READY | DEGRADED | BLOCKED
 
-> `PASS` so e valido quando **todo** criterio de aceite de **toda** feature
-> numerada foi testado com evidencia, ou marcado `N/A` com ancora no spec.
-> Cobertura parcial, dado ausente ou criterio nao testado => `PARTIAL` ou
-> `BLOCKED`, nunca `PASS`.
+> `PASS` is only valid when **every** acceptance criterion of **every**
+> numbered feature was tested with evidence, or marked `N/A` with an anchor in
+> the spec. Partial coverage, missing data, or untested criteria => `PARTIAL`
+> or `BLOCKED`, never `PASS`.
 
 ## Test Setup
 
-> Origem dos dados: `run-manifest.md` (unico input de build permitido). O
-> *esperado* vem do `spec.md`.
+> Data origin: `run-manifest.md` (only permitted build input). The
+> *expected* comes from `spec.md`.
 
 - App command:
 - Initial URL:
@@ -31,36 +31,36 @@ Browser Harness: READY | DEGRADED | BLOCKED
 
 ## Spec Coverage
 
-> Uma linha por criterio de aceite de cada feature. Sem linhas faltando.
+> One line per acceptance criterion of each feature. No missing lines.
 
-| Feature | Criterio | Status | Evidencia |
+| Feature | Criterion | Status | Evidence |
 | --- | --- | --- | --- |
-| F1 | <criterio de aceite> | PASS \| FAIL \| BLOCKED \| N/A | <URL, acao, screenshot, snapshot ou log; para N/A, ancora no spec> |
+| F1 | <acceptance criterion> | PASS \| FAIL \| BLOCKED \| N/A | <URL, action, screenshot, snapshot or log; for N/A, anchor in spec> |
 
 ## Browser Run
 
-1. <acao executada>
-2. <acao executada>
-3. <observacao relevante>
+1. <action performed>
+2. <action performed>
+3. <relevant observation>
 
 ## Findings
 
-> Cada finding tem **ID estavel** (`DQ-NN`), a feature/criterio afetado e uma
-> **categoria**. O `build` usa o ID para detectar "sem-progresso" (mesmo ID
-> persiste apos um fix) e a categoria para acionar o disjuntor.
-> Categorias: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
+> Each finding has a **stable ID** (`DQ-NN`), the affected feature/criterion, and a
+> **category**. The `build` agent uses the ID to detect "no-progress" (same ID
+> persists after a fix) and the category to trigger the circuit breaker.
+> Categories: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
 
-| ID | Feature/Criterio | Categoria | Severidade | Achado (ancorado na spec + evidencia) |
+| ID | Feature/Criterion | Category | Severity | Finding (anchored in spec + evidence) |
 | --- | --- | --- | --- | --- |
-| DQ-01 | F1 / <criterio> | bug \| missing-coverage \| missing-spec-field \| env-blocked | high \| medium \| low | <achado objetivo> |
+| DQ-01 | F1 / <criterion> | bug \| missing-coverage \| missing-spec-field \| env-blocked | high \| medium \| low | <objective finding> |
 
 ## Required Changes
 
-- <mudanca necessaria antes de considerar a feature conforme, ou "None">
+- <change necessary before considering the feature compliant, or "None">
 
 ## Blockers
 
-- <credencial, dado, ambiente, permissao ou browser ausente, ou "None">
+- <credential, data, environment, permission, or browser missing, or "None">
 
 ## Artifacts
 

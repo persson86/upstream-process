@@ -1,31 +1,31 @@
-# Run Manifest: <titulo curto>
+# Run Manifest: <short title>
 
-> Artefato **neutro** de execucao, escrito pelo `build`. E o **unico** input
-> de build que o `build-qa` pode ler (junto do `spec.md`). Contem apenas como
-> rodar e exercitar o app — nenhuma narrativa, assuncao, "contrato claimed" ou
-> historico de iteracoes. Tudo que orienta o *esperado* deve vir do `spec.md`.
+> **Neutral** execution artifact, written by `build`. The **only** input
+> that `build-qa` can read (along with `spec.md`). Contains only how
+> to run and exercise the app — no narrative, assumption, "claimed contract" or
+> history of iterations. Everything that guides the *expected* must come from `spec.md`.
 
-## Origem
+## Origin
 
 - Spec: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`
-- Data:
-- Modo de build: DIRETO | PARALELO
+- Date:
+- Build mode: DIRECT | PARALLEL
 
-## Como Rodar
+## How to Run
 
-- Comando do dev server:
-- URL inicial:
-- Comandos de build:
-- Comandos de migracao/seed:
-- Runtime/dependencias (ex.: node, versao):
+- Dev server command:
+- Initial URL:
+- Build commands:
+- Migration/seed commands:
+- Runtime/dependencies (ex.: node, version):
 
-## Dados De Teste
+## Test Data
 
-- Dados de teste/fixtures:
-- Credenciais de teste:
-- Setup/auth necessario para exercitar fluxos:
+- Test data/fixtures:
+- Test credentials:
+- Setup/auth required to exercise flows:
 
-## Superficies
+## Surfaces
 
-- Frontend (URL/rota):
-- Backend (base URL/rotas expostas):
+- Frontend (URL/route):
+- Backend (base URL/exposed routes):

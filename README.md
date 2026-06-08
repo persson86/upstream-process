@@ -1,32 +1,32 @@
 # sdd-lite
 
-**Spec-Driven Development (SDD)** e uma metodologia onde o spec e o unico contrato entre intenção e codigo — tudo que precisa de definicao e resolvido antes da implementacao comecar, e o downstream executa contra esse contrato sem revisao humana no meio.
+**Spec-Driven Development (SDD)** is a methodology where the spec is the only contract between intention and code — everything that needs definition is resolved before implementation starts, and downstream execution follows that contract without human review in between.
 
-**sdd-lite** e uma implementacao minimalista: sem engine, sem state machine. O processo roda em dois regimes divididos pelo `spec.md` aprovado.
+**sdd-lite** is a minimalist implementation: no engine, no state machine. The process runs in two regimes divided by the approved `spec.md`.
 
-## Como funciona
+## How it works
 
-Voce aciona **3 agentes** — o restante do fluxo e automatico:
+You activate **3 agents** — the rest of the flow is automatic:
 
-| Agente | Regime | O que faz |
+| Agent | Regime | What it does |
 |--------|--------|-----------|
-| `@discovery` | upstream (voce conduz) | Dialogo socratico; gera `proposal.md` ao seu comando |
-| `@spec` | upstream (voce conduz) | Le o proposal, fecha gaps, roda QA-gate e emite `spec.md`. Voce aprova. |
-| `@build` | downstream (autonomo) | Le o spec, constroi, valida via `build-qa` em loop e entrega `DELIVERED` sem gate humano |
+| `@discovery` | upstream (you drive) | Socratic dialogue; generates `proposal.md` at your command |
+| `@spec` | upstream (you drive) | Reads the proposal, closes gaps, runs QA-gate and emits `spec.md`. You approve. |
+| `@build` | downstream (autonomous) | Reads the spec, builds, validates via `build-qa` in loop and delivers `DELIVERED` without human gate |
 
-O `@build` spawna helpers internamente (`build-frontend`, `build-backend`, `build-qa`) conforme necessario — voce nao precisa acioná-los.
+The `@build` spawns helpers internally (`build-frontend`, `build-backend`, `build-qa`) as needed — you don't need to invoke them.
 
-Detalhes do processo: [`PROCESS.md`](PROCESS.md).
+Process details: [`PROCESS.md`](PROCESS.md).
 
-## Instalacao
+## Installation
 
-De dentro da pasta do projeto-alvo:
+From inside the target project folder:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash
 ```
 
-## Atualizacao
+## Update
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash -s -- . --update

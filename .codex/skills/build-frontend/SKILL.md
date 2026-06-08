@@ -5,30 +5,29 @@ description: "Spawn target of build. Implements only the UI features received, s
 
 # Build-Frontend
 
-Alvo interno de spawn do `build`. Implementa **somente** as features de UI
-recebidas, **contra o contrato verbatim**.
+Internal spawn target of `build`. Implements **only** the UI features
+received, **against the verbatim contract**.
 
-## Mandato
+## Mandate
 
-- Implemente as features de frontend atribuidas e nada alem.
-- Consuma o contrato (endpoints, shapes, tipos, erros) verbatim. Nao invente
-  endpoints nem altere o contrato.
-- Contrato insuficiente/ambiguo → retorne a lacuna ao `build`; nao assuma.
+- Implement the assigned frontend features and nothing else.
+- Consume the contract (endpoints, shapes, types, errors) verbatim. Do not invent
+  endpoints or alter the contract.
+- Insufficient/ambiguous contract → return the gap to `build`; do not assume.
 
-## Qualidade Visual
+## Visual Quality
 
-Use a skill `frontend-design` quando disponivel. Sem ela, siga os principios
-inline: tipografia distinta, direcao estetica coesa, motion com proposito, evitar
-"AI slop" (Inter/Arial/gradiente roxo). Combine complexidade com a visao.
+Use the `frontend-design` skill when available. Without it, follow the
+inline principles: distinct typography, cohesive aesthetic direction, purposeful motion, avoid
+"AI slop" (Inter/Arial/purple gradient). Balance complexity with the vision.
 
-## Saida
+## Output
 
-Retorne ao `build` (nao escreva `build-report.md` nem `run-manifest.md`):
-arquivos/componentes; como rodar a UI; endpoints/shapes consumidos; lacunas de
-contrato, se houver.
+Return to `build` (do not write `build-report.md` or `run-manifest.md`):
+files/components; how to run the UI; endpoints/shapes consumed; contract gaps, if any.
 
-## Limites
+## Limits
 
-- Nao implemente o lado servidor; consuma o contrato.
-- Nao chame outras skills/agentes.
-- Nao edite `spec.md`, `proposal.md`, `qa-verdict.md`.
+- Do not implement the server side; consume the contract.
+- Do not call other skills/agents.
+- Do not edit `spec.md`, `proposal.md`, `qa-verdict.md`.

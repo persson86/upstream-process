@@ -5,56 +5,58 @@ description: "Build phase: orchestrates the autonomous downstream loop. Reads sp
 
 # Build
 
-Voce conduz a fase **Build** do sdd-lite — o inicio do **downstream autonomo**. O
-humano ja aprovou o `spec.md`; do seu acionamento ate `DELIVERED` (ou escalonamento)
-**nao ha gate humano**. Codigo e commodity: o que precisa de definicao ja esta no spec.
+> **Language:** Respond in the language the user writes in. If they write in Portuguese, reply in Portuguese; default is English.
 
-## Diretorio De Trabalho
+You lead the **Build** phase of sdd-lite — the start of the **autonomous downstream**. The
+human has already approved `spec.md`; from your activation until `DELIVERED` (or escalation)
+**there is no human gate**. Code is commodity: what needs definition is already in the spec.
 
-A POC mora em `sdd-docs/<slug>/`. Voce le `sdd-docs/<slug>/YYYY-MM-DD-spec.md` e
-escreve (data atual):
+## Working Directory
 
-- `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — neutro (como rodar). Unico input de
-  build que o `build-qa` le. Use `sdd-templates/run-manifest.md`.
-- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — sua auditoria. O `build-qa` nao ve.
+The POC lives in `sdd-docs/<slug>/`. You read `sdd-docs/<slug>/YYYY-MM-DD-spec.md` and
+write (current date):
+
+- `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — neutral (how to run). Only build input
+  that `build-qa` reads. Use `sdd-templates/run-manifest.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — your audit. `build-qa` does not see.
   Use `sdd-templates/build-report.md`.
 
-## Entrada
+## Input
 
-Obrigatoria: `spec.md` aprovado. Se faltar feature/criterio testavel ou faltar
-`Contrato de Integracao` para feature que cruza fronteira → escale `lacuna-spec`.
-Nao invente definicao.
+Required: approved `spec.md`. If feature/testable criterion is missing or
+`Integration Contract` is missing for feature that crosses boundary → escalate as `spec-gap`.
+Do not invent definition.
 
-## Loop De Trabalho
+## Work Loop
 
-1. Leia o spec: features, criterios, secao `Contrato de Integracao`.
-2. Monte o grafo e escolha o modo: **DIRETO** (pequeno/acoplado, voce implementa) ou
-   **PARALELO** (UI e servidor independentes).
-3. **Derive** o contrato do spec (nao invente); registre no `build-report.md`.
-4. Execute: implemente direto, ou invoque as skills `build-frontend` e
-   `build-backend` passando `<slug>`, features e contrato verbatim.
-5. Integre, rode `build`/`lint`/`test`, e escreva `run-manifest.md`.
-6. Invoque a skill `build-qa` passando **apenas** `<slug>` + caminhos de
-   `spec.md` e `run-manifest.md`. Nao passe deliberacao/assuncoes/contrato claimed.
-7. Trate o veredito de `YYYY-MM-DD-build-qa-report.md`:
-   - `PASS` → `DELIVERED` no `build-report.md`. Fim.
-   - `PARTIAL`/`FAIL` → leia findings `DQ-NN`, corrija a causa raiz, volte ao 5.
-8. **Disjuntor** (primeira condicao → `ESCALATED` com gatilho):
-   - `teto-de-iteracoes`: 3 ciclos sem PASS.
+1. Read the spec: features, criteria, `Integration Contract` section.
+2. Build the graph and choose mode: **DIRECT** (small/coupled, you implement) or
+   **PARALLEL** (UI and server independent).
+3. **Derive** the contract from the spec (do not invent); record in `build-report.md`.
+4. Execute: implement directly, or invoke `build-frontend` and
+   `build-backend` skills passing `<slug>`, features and contract verbatim.
+5. Integrate, run `build`/`lint`/`test`, and write `run-manifest.md`.
+6. Invoke the `build-qa` skill passing **only** `<slug>` + paths to
+   `spec.md` and `run-manifest.md`. Do not pass deliberation/assumptions/claimed contract.
+7. Handle verdict from `YYYY-MM-DD-build-qa-report.md`:
+   - `PASS` → `DELIVERED` in `build-report.md`. Done.
+   - `PARTIAL`/`FAIL` → read findings `DQ-NN`, fix root cause, go back to step 5.
+8. **Breaker** (first condition → `ESCALATED` with trigger):
+   - `iteration-ceiling`: 3 cycles without PASS.
    - `BLOCKED`: build-qa BLOCKED (`env-blocked`).
-   - `sem-progresso`: mesmo `DQ-NN` persiste apos um fix.
-   - `lacuna-spec`: finding `missing-spec-field` ou contrato exige definicao ausente.
+   - `no-progress`: same `DQ-NN` persists after a fix.
+   - `spec-gap`: finding `missing-spec-field` or contract requires absent definition.
 
-## Regras De Spawn
+## Spawn Rules
 
-- So pode chamar `build-frontend`, `build-backend` e `build-qa`.
-- Helpers nao spawnam outros; voce integra.
-- `build-qa` roda fresh a cada iteracao com allowlist `{spec.md, run-manifest.md}`.
-  Voce e o unico que corrige codigo; o `build-qa` so le e julga.
+- Can only call `build-frontend`, `build-backend` and `build-qa`.
+- Helpers do not spawn others; you integrate.
+- `build-qa` runs fresh each iteration with allowlist `{spec.md, run-manifest.md}`.
+  You are the only one who fixes code; `build-qa` only reads and judges.
 
-## Fora De Escopo
+## Out of Scope
 
-- Nao pedir gate humano no meio (so escale pelo disjuntor).
-- Nao editar `spec.md`, `proposal.md`, `qa-verdict.md`.
-- Nao inventar definicao ausente — escale.
-- Nao chamar skills alem das tres permitidas.
+- Do not request human gate in the middle (only escalate via breaker).
+- Do not edit `spec.md`, `proposal.md`, `qa-verdict.md`.
+- Do not invent absent definition — escalate.
+- Do not call skills beyond the three permitted.

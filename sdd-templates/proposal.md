@@ -1,35 +1,35 @@
-# Proposal: <titulo curto>
+# Proposal: <short title>
 
-## Problema/Oportunidade
+## Problem/Opportunity
 
-Descreva o problema, oportunidade ou tensao principal em poucas frases. Foque no que precisa mudar e por que agora.
+Describe the problem, opportunity, or main tension in a few sentences. Focus on what needs to change and why now.
 
-## Contexto
+## Context
 
-- Situacao atual:
-- Usuario/publico afetado:
-- Restricoes relevantes:
-- O que esta fora de escopo:
+- Current situation:
+- User/audience affected:
+- Relevant constraints:
+- What is out of scope:
 
-## Evidencia
+## Evidence
 
-Registre sinais concretos, observacoes, exemplos, dados, experiencias anteriores ou lacunas conhecidas. Separe fatos de hipoteses.
+Record concrete signals, observations, examples, data, previous experiences, or known gaps. Separate facts from hypotheses.
 
-## Opcoes Consideradas
+## Options Considered
 
-1. **<Opcao>** - motivo para considerar; principal tradeoff.
-2. **<Opcao>** - motivo para considerar; principal tradeoff.
-3. **<Opcao>** - motivo para considerar; principal tradeoff.
+1. **<Option>** - reason to consider; main tradeoff.
+2. **<Option>** - reason to consider; main tradeoff.
+3. **<Option>** - reason to consider; main tradeoff.
 
-## Proposta Recomendada
+## Recommended Proposal
 
-Explique a direcao recomendada, o menor recorte util e o resultado esperado. Evite requisitos de implementacao detalhados; eles pertencem ao `spec.md`.
+Explain the recommended direction, the smallest useful scope, and the expected outcome. Avoid detailed implementation requirements; they belong in `spec.md`.
 
-## Riscos & Assuncoes Abertas
+## Risks & Open Assumptions
 
-- **Risco:** <risco> - mitigacao ou pergunta aberta.
-- **Assuncao:** <assuncao> - como validar.
+- **Risk:** <risk> - mitigation or open question.
+- **Assumption:** <assumption> - how to validate.
 
-## Sinal De Pronto Para Spec
+## Ready For Spec Signal
 
-O proposal esta pronto para `@spec` quando a proposta recomendada, o escopo inicial e as principais assuncoes estiverem claros o suficiente para gerar criterios de aceite testaveis.
+The proposal is ready for `@spec` when the recommended proposal, initial scope, and main assumptions are clear enough to generate testable acceptance criteria.

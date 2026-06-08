@@ -1,194 +1,194 @@
 # SDD-lite
 
-Framework SDD-lite para transformar uma ideia crua em um `spec.md` testavel e fatiavel, com o usuario conduzindo as decisoes e os agentes atuando apenas sob demanda.
+SDD-lite framework for transforming a raw idea into a testable and sliceable `spec.md`, with the user driving decisions and agents acting only on demand.
 
-## Principios
+## Principles
 
-O fluxo tem **dois regimes**, com a linha tracada no `spec.md`:
+The workflow has **two regimes**, with the dividing line at `spec.md`:
 
-- **Upstream (Discovery, Spec): humano conduz**, passo a passo. Sem auto-handoff;
-  cada fase avanca por decisao do usuario.
-- **Downstream (Build, Build-QA): autonomo** a partir do spec aprovado. O humano
-  aciona uma vez; o `build` constroi, valida via `build-qa` e entrega sem gate
-  humano, escalando so pelo disjuntor. Auto-handoff build↔build-qa existe **apenas
-  aqui**, e ainda sem engine/state machine (o loop roda na invocacao do lider).
+- **Upstream (Discovery, Spec): human-led**, step by step. No auto-handoff;
+  each phase advances by user decision.
+- **Downstream (Build, Build-QA): autonomous** from the approved spec. The human
+  triggers once; `build` constructs, validates via `build-qa` and delivers without
+  human gate, escalating only via the circuit breaker. Auto-handoff build↔build-qa exists **only
+  here**, and even then without engine/state machine (the loop runs on the leader's invocation).
 
-Demais principios:
+Additional principles:
 
-- Projeto autocontido: sem heranca de outros frameworks; o que for util de fora, copia-se para dentro.
-- Cada POC mora em `sdd-docs/<slug>/` e contem `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md` e `YYYY-MM-DD-build-qa-report.md`.
-- `discovery` escreve o proposal somente quando o usuario pedir explicitamente.
-- `spec` possui o artefato `spec.md` e decide, por gap, entre perguntar ao usuario, chamar uma lente isolada ou assumir registrando a assuncao.
-- Spawns sao fechados: `@spec` so chama `spec-architect`/`spec-qa`; `@build` so chama `build-frontend`, `build-backend` ou `build-qa`.
-- **O gate `spec-qa` e load-bearing.** Como o downstream entrega sem revisao humana, o spec e a unica garantia: o `spec-qa` da `FAIL` se uma feature cruza fronteira FE/BE e o `Contrato de Integracao` esta ausente/ambiguo. QA e gate, nao conselho opcional; o `spec-qa` escreve `qa-verdict.md` (fonte de verdade) e o `@spec` o copia verbatim, sem editar.
-- **Isolamento creator/verifier no downstream:** o `build` constroi e corrige; o `build-qa` so le `spec.md` + `run-manifest.md` (nunca o `build-report.md`) e julga. PASS exige cobertura total dos criterios.
+- Self-contained project: no inheritance from other frameworks; anything useful from outside is copied in.
+- Each POC lives in `sdd-docs/<slug>/` and contains `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`, and `YYYY-MM-DD-build-qa-report.md`.
+- `discovery` writes the proposal only when the user explicitly asks.
+- `spec` owns the `spec.md` artifact and decides, by gap, between asking the user, calling an isolated lens, or assuming and recording the assumption.
+- Spawns are closed: `@spec` only calls `spec-architect`/`spec-qa`; `@build` only calls `build-frontend`, `build-backend`, or `build-qa`.
+- **The `spec-qa` gate is load-bearing.** Because the downstream delivers without human review, the spec is the only guarantee: `spec-qa` returns `FAIL` if a feature crosses the FE/BE boundary and the `Integration Contract` is absent/ambiguous. QA is a gate, not optional advice; `spec-qa` writes `qa-verdict.md` (source of truth) and `@spec` copies it verbatim, without editing.
+- **Creator/verifier isolation in downstream:** `build` constructs and fixes; `build-qa` only reads `spec.md` + `run-manifest.md` (never `build-report.md`) and judges. PASS requires full coverage of criteria.
 
-## Fases
+## Phases
 
-| Fase | Regime | Agente | Entrada | Saida | Gate humano |
+| Phase | Regime | Agent | Input | Output | Human Gate |
 | --- | --- | --- | --- | --- | --- |
-| 1. Discovery | upstream | `@discovery` | Ideia, contexto e respostas do usuario | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | Usuario pede explicitamente para gerar |
-| 2. Spec | upstream | `@spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | Usuario aprova o spec e o QA-gate nao esta em `FAIL` |
-| 3. Build | downstream | `@build` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` aprovado | `run-manifest.md` + `build-report.md` (`DELIVERED`/`ESCALATED`) | Apenas aciona; sem gate ate `DELIVERED` ou disjuntor escalar |
-| 4. Build-QA | downstream | `@build-qa` (spawn do `build` ou standalone) | `spec.md` + `run-manifest.md` | `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` | Nenhum no loop autonomo; standalone, o usuario decide |
+| 1. Discovery | upstream | `@discovery` | Idea, context, and user answers | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | User explicitly asks to generate |
+| 2. Spec | upstream | `@spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | User approves spec and QA gate is not in `FAIL` |
+| 3. Build | downstream | `@build` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` approved | `run-manifest.md` + `build-report.md` (`DELIVERED`/`ESCALATED`) | Trigger only; no gate until `DELIVERED` or circuit breaker escalates |
+| 4. Build-QA | downstream | `@build-qa` (spawn from `build` or standalone) | `spec.md` + `run-manifest.md` | `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` | None in autonomous loop; standalone, user decides |
 
-## Fase 1: Discovery
+## Phase 1: Discovery
 
-Objetivo: fundir insight, contexto e proposta em uma conversa socratica curta o suficiente para convergir, mas forte o suficiente para expor raciocinio fraco.
+Objective: merge insight, context, and proposal in a short Socratic conversation strong enough to converge, yet rigorous enough to expose weak reasoning.
 
-Operacao:
+Operation:
 
-1. Fazer uma pergunta focada por vez.
-2. Refletir o entendimento de volta quando houver nova informacao relevante.
-3. Nomear explicitamente o que ainda esta nebuloso.
-4. Desafiar propostas sem evidencia, escopo largo demais ou sucesso impossivel de verificar.
-5. Sinalizar quando ha contexto suficiente, mas nao escrever arquivo sem comando claro do usuario.
+1. Ask one focused question at a time.
+2. Reflect understanding back when new relevant information emerges.
+3. Explicitly name what remains unclear.
+4. Challenge proposals lacking evidence, scope too broad, or success impossible to verify.
+5. Signal when context is sufficient, but do not write the file without clear user command.
 
-O `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` deve caber aproximadamente em uma pagina. Ele registra problema/oportunidade, contexto, evidencia, opcoes consideradas, proposta recomendada, riscos e assuncoes abertas.
+The `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` should fit approximately on one page. It records problem/opportunity, context, evidence, options considered, recommended proposal, risks, and open assumptions.
 
-## Fase 2: Spec
+## Phase 2: Spec
 
-Objetivo: transformar `sdd-docs/<slug>/proposal.md` em um `sdd-docs/<slug>/spec.md` implementavel, com JTBD, user stories, features numeradas e criterios de aceite testaveis.
+Objective: transform `sdd-docs/<slug>/proposal.md` into an implementable `sdd-docs/<slug>/spec.md`, with JTBD, user stories, numbered features, and testable acceptance criteria.
 
-Operacao do `@spec`:
+Operation of `@spec`:
 
-1. Ler `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
-2. Fazer um gap scan de intencao, prioridade, escopo, viabilidade tecnica, riscos e testabilidade.
-3. Para cada gap, escolher um movimento:
-   - perguntar ao usuario quando o gap for de intencao, prioridade ou escopo;
-   - chamar `spec-architect` quando a viabilidade tecnica exigir ler codigo, stack ou restricoes de implementacao;
-   - assumir e sinalizar quando a assuncao for pequena, reversivel e nao bloquear o spec.
-4. Rascunhar `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
-5. Chamar `spec-qa` passando somente `YYYY-MM-DD-proposal.md` e o draft de `YYYY-MM-DD-spec.md`. O `spec-qa` escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
-6. Ler `YYYY-MM-DD-qa-verdict.md` e copiar o veredito verbatim na secao fixa de QA-gate do spec.
-7. Finalizar apenas se o gate permitir.
+1. Read `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
+2. Perform a gap scan on intent, priority, scope, technical feasibility, risks, and testability.
+3. For each gap, choose one action:
+   - ask the user when the gap is intent, priority, or scope;
+   - call `spec-architect` when technical feasibility requires reading code, stack, or implementation constraints;
+   - assume and signal when the assumption is small, reversible, and does not block the spec.
+4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
+5. Call `spec-qa` passing only `YYYY-MM-DD-proposal.md` and the `YYYY-MM-DD-spec.md` draft. `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
+6. Read `YYYY-MM-DD-qa-verdict.md` and copy the verdict verbatim into the fixed QA-gate section of the spec.
+7. Finalize only if the gate permits.
 
-## Regras De Spawn
+## Spawn Rules
 
-- `@spec` pode spawnar somente `spec-architect` e `spec-qa`.
-- `@build` pode spawnar somente `build-frontend`, `build-backend` e `build-qa`.
-- `spec-architect` e opcional e usado apenas para viabilidade tecnica que depende de ler codigo, stack ou restricoes concretas.
-- `spec-qa` e obrigatorio antes de finalizar qualquer `spec.md`.
-- `build-qa` e obrigatorio em cada iteracao do downstream; roda fresh com a allowlist `{spec.md, run-manifest.md}`.
-- Helpers independentes podem rodar em paralelo quando a ferramenta suportar (ex.: `build-frontend ‖ build-backend`).
-- Helpers nao possuem o artefato final. Eles retornam pareceres/codigo; `@spec`/`@build` incorpora ou responde aos achados.
+- `@spec` can spawn only `spec-architect` and `spec-qa`.
+- `@build` can spawn only `build-frontend`, `build-backend`, and `build-qa`.
+- `spec-architect` is optional and used only for technical feasibility depending on reading code, stack, or concrete constraints.
+- `spec-qa` is mandatory before finalizing any `spec.md`.
+- `build-qa` is mandatory in each downstream iteration; runs fresh with the allowlist `{spec.md, run-manifest.md}`.
+- Independent helpers can run in parallel when the tool supports it (e.g., `build-frontend ‖ build-backend`).
+- Helpers do not own the final artifact. They return findings/code; `@spec`/`@build` incorporates or responds to findings.
 
 ## QA-Gate
 
-O `spec-qa` recebe apenas:
+`spec-qa` receives only:
 
 - `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`;
-- draft atual de `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
+- current draft of `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 
-Ele nao recebe a deliberacao do `@spec`, historico interno ou justificativas adicionais. **O proprio `spec-qa` escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — esse arquivo existe independente do `@spec`, que nao pode edita-lo.
+It does not receive `@spec`'s deliberation, internal history, or additional justifications. **`spec-qa` itself writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — this file exists independently of `@spec`, which cannot edit it.
 
-Vereditos:
+Verdicts:
 
-- `PASS`: o `spec.md` pode ser finalizado.
-- `CONCERNS`: caminho padrao e resolver os achados (re-rodar `spec-qa` ate `PASS`); waiver e excecao e exige pedido explicito do usuario, registrado no `spec.md`.
-- `FAIL`: bloqueia a finalizacao. O `@spec` deve revisar o draft e rodar novo QA-gate (o `spec-qa` reescreve `qa-verdict.md`).
+- `PASS`: the `spec.md` can be finalized.
+- `CONCERNS`: default path is to resolve findings (re-run `spec-qa` until `PASS`); waiver is an exception and requires explicit user request, recorded in the `spec.md`.
+- `FAIL`: blocks finalization. `@spec` must review the draft and run a new QA gate (`spec-qa` rewrites `qa-verdict.md`).
 
-O `@spec` nao pode editar, resumir ou descartar o veredito. Deve copia-lo verbatim de `qa-verdict.md` para a secao `QA-Gate` do `spec.md`. Alem dos vereditos acima, o `spec-qa` da `FAIL` quando uma feature cruza fronteira FE/BE ou integracao externa e o `Contrato de Integracao` do spec esta ausente, incompleto ou ambiguo (contract-completeness gate) — a lacuna se resolve no Spec, nao no downstream.
+`@spec` cannot edit, summarize, or discard the verdict. It must copy it verbatim from `qa-verdict.md` into the `QA-Gate` section of `spec.md`. Beyond the verdicts above, `spec-qa` returns `FAIL` when a feature crosses the FE/BE boundary or external integration and the `Integration Contract` in the spec is absent, incomplete, or ambiguous (contract-completeness gate) — the gap is resolved in the Spec, not downstream.
 
-## Fase 3: Build
+## Phase 3: Build
 
-Objetivo: transformar o `spec.md` aprovado em implementacao entregue, de forma
-**autonoma**. O humano aciona `@build` uma vez; nao ha gate humano ate
-`DELIVERED` ou ate o disjuntor escalar.
+Objective: transform the approved `spec.md` into delivered implementation,
+**autonomously**. The human triggers `@build` once; no human gate until
+`DELIVERED` or until the circuit breaker escalates.
 
-Operacao do `@build`:
+Operation of `@build`:
 
-1. Ler o spec; montar o grafo de features e escolher o modo: **DIRETO** (pequeno/
-   acoplado, o lider implementa) ou **PARALELO** (UI e servidor independentes).
-2. Derivar o contrato da secao `Contrato de Integracao` do spec (nao inventar). Se
-   faltar para feature que cruza fronteira → escalar `lacuna-spec`.
-3. Implementar direto, ou spawnar `build-frontend ‖ build-backend` contra o
-   contrato verbatim, e integrar.
-4. Rodar `build`/`lint`/`test` e escrever `run-manifest.md` (neutro: como rodar).
-5. Spawnar `build-qa` (allowlist `{spec.md, run-manifest.md}`) e tratar o veredito:
-   - `PASS` (cobertura total) → `DELIVERED` no `build-report.md`. Fim.
-   - `PARTIAL`/`FAIL` → corrigir a causa raiz pelos findings `DQ-NN` e re-rodar.
-6. Registrar cada iteracao no `build-report.md`.
+1. Read the spec; build the feature graph and choose the mode: **DIRECT** (small/
+   coupled, leader implements) or **PARALLEL** (UI and server independent).
+2. Derive the contract from the `Integration Contract` section of the spec (do not invent). If
+   missing for a feature crossing boundaries → escalate `spec-gap`.
+3. Implement directly, or spawn `build-frontend ‖ build-backend` against the
+   contract verbatim, and integrate.
+4. Run `build`/`lint`/`test` and write `run-manifest.md` (neutral: how to run).
+5. Spawn `build-qa` (allowlist `{spec.md, run-manifest.md}`) and handle the verdict:
+   - `PASS` (full coverage) → `DELIVERED` in `build-report.md`. Done.
+   - `PARTIAL`/`FAIL` → fix the root cause per findings `DQ-NN` and re-run.
+6. Record each iteration in `build-report.md`.
 
-Disjuntor (na primeira condicao → `ESCALATED` com gatilho):
+Circuit breaker (on first condition → `ESCALATED` with trigger):
 
-- `teto-de-iteracoes`: 3 ciclos build↔build-qa sem `PASS`.
-- `BLOCKED`: o build-qa retornou `BLOCKED` (`env-blocked`).
-- `sem-progresso`: o mesmo `DQ-NN` persiste apos uma tentativa de fix.
-- `lacuna-spec`: finding `missing-spec-field` ou o contrato exige definicao ausente.
+- `iteration-ceiling`: 3 build↔build-qa cycles without `PASS`.
+- `BLOCKED`: build-qa returned `BLOCKED` (`env-blocked`).
+- `no-progress`: the same `DQ-NN` persists after one fix attempt.
+- `spec-gap`: finding `missing-spec-field` or contract requires undefined field.
 
-O `build` e o unico que corrige codigo e escreve o `build-report.md` (auditoria,
-nao visto pelo build-qa). Isolamento creator/verifier preservado.
+`build` is the only entity that fixes code and writes `build-report.md` (audit,
+not seen by build-qa). Creator/verifier isolation preserved.
 
-## Fase 4: Build-QA
+## Phase 4: Build-QA
 
-Objetivo: validar a implementacao contra o `spec.md` usando fluxo real e
-evidencia observavel. Para web, o caminho preferencial e navegador real com
-Playwright, browser CLI ou ferramenta equivalente. Roda como spawn do `build`
-no loop autonomo, ou standalone por invocacao humana.
+Objective: validate the implementation against `spec.md` using real flow and
+observable evidence. For web, the preferred path is real browser with
+Playwright, browser CLI, or equivalent tool. Runs as spawn of `build`
+in the autonomous loop, or standalone by human invocation.
 
-Operacao:
+Operation:
 
-1. Ler `sdd-docs/<slug>/YYYY-MM-DD-spec.md` (esperado) e
-   `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` (execucao). Nunca o `build-report.md`.
-2. Extrair **todos** os criterios de aceite de **todas** as features.
-3. Localizar/subir o app pelo run-manifest, sem alteracoes permanentes.
-4. Rodar o Browser Capability Check (subsecao abaixo).
-5. Navegar como usuario real e comparar cada criterio contra o observado.
-6. Escrever `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` com tabela de cobertura e
+1. Read `sdd-docs/<slug>/YYYY-MM-DD-spec.md` (expected) and
+   `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` (execution). Never `build-report.md`.
+2. Extract **all** acceptance criteria from **all** features.
+3. Locate/start the app per run-manifest, without permanent changes.
+4. Run the Browser Capability Check (subsection below).
+5. Navigate as a real user and compare each criterion against observed behavior.
+6. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` with coverage table and
    findings `DQ-NN`.
 
-Regras:
+Rules:
 
-- Read-only por padrao; nao corrigir codigo durante o build-qa.
-- `PASS` so com cobertura total (todo criterio testado ou `N/A` ancorado).
-- Nao marcar PASS para fluxo web sem exercitar browser.
-- Se Playwright/browser nao estiver pronto, tentar bootstrap ou fallback antes
-  de declarar bloqueio.
-- Registrar `Browser Harness: READY | DEGRADED | BLOCKED`.
-- `BLOCKED` (`env-blocked`) e aceitavel quando faltam auth, dados, permissao, rede ou browser.
+- Read-only by default; do not fix code during build-qa.
+- `PASS` only with full coverage (all criteria tested or `N/A` anchored).
+- Do not mark PASS for web flow without exercising the browser.
+- If Playwright/browser is not ready, try bootstrap or fallback before
+  declaring blocked.
+- Record `Browser Harness: READY | DEGRADED | BLOCKED`.
+- `BLOCKED` (`env-blocked`) is acceptable when auth, data, permission, network, or browser is missing.
 
 ### Browser Capability Check
 
-Antes de testar fluxo web, o build-qa diagnostica o harness:
+Before testing web flow, build-qa diagnoses the harness:
 
-1. Procurar setup existente do projeto: `package.json`, scripts, Playwright,
-   framework de teste ou docs locais.
-2. Verificar runtime: `node --version`, `npm --version`, `command -v npx`.
-3. Tentar Playwright do projeto ou runtime bundled quando existir.
-4. Se browsers do Playwright faltarem, rodar ou solicitar permissao para
-   `npx playwright install` quando apropriado.
-5. Se download nao for possivel, tentar Chrome/Edge do sistema por canal.
-6. Se GUI for bloqueada, tentar headless; se headed for essencial, pedir permissao.
-7. Se nada funcionar, emitir `Browser Harness: BLOCKED` com comando e erro.
+1. Look for existing project setup: `package.json`, scripts, Playwright,
+   test framework, or local docs.
+2. Check runtime: `node --version`, `npm --version`, `command -v npx`.
+3. Try Playwright from the project or bundled runtime when available.
+4. If Playwright browsers are missing, run or request permission for
+   `npx playwright install` when appropriate.
+5. If download is not possible, try Chrome/Edge from system via channel.
+6. If GUI is blocked, try headless; if headed is essential, request permission.
+7. If nothing works, emit `Browser Harness: BLOCKED` with command and error.
 
-Nunca marcar teste de browser como concluido se o browser nao foi de fato exercitado.
+Never mark browser test as complete if the browser was not actually exercised.
 
 ### Browser Harness
 
-- `READY`: automacao de browser funcionou normalmente.
-- `DEGRADED`: teste executado com fallback (ex.: Chrome do sistema em vez de
-  Chromium bundled).
-- `BLOCKED`: nao foi possivel lancar, navegar ou interagir; incluir o erro.
+- `READY`: browser automation worked normally.
+- `DEGRADED`: test ran with fallback (e.g., system Chrome instead of
+  bundled Chromium).
+- `BLOCKED`: could not launch, navigate, or interact; include the error.
 
-## Artefatos
+## Artifacts
 
-- Diretorio de cada POC: `sdd-docs/<slug>/` com `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`.
+- Directory for each POC: `sdd-docs/<slug>/` with `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`.
 - Build-QA report: `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 - Templates: `sdd-templates/proposal.md`, `sdd-templates/spec.md`, `sdd-templates/run-manifest.md`, `sdd-templates/build-report.md`, `sdd-templates/build-qa-report.md`.
-- Agentes de menu: `.claude/agents/discovery.md`, `.claude/agents/spec.md`, `.claude/agents/build.md`.
-- Alvos internos de spawn: `.claude/agents/spec-architect.md`, `.claude/agents/spec-qa.md`, `.claude/agents/build-frontend.md`, `.claude/agents/build-backend.md`.
-- QA pos-implementacao: `.claude/agents/build-qa.md` e skill Codex `.codex/skills/build-qa/SKILL.md`.
-- Skills Codex equivalentes para cada agente em `.codex/skills/<nome>/SKILL.md`.
+- Menu agents: `.claude/agents/discovery.md`, `.claude/agents/spec.md`, `.claude/agents/build.md`.
+- Internal spawn targets: `.claude/agents/spec-architect.md`, `.claude/agents/spec-qa.md`, `.claude/agents/build-frontend.md`, `.claude/agents/build-backend.md`.
+- Post-implementation QA: `.claude/agents/build-qa.md` and Codex skill `.codex/skills/build-qa/SKILL.md`.
+- Codex skills equivalent for each agent in `.codex/skills/<name>/SKILL.md`.
 
-## Dry-Run De Validacao
+## Validation Dry-Run
 
-1. Invocar `@discovery` com uma ideia pequena e definir o `<slug>`.
-2. Confirmar que ele conversa primeiro e so escreve `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` quando o usuario pedir.
-3. Invocar `@spec`.
-4. Confirmar que ele pergunta ao usuario em gaps de escopo/intencao, nao spawna sem necessidade, roda `spec-qa` e gera `sdd-docs/<slug>/YYYY-MM-DD-spec.md` com features numeradas.
-5. Confirmar que `spec-qa` escreveu `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, que o veredito esta copiado verbatim no spec e que `FAIL` bloqueia a finalizacao.
-6. Confirmar que, se uma feature cruza fronteira FE/BE sem `Contrato de Integracao`, o `spec-qa` retorna `FAIL`.
-7. Invocar `@build` com o spec aprovado.
-8. Confirmar que ele escolhe o modo (DIRETO/PARALELO), deriva o contrato, escreve `run-manifest.md` e spawna `build-qa` so com `{spec.md, run-manifest.md}`.
-9. Confirmar que `PASS` exige cobertura total e gera `build-report.md` com status `DELIVERED`; e que `teto=3`/`BLOCKED`/`sem-progresso`/`lacuna-spec` geram `ESCALATED` com o gatilho.
+1. Invoke `@discovery` with a small idea and define the `<slug>`.
+2. Confirm it converses first and only writes `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` when the user asks.
+3. Invoke `@spec`.
+4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features.
+5. Confirm `spec-qa` wrote `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, the verdict is copied verbatim into the spec, and `FAIL` blocks finalization.
+6. Confirm that if a feature crosses the FE/BE boundary without `Integration Contract`, `spec-qa` returns `FAIL`.
+7. Invoke `@build` with the approved spec.
+8. Confirm it chooses the mode (DIRECT/PARALLEL), derives the contract, writes `run-manifest.md`, and spawns `build-qa` only with `{spec.md, run-manifest.md}`.
+9. Confirm `PASS` requires full coverage and generates `build-report.md` with status `DELIVERED`; and that `ceiling=3`/`BLOCKED`/`no-progress`/`spec-gap` generate `ESCALATED` with the trigger.

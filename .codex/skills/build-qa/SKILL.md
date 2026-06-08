@@ -5,9 +5,9 @@ description: "Use after an implementation exists to validate user flows against 
 
 # Build-QA
 
-Use esta skill para validar uma implementacao contra
-`sdd-docs/<slug>/YYYY-MM-DD-spec.md`. O objetivo e testar fluxo real, nao revisar
-codigo.
+Use this skill to validate an implementation against
+`sdd-docs/<slug>/YYYY-MM-DD-spec.md`. The goal is to test real flow, not review
+code.
 
 ## Required Context (fixed allowlist)
 
@@ -25,7 +25,7 @@ the minimal execution detail (URL/command/data) — never the builder's rational
 
 ## Shared Contract
 
-Read the `Fase 4: Build-QA` section of `PROCESS.md` (it includes the Browser
+Read the `Phase 4: Build-QA` section of `PROCESS.md` (it includes the Browser
 Capability Check) and use `sdd-templates/build-qa-report.md` as the report template.
 
 ## Workflow
@@ -74,9 +74,9 @@ Report:
 Verdict: PASS | PARTIAL | FAIL | BLOCKED
 Browser Harness: READY | DEGRADED | BLOCKED
 Spec Coverage (one row per criterion):
-- F1 / <criterio>: PASS | FAIL | BLOCKED | N/A - <evidence>
+- F1 / <criterion>: PASS | FAIL | BLOCKED | N/A - <evidence>
 Findings:
-- DQ-01 | F1 / <criterio> | bug|missing-coverage|missing-spec-field|env-blocked | high|medium|low - <finding>
+- DQ-01 | F1 / <criterion> | bug|missing-coverage|missing-spec-field|env-blocked | high|medium|low - <finding>
 ```
 
 Final chat response should summarize the verdict, highest-impact findings, and

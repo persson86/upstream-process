@@ -1,89 +1,89 @@
-# Spec: <titulo curto>
+# Spec: <short title>
 
-## Origem
+## Origin
 
 - Proposal: `proposal.md`
-- Data:
-- Autor do spec:
+- Date:
+- Spec author:
 
 ## Job To Be Done
 
-Quando <situacao>, quero <motivacao/necessidade>, para <resultado mensuravel ou observavel>.
+When <situation>, I want <motivation/need>, so that <measurable or observable outcome>.
 
 ## User Stories
 
-1. Como <persona>, quero <capacidade>, para <resultado>.
-2. Como <persona>, quero <capacidade>, para <resultado>.
+1. As a <persona>, I want <capability>, so that <outcome>.
+2. As a <persona>, I want <capability>, so that <outcome>.
 
-## Features Numeradas
+## Numbered Features
 
-### F1. <nome da feature>
+### F1. <feature name>
 
-**Objetivo:** <resultado que esta feature entrega>
+**Objective:** <outcome this feature delivers>
 
-**Escopo:**
+**Scope:**
 
-- Inclui:
-- Nao inclui:
+- Includes:
+- Does not include:
 
-**Criterios de aceite:**
+**Acceptance criteria:**
 
-- Dado <contexto>, quando <acao>, entao <resultado observavel>.
-- Dado <contexto>, quando <acao>, entao <resultado observavel>.
+- Given <context>, when <action>, then <observable result>.
+- Given <context>, when <action>, then <observable result>.
 
-**Dependencias/ordem:** <por que esta feature vem nesta posicao>
+**Dependencies/order:** <why this feature comes in this position>
 
-### F2. <nome da feature>
+### F2. <feature name>
 
-**Objetivo:** <resultado que esta feature entrega>
+**Objective:** <outcome this feature delivers>
 
-**Escopo:**
+**Scope:**
 
-- Inclui:
-- Nao inclui:
+- Includes:
+- Does not include:
 
-**Criterios de aceite:**
+**Acceptance criteria:**
 
-- Dado <contexto>, quando <acao>, entao <resultado observavel>.
+- Given <context>, when <action>, then <observable result>.
 
-**Dependencias/ordem:** <por que esta feature vem nesta posicao>
+**Dependencies/order:** <why this feature comes in this position>
 
-## Contrato De Integracao
+## Integration Contract
 
-Preencha **quando alguma feature cruza fronteira FE/BE ou integra com servico externo**. Este contrato e o que o downstream autonomo (`build`) deriva e os helpers implementam verbatim — se faltar aqui, o `spec-qa` bloqueia o spec (nao se deixa a lacuna para o downstream travar).
+Fill in **when any feature crosses FE/BE boundary or integrates with external service**. This contract is what the downstream autonomous (`build`) derives and helpers implement verbatim — if missing here, `spec-qa` blocks the spec (don't leave the gap for downstream to get stuck).
 
-Se nenhuma feature cruza fronteira, escreva: `N/A — sem fronteira FE/BE nem integracao externa.`
+If no feature crosses boundary, write: `N/A — no FE/BE boundary or external integration.`
 
-- **Endpoints/rotas:** metodo, caminho, proposito.
-- **Request/Response:** shape de payload por endpoint (campos e tipos).
-- **Tipos/modelos compartilhados:** entidades e campos usados por FE e BE.
-- **Estados de erro:** codigos/condicoes e como o cliente reage.
-- **Dados/auth de setup:** o que precisa existir para exercitar o fluxo.
-- **Comportamento esperado por criterio:** para cada criterio de aceite que cruza fronteira, o resultado observavel sem ambiguidade.
+- **Endpoints/routes:** method, path, purpose.
+- **Request/Response:** payload shape per endpoint (fields and types).
+- **Shared types/models:** entities and fields used by FE and BE.
+- **Error states:** codes/conditions and how the client reacts.
+- **Setup data/auth:** what needs to exist to exercise the flow.
+- **Expected behavior per criterion:** for each acceptance criterion that crosses boundary, the observable result without ambiguity.
 
-## Notas De Arquitetura
+## Architecture Notes
 
-Registre restricoes tecnicas, decisoes relevantes, integracoes, dados, riscos de implementacao e achados do `architect` quando ele for chamado.
+Record technical constraints, relevant decisions, integrations, data, implementation risks, and findings from `architect` when called.
 
-## Assuncoes E Perguntas Abertas
+## Assumptions And Open Questions
 
-- **Assuncao:** <assuncao> - impacto se estiver errada.
-- **Pergunta:** <pergunta> - dono ou momento de resposta.
+- **Assumption:** <assumption> - impact if wrong.
+- **Question:** <question> - owner or timing of answer.
 
 ## QA-Gate
 
-Fonte de verdade: `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `spec-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
+Source of truth: `sdd-docs/<slug>/qa-verdict.md`, written by `spec-qa`. The block below is copied verbatim; in case of divergence, the file takes precedence.
 
-### Veredito Verbatim Do `spec-qa`
+### Verdict Verbatim From `spec-qa`
 
 ```text
-<colar aqui o conteudo de qa-verdict.md, sem editar>
+<paste here the content of qa-verdict.md, without editing>
 ```
 
-### Resolucao
+### Resolution
 
-Caminho padrao = **resolver** os achados (re-rodar o `spec-qa` ate `PASS`). Waiver e excecao e exige pedido explicito do usuario.
+Default path = **resolve** the findings (re-run `spec-qa` until `PASS`). Waiver is exception and requires explicit user request.
 
-- Achados resolvidos (com referencia a feature):
-- Waivers explicitos do usuario (so com pedido do usuario):
-- Status final do gate: PASS | CONCERNS (RESOLVIDO) | CONCERNS (COM WAIVER) | FAIL (BLOQUEADO)
+- Findings resolved (with feature reference):
+- Explicit user waivers (only with user request):
+- Final gate status: PASS | CONCERNS (RESOLVED) | CONCERNS (WITH WAIVER) | FAIL (BLOCKED)

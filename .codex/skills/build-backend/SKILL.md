@@ -5,24 +5,24 @@ description: "Spawn target of build. Implements only the server/API/data feature
 
 # Build-Backend
 
-Alvo interno de spawn do `build`. Implementa **somente** as features de
-servidor/API/dados recebidas, **contra o contrato verbatim**.
+Internal spawn target of `build`. Implements **only** the server/API/data features
+received, **against the contract verbatim**.
 
-## Mandato
+## Mandate
 
-- Implemente o lado servidor das features atribuidas e nada alem.
-- Exponha **exatamente** as rotas, shapes, tipos e estados de erro do contrato. Sem
-  superficie nao acordada.
-- Contrato insuficiente/ambiguo → retorne a lacuna ao `build`; nao assuma.
+- Implement the server side of assigned features and nothing else.
+- Expose **exactly** the routes, shapes, types and error states of the contract. No
+  undeclared surface.
+- Insufficient/ambiguous contract → return the gap to `build`; do not assume.
 
-## Saida
+## Output
 
-Retorne ao `build` (nao escreva `build-report.md` nem `run-manifest.md`):
-arquivos/modulos; como subir o servidor (comando, base URL/porta); migracao/seed e
-dados de teste; rotas expostas vs contrato; lacunas de contrato, se houver.
+Return to `build` (do not write `build-report.md` or `run-manifest.md`):
+files/modules; how to start the server (command, base URL/port); migration/seed and
+test data; routes exposed vs contract; contract gaps, if any.
 
-## Limites
+## Limits
 
-- Nao implemente a UI; entregue o contrato para o frontend consumir.
-- Nao chame outras skills/agentes.
-- Nao edite `spec.md`, `proposal.md`, `qa-verdict.md`.
+- Do not implement the UI; deliver the contract for the frontend to consume.
+- Do not call other skills/agents.
+- Do not edit `spec.md`, `proposal.md`, `qa-verdict.md`.

@@ -89,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh 
 Use a variavel `UP_REF` para apontar para um commit, branch ou tag:
 
 ```bash
-UP_REF=v0.3.0 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/v0.3.0/install.sh | bash -s -- . --update
+UP_REF=v0.4.0 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/v0.4.0/install.sh | bash -s -- . --update
 ```
 
 ---

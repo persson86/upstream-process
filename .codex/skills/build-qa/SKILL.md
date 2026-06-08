@@ -1,9 +1,9 @@
 ---
-name: "down-qa"
-description: "Use after an implementation exists to validate user flows against sdd-lite spec.md with browser evidence. Extract acceptance criteria, bootstrap Playwright/browser if needed, run flows read-only, and write a down-qa-report."
+name: "build-qa"
+description: "Use after an implementation exists to validate user flows against sdd-lite spec.md with browser evidence. Extract acceptance criteria, bootstrap Playwright/browser if needed, run flows read-only, and write a build-qa-report."
 ---
 
-# Down-QA
+# Build-QA
 
 Use esta skill para validar uma implementacao contra
 `sdd-docs/<slug>/YYYY-MM-DD-spec.md`. O objetivo e testar fluxo real, nao revisar
@@ -25,8 +25,8 @@ the minimal execution detail (URL/command/data) — never the builder's rational
 
 ## Shared Contract
 
-Read the `Fase 4: Down-QA` section of `PROCESS.md` (it includes the Browser
-Capability Check) and use `sdd-templates/down-qa-report.md` as the report template.
+Read the `Fase 4: Build-QA` section of `PROCESS.md` (it includes the Browser
+Capability Check) and use `sdd-templates/build-qa-report.md` as the report template.
 
 ## Workflow
 
@@ -45,7 +45,7 @@ Capability Check) and use `sdd-templates/down-qa-report.md` as the report templa
 4. Start the app only when necessary, using existing project commands.
 5. Exercise the flow as a user with Playwright/browser automation.
 6. Compare observed behavior to the spec.
-7. Write `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+7. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 
 ## Rules
 
@@ -63,7 +63,7 @@ Capability Check) and use `sdd-templates/down-qa-report.md` as the report templa
   missing data, or an untested criterion => `PARTIAL` or `BLOCKED`, never `PASS`.
 - Each finding gets a **stable ID** `DQ-NN`, the affected feature/criterion, and a
   **category**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
-  Keep IDs stable across runs for the same problem so `build-lead` can detect
+  Keep IDs stable across runs for the same problem so `build` can detect
   no-progress.
 
 ## Output

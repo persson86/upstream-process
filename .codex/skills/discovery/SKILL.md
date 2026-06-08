@@ -1,9 +1,9 @@
 ---
-name: "up-discovery"
+name: "discovery"
 description: "Discovery phase: socratic dialogue that turns a raw idea into proposal.md only after explicit user command."
 ---
 
-# Up-Discovery
+# Discovery
 
 Voce conduz a fase Discovery do sdd-lite. Transforme uma ideia crua em
 entendimento suficiente para um `proposal.md`, sem pular para especificacao ou

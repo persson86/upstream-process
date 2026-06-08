@@ -1,12 +1,12 @@
 ---
-name: "up-qa"
-description: "Isolated QA-gate for up-spec. Reviews only proposal.md and spec.md draft, then writes its own verbatim verdict to sdd-docs/<slug>/qa-verdict.md."
+name: "spec-qa"
+description: "Isolated QA-gate for spec. Reviews only proposal.md and spec.md draft, then writes its own verbatim verdict to sdd-docs/<slug>/qa-verdict.md."
 ---
 
-# Up-QA
+# Spec-QA
 
 Voce valida isoladamente se o draft de `spec.md` e claro, testavel, fatiavel e
-coerente com `proposal.md`. Normalmente chamado pelo `up-spec`, mas pode ser
+coerente com `proposal.md`. Normalmente chamado pelo `spec`, mas pode ser
 invocado diretamente.
 
 ## Isolamento
@@ -50,7 +50,7 @@ Waiver Eligible:
 
 ## Contract-Completeness Gate (downstream autonomo)
 
-O downstream (`build-lead`) implementa e entrega sem revisao humana; o spec e a
+O downstream (`build`) implementa e entrega sem revisao humana; o spec e a
 unica garantia. Quando **alguma feature cruza fronteira FE/BE ou integra com
 servico externo**, a secao `Contrato de Integracao` do spec deve estar presente e
 completa (endpoints, shapes, tipos, estados de erro, dados/auth de setup,

@@ -1,9 +1,9 @@
 ---
-name: "up-spec"
-description: "Spec phase: owns spec.md, reads proposal.md, asks scope questions, runs up-architect and up-qa as companion skills, and enforces the QA-gate."
+name: "spec"
+description: "Spec phase: owns spec.md, reads proposal.md, asks scope questions, runs spec-architect and spec-qa as companion skills, and enforces the QA-gate."
 ---
 
-# Up-Spec
+# Spec
 
 Voce conduz a fase Spec do sdd-lite e possui o artefato `spec.md`. Sua
 funcao e transformar `proposal.md` em um spec implementavel, testavel e
@@ -31,13 +31,13 @@ aceite, pare e diga exatamente o que falta.
    testabilidade e sequenciamento.
 3. Para cada gap, escolha um movimento:
    - perguntar ao usuario quando o gap for de intencao, prioridade ou escopo;
-   - invocar a skill `up-architect` quando a viabilidade tecnica exigir ler
+   - invocar a skill `spec-architect` quando a viabilidade tecnica exigir ler
      codigo, stack ou restricoes concretas;
    - assumir e sinalizar quando a assuncao for pequena, reversivel e nao
      bloquear o spec.
 4. Rascunhe `sdd-docs/<slug>/YYYY-MM-DD-spec.md` usando `sdd-templates/spec.md`.
-5. Invoque a skill `up-qa`, passando o `<slug>` e somente os artefatos
-   (`YYYY-MM-DD-proposal.md` + draft de `YYYY-MM-DD-spec.md`). O `up-qa`
+5. Invoque a skill `spec-qa`, passando o `<slug>` e somente os artefatos
+   (`YYYY-MM-DD-proposal.md` + draft de `YYYY-MM-DD-spec.md`). O `spec-qa`
    escreve o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
 6. Leia `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` e cole o veredito verbatim na
    secao `QA-Gate` do spec.
@@ -45,7 +45,7 @@ aceite, pare e diga exatamente o que falta.
 
 ## QA-Gate
 
-A fonte de verdade e `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa` — voce
+A fonte de verdade e `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `spec-qa` — voce
 nao o produz nem o reescreve. Copie-o sem edicao para a secao `QA-Gate` do
 `spec.md`.
 
@@ -66,5 +66,5 @@ nao o produz nem o reescreve. Copie-o sem edicao para a secao `QA-Gate` do
 ## Fora De Escopo
 
 - Nao implementar features.
-- Nao chamar skills alem de `up-architect` e `up-qa`.
+- Nao chamar skills alem de `spec-architect` e `spec-qa`.
 - Nao editar `proposal.md` nem `qa-verdict.md`.

@@ -3,12 +3,11 @@
 # sdd-lite installer
 #
 # Copia o framework SDD-lite para dentro de um projeto-alvo:
-#   - <target>/.claude/agents/up-*.md      (agentes upstream invocaveis)
-#   - <target>/.claude/agents/build-*.md   (build-lead, build-frontend, build-backend)
-#   - <target>/.claude/agents/down-qa.md   (QA pos-implementacao)
-#   - <target>/.codex/skills/*/            (skills Codex: up-discovery, up-spec, up-architect, up-qa, build-lead, build-frontend, build-backend, down-qa)
-#   - <target>/sdd-lite/PROCESS.md (a espinha do processo, inclui o runbook do down-qa)
-#   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, run-manifest.md, build-report.md, down-qa-report.md)
+#   - <target>/.claude/agents/*.md         (upstream: discovery, spec, spec-architect, spec-qa)
+#   - <target>/.claude/agents/build*.md    (downstream: build, build-frontend, build-backend, build-qa)
+#   - <target>/.codex/skills/*/            (skills Codex: discovery, spec, spec-architect, spec-qa, build, build-frontend, build-backend, build-qa)
+#   - <target>/sdd-lite/PROCESS.md (a espinha do processo, inclui o runbook do build-qa)
+#   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, run-manifest.md, build-report.md, build-qa-report.md)
 #   - <target>/sdd-docs/                     (SEUS outputs: cada POC em sdd-docs/<slug>/)
 #
 # Outputs ficam em sdd-docs/ na raiz do projeto (separados do framework) e
@@ -89,7 +88,7 @@ if [ ! -d "$TARGET/.git" ]; then
   echo "aviso: $TARGET nao parece um repo git (sem .git)."
 fi
 
-AGENTS=(up-discovery up-spec up-architect up-qa build-lead build-frontend build-backend down-qa)
+AGENTS=(discovery spec spec-architect spec-qa build build-frontend build-backend build-qa)
 
 # --- checagem de colisao ---------------------------------------------------
 if [ "$FORCE" -eq 0 ]; then
@@ -97,10 +96,10 @@ if [ "$FORCE" -eq 0 ]; then
   for a in "${AGENTS[@]}"; do
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
-  for s in up-discovery up-spec up-architect up-qa build-lead build-frontend build-backend down-qa; do
+  for s in discovery spec spec-architect spec-qa build build-frontend build-backend build-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
-  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/down-qa-report.md .version; do
+  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -124,7 +123,7 @@ mkdir -p \
   "$TARGET/.claude/agents" \
   "$TARGET/$PKG/sdd-templates" \
   "$TARGET/sdd-docs"
-for s in up-discovery up-spec up-architect up-qa build-lead build-frontend build-backend down-qa; do
+for s in discovery spec spec-architect spec-qa build build-frontend build-backend build-qa; do
   mkdir -p "$TARGET/.codex/skills/$s"
 done
 
@@ -140,10 +139,10 @@ fetch "sdd-templates/proposal.md"        > "$TARGET/$PKG/sdd-templates/proposal.
 fetch "sdd-templates/spec.md"            > "$TARGET/$PKG/sdd-templates/spec.md"
 fetch "sdd-templates/run-manifest.md"    > "$TARGET/$PKG/sdd-templates/run-manifest.md"
 fetch "sdd-templates/build-report.md"    > "$TARGET/$PKG/sdd-templates/build-report.md"
-fetch "sdd-templates/down-qa-report.md"  > "$TARGET/$PKG/sdd-templates/down-qa-report.md"
-echo "  + $PKG/sdd-templates/{proposal,spec,run-manifest,build-report,down-qa-report}.md"
+fetch "sdd-templates/build-qa-report.md"  > "$TARGET/$PKG/sdd-templates/build-qa-report.md"
+echo "  + $PKG/sdd-templates/{proposal,spec,run-manifest,build-report,build-qa-report}.md"
 
-for s in up-discovery up-spec up-architect up-qa build-lead build-frontend build-backend down-qa; do
+for s in discovery spec spec-architect spec-qa build build-frontend build-backend build-qa; do
   fetch ".codex/skills/$s/SKILL.md" | rewrite > "$TARGET/.codex/skills/$s/SKILL.md"
   echo "  + .codex/skills/$s/SKILL.md"
 done
@@ -155,4 +154,4 @@ echo "  + sdd-docs/  (seus outputs vao aqui)"
 
 echo
 echo "sdd-lite v$VERSION instalado em: $TARGET"
-echo "Comece com:  @up-discovery"
+echo "Comece com:  @discovery"

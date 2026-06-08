@@ -1,4 +1,4 @@
-# Down-QA Report: <titulo curto>
+# Build-QA Report: <titulo curto>
 
 ## Origem
 
@@ -46,7 +46,7 @@ Browser Harness: READY | DEGRADED | BLOCKED
 ## Findings
 
 > Cada finding tem **ID estavel** (`DQ-NN`), a feature/criterio afetado e uma
-> **categoria**. O `build-lead` usa o ID para detectar "sem-progresso" (mesmo ID
+> **categoria**. O `build` usa o ID para detectar "sem-progresso" (mesmo ID
 > persiste apos um fix) e a categoria para acionar o disjuntor.
 > Categorias: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
 

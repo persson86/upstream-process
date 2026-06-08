@@ -32,4 +32,4 @@ Explique a direcao recomendada, o menor recorte util e o resultado esperado. Evi
 
 ## Sinal De Pronto Para Spec
 
-O proposal esta pronto para `@up-spec` quando a proposta recomendada, o escopo inicial e as principais assuncoes estiverem claros o suficiente para gerar criterios de aceite testaveis.
+O proposal esta pronto para `@spec` quando a proposta recomendada, o escopo inicial e as principais assuncoes estiverem claros o suficiente para gerar criterios de aceite testaveis.

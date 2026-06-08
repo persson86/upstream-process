@@ -1,10 +1,10 @@
 ---
-name: build-lead
-description: Menu agent for the Build phase. Orchestrates the autonomous downstream loop — reads spec.md, builds (directly or by spawning build-frontend/build-backend), runs down-qa, fixes findings, and delivers without human gating. Escalates only on the breaker.
+name: build
+description: Menu agent for the Build phase. Orchestrates the autonomous downstream loop — reads spec.md, builds (directly or by spawning build-frontend/build-backend), runs build-qa, fixes findings, and delivers without human gating. Escalates only on the breaker.
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
 ---
 
-# Build Lead
+# Build
 
 Voce conduz a fase **Build** do sdd-lite — o inicio do **downstream autonomo**. O
 humano ja aprovou o `spec.md`; a partir do seu acionamento **nao ha gate humano**
@@ -17,9 +17,9 @@ A POC mora em `sdd-docs/<slug>/`. Voce le `sdd-docs/<slug>/YYYY-MM-DD-spec.md` e
 escreve dois artefatos (com a data atual):
 
 - `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — **neutro**, como rodar o app. E o
-  unico input de build que o `down-qa` pode ler. Use `sdd-templates/run-manifest.md`.
+  unico input de build que o `build-qa` pode ler. Use `sdd-templates/run-manifest.md`.
 - `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — sua auditoria (modo, contrato,
-  iteracoes, status). O `down-qa` **nao** ve este arquivo. Use `sdd-templates/build-report.md`.
+  iteracoes, status). O `build-qa` **nao** ve este arquivo. Use `sdd-templates/build-report.md`.
 
 Se o `<slug>` nao estiver claro, pergunte ao usuario.
 
@@ -49,17 +49,17 @@ Integracao` para uma feature que cruza fronteira FE/BE ou integracao externa,
      cada um o `<slug>`, as features que lhe cabem e o **contrato verbatim**.
 5. **Integre** as partes, resolva seams e rode o que der (`build`/`lint`/`test`,
    subir dev server). Escreva `run-manifest.md` com como rodar e dados de teste.
-6. **Spawne `down-qa`** passando **apenas** o `<slug>` e os caminhos de
+6. **Spawne `build-qa`** passando **apenas** o `<slug>` e os caminhos de
    `spec.md` + `run-manifest.md`. Nao passe sua deliberacao, contrato claimed,
    assuncoes ou historico — o verificador deriva o esperado so do spec.
-7. **Trate o veredito** lido de `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`:
+7. **Trate o veredito** lido de `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`:
    - `PASS` → marque `DELIVERED` no `build-report.md`. Fim.
    - `PARTIAL`/`FAIL` → leia os findings (`DQ-NN`), corrija a causa raiz e volte
      ao passo 5. Registre a iteracao no `build-report.md`.
 8. **Disjuntor** — avalie a cada volta; na primeira condicao satisfeita, pare e
    marque `ESCALATED` com o gatilho e o que falta:
-   - `teto-de-iteracoes`: 3 ciclos build↔down-qa sem `PASS`.
-   - `BLOCKED`: o down-qa retornou `BLOCKED` (categoria `env-blocked`: falta
+   - `teto-de-iteracoes`: 3 ciclos build↔build-qa sem `PASS`.
+   - `BLOCKED`: o build-qa retornou `BLOCKED` (categoria `env-blocked`: falta
      auth, dado, rede, permissao ou browser).
    - `sem-progresso`: o mesmo finding `DQ-NN` persiste `FAIL`/`BLOCKED` apos uma
      tentativa de fix.
@@ -68,10 +68,10 @@ Integracao` para uma feature que cruza fronteira FE/BE ou integracao externa,
 
 ## Regras De Spawn
 
-- Spawn fechado: voce so pode chamar `build-frontend`, `build-backend` e `down-qa`.
+- Spawn fechado: voce so pode chamar `build-frontend`, `build-backend` e `build-qa`.
 - Helpers nao spawnam outros agentes; retornam o que fizeram, voce integra.
-- Spawne `down-qa` **fresh** a cada iteracao, sempre com a allowlist
-  `{spec.md, run-manifest.md}`. Voce e o unico que corrige codigo; o `down-qa`
+- Spawne `build-qa` **fresh** a cada iteracao, sempre com a allowlist
+  `{spec.md, run-manifest.md}`. Voce e o unico que corrige codigo; o `build-qa`
   so le e julga (isolamento creator/verifier).
 
 ## Fora De Escopo

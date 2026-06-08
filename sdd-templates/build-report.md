@@ -1,8 +1,8 @@
 # Build Report: <titulo curto>
 
-> Artefato de **auditoria** do `build-lead` no downstream autonomo. Registra o que
-> foi construido, o loop build<->down-qa e o status final. **Nao** e input do
-> `down-qa` (que ve apenas `spec.md` + `run-manifest.md`) — isolamento
+> Artefato de **auditoria** do `build` no downstream autonomo. Registra o que
+> foi construido, o loop build<->build-qa e o status final. **Nao** e input do
+> `build-qa` (que ve apenas `spec.md` + `run-manifest.md`) — isolamento
 > creator/verifier.
 
 ## Origem
@@ -30,7 +30,7 @@
 
 ## Historico De Iteracoes
 
-| Iteracao | Mudanca aplicada | Veredito down-qa | Findings resolvidos (IDs) |
+| Iteracao | Mudanca aplicada | Veredito build-qa | Findings resolvidos (IDs) |
 | --- | --- | --- | --- |
 | 1 | <build inicial> | PASS \| PARTIAL \| FAIL \| BLOCKED | <DQ-NN, ...> |
 

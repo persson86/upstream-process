@@ -1,7 +1,7 @@
 # Run Manifest: <titulo curto>
 
-> Artefato **neutro** de execucao, escrito pelo `build-lead`. E o **unico** input
-> de build que o `down-qa` pode ler (junto do `spec.md`). Contem apenas como
+> Artefato **neutro** de execucao, escrito pelo `build`. E o **unico** input
+> de build que o `build-qa` pode ler (junto do `spec.md`). Contem apenas como
 > rodar e exercitar o app — nenhuma narrativa, assuncao, "contrato claimed" ou
 > historico de iteracoes. Tudo que orienta o *esperado* deve vir do `spec.md`.
 

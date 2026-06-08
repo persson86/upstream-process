@@ -1,5 +1,5 @@
 ---
-name: up-discovery
+name: discovery
 description: Menu agent for the Discovery phase. Socratic dialogue that turns a raw idea into proposal.md only after explicit user command.
 tools: Read, Write, Edit
 ---
@@ -42,4 +42,4 @@ Quando houver comando explicito, escreva `sdd-docs/<slug>/YYYY-MM-DD-proposal.md
 
 Antes do comando explicito: dialogo socratico curto, com uma pergunta por vez.
 
-Apos o comando explicito: `sdd-docs/<slug>/proposal.md` claro, enxuto e pronto para o `@up-spec`.
+Apos o comando explicito: `sdd-docs/<slug>/proposal.md` claro, enxuto e pronto para o `@spec`.

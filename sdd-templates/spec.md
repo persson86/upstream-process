@@ -50,7 +50,7 @@ Quando <situacao>, quero <motivacao/necessidade>, para <resultado mensuravel ou 
 
 ## Contrato De Integracao
 
-Preencha **quando alguma feature cruza fronteira FE/BE ou integra com servico externo**. Este contrato e o que o downstream autonomo (`build-lead`) deriva e os helpers implementam verbatim — se faltar aqui, o `up-qa` bloqueia o spec (nao se deixa a lacuna para o downstream travar).
+Preencha **quando alguma feature cruza fronteira FE/BE ou integra com servico externo**. Este contrato e o que o downstream autonomo (`build`) deriva e os helpers implementam verbatim — se faltar aqui, o `spec-qa` bloqueia o spec (nao se deixa a lacuna para o downstream travar).
 
 Se nenhuma feature cruza fronteira, escreva: `N/A — sem fronteira FE/BE nem integracao externa.`
 
@@ -72,9 +72,9 @@ Registre restricoes tecnicas, decisoes relevantes, integracoes, dados, riscos de
 
 ## QA-Gate
 
-Fonte de verdade: `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
+Fonte de verdade: `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `spec-qa`. O bloco abaixo e copia verbatim; em caso de divergencia, o arquivo prevalece.
 
-### Veredito Verbatim Do `up-qa`
+### Veredito Verbatim Do `spec-qa`
 
 ```text
 <colar aqui o conteudo de qa-verdict.md, sem editar>
@@ -82,7 +82,7 @@ Fonte de verdade: `sdd-docs/<slug>/qa-verdict.md`, escrito pelo `up-qa`. O bloco
 
 ### Resolucao
 
-Caminho padrao = **resolver** os achados (re-rodar o `up-qa` ate `PASS`). Waiver e excecao e exige pedido explicito do usuario.
+Caminho padrao = **resolver** os achados (re-rodar o `spec-qa` ate `PASS`). Waiver e excecao e exige pedido explicito do usuario.
 
 - Achados resolvidos (com referencia a feature):
 - Waivers explicitos do usuario (so com pedido do usuario):

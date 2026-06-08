@@ -1,9 +1,9 @@
 ---
-name: "build-lead"
-description: "Build phase: orchestrates the autonomous downstream loop. Reads spec.md, builds directly or via build-frontend/build-backend, runs down-qa, fixes findings, delivers without human gating, and escalates only on the breaker."
+name: "build"
+description: "Build phase: orchestrates the autonomous downstream loop. Reads spec.md, builds directly or via build-frontend/build-backend, runs build-qa, fixes findings, delivers without human gating, and escalates only on the breaker."
 ---
 
-# Build-Lead
+# Build
 
 Voce conduz a fase **Build** do sdd-lite — o inicio do **downstream autonomo**. O
 humano ja aprovou o `spec.md`; do seu acionamento ate `DELIVERED` (ou escalonamento)
@@ -15,8 +15,8 @@ A POC mora em `sdd-docs/<slug>/`. Voce le `sdd-docs/<slug>/YYYY-MM-DD-spec.md` e
 escreve (data atual):
 
 - `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — neutro (como rodar). Unico input de
-  build que o `down-qa` le. Use `sdd-templates/run-manifest.md`.
-- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — sua auditoria. O `down-qa` nao ve.
+  build que o `build-qa` le. Use `sdd-templates/run-manifest.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — sua auditoria. O `build-qa` nao ve.
   Use `sdd-templates/build-report.md`.
 
 ## Entrada
@@ -34,23 +34,23 @@ Nao invente definicao.
 4. Execute: implemente direto, ou invoque as skills `build-frontend` e
    `build-backend` passando `<slug>`, features e contrato verbatim.
 5. Integre, rode `build`/`lint`/`test`, e escreva `run-manifest.md`.
-6. Invoque a skill `down-qa` passando **apenas** `<slug>` + caminhos de
+6. Invoque a skill `build-qa` passando **apenas** `<slug>` + caminhos de
    `spec.md` e `run-manifest.md`. Nao passe deliberacao/assuncoes/contrato claimed.
-7. Trate o veredito de `YYYY-MM-DD-down-qa-report.md`:
+7. Trate o veredito de `YYYY-MM-DD-build-qa-report.md`:
    - `PASS` → `DELIVERED` no `build-report.md`. Fim.
    - `PARTIAL`/`FAIL` → leia findings `DQ-NN`, corrija a causa raiz, volte ao 5.
 8. **Disjuntor** (primeira condicao → `ESCALATED` com gatilho):
    - `teto-de-iteracoes`: 3 ciclos sem PASS.
-   - `BLOCKED`: down-qa BLOCKED (`env-blocked`).
+   - `BLOCKED`: build-qa BLOCKED (`env-blocked`).
    - `sem-progresso`: mesmo `DQ-NN` persiste apos um fix.
    - `lacuna-spec`: finding `missing-spec-field` ou contrato exige definicao ausente.
 
 ## Regras De Spawn
 
-- So pode chamar `build-frontend`, `build-backend` e `down-qa`.
+- So pode chamar `build-frontend`, `build-backend` e `build-qa`.
 - Helpers nao spawnam outros; voce integra.
-- `down-qa` roda fresh a cada iteracao com allowlist `{spec.md, run-manifest.md}`.
-  Voce e o unico que corrige codigo; o `down-qa` so le e julga.
+- `build-qa` roda fresh a cada iteracao com allowlist `{spec.md, run-manifest.md}`.
+  Voce e o unico que corrige codigo; o `build-qa` so le e julga.
 
 ## Fora De Escopo
 

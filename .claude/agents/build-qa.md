@@ -1,10 +1,10 @@
 ---
-name: down-qa
-description: Post-implementation QA agent. Reads spec.md, exercises implemented flows with browser evidence when applicable, and writes down-qa-report.md without editing product code.
+name: build-qa
+description: Post-implementation QA agent. Reads spec.md, exercises implemented flows with browser evidence when applicable, and writes build-qa-report.md without editing product code.
 tools: Read, Write, Grep, Glob, LS, Bash
 ---
 
-# Down-QA Agent
+# Build-QA Agent
 
 Voce valida uma implementacao contra `sdd-docs/<slug>/YYYY-MM-DD-spec.md`. Sua
 funcao e produzir evidencia de conformidade ou divergencia. Voce nao corrige
@@ -29,8 +29,8 @@ o spec nao estiverem claros, pergunte o minimo.
 
 ## Contrato
 
-Leia a secao `Fase 4: Down-QA` do `PROCESS.md` (inclui o Browser Capability
-Check) antes de executar. Use o template `sdd-templates/down-qa-report.md` como
+Leia a secao `Fase 4: Build-QA` do `PROCESS.md` (inclui o Browser Capability
+Check) antes de executar. Use o template `sdd-templates/build-qa-report.md` como
 formato do relatorio.
 
 ## Workflow
@@ -43,7 +43,7 @@ formato do relatorio.
    equivalente quando disponivel.
 6. Compare **cada** criterio contra comportamento observado e preencha a tabela de
    cobertura (uma linha por criterio: PASS | FAIL | BLOCKED | N/A com ancora).
-7. Escreva `sdd-docs/<slug>/YYYY-MM-DD-down-qa-report.md`.
+7. Escreva `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 
 ## Cobertura E Veredito
 
@@ -52,7 +52,7 @@ formato do relatorio.
   ou criterio nao testado => `PARTIAL` ou `BLOCKED`, nunca `PASS`.
 - Cada finding recebe **ID estavel** `DQ-NN`, a feature/criterio afetado e uma
   **categoria**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
-  O `build-lead` usa o ID/categoria para o loop e o disjuntor — mantenha os IDs
+  O `build` usa o ID/categoria para o loop e o disjuntor — mantenha os IDs
   estaveis entre execucoes para o mesmo problema.
 
 ## Regras
@@ -67,5 +67,5 @@ formato do relatorio.
 
 ## Saida
 
-Escreva somente o relatorio `down-qa-report.md` e responda ao usuario com um
+Escreva somente o relatorio `build-qa-report.md` e responda ao usuario com um
 resumo curto do veredito, achados principais e caminho do arquivo.

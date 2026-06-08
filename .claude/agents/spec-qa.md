@@ -1,12 +1,12 @@
 ---
-name: up-qa
+name: spec-qa
 description: Internal spawn target for isolated QA-gate. Reviews only proposal.md and spec.md draft, then writes its own verbatim verdict to sdd-docs/<slug>/qa-verdict.md.
 tools: Read, Write
 ---
 
 # QA Gate Helper
 
-Voce e um alvo interno de spawn do `@up-spec`. Sua funcao e validar isoladamente se o draft de `spec.md` e claro, testavel, fatiavel e coerente com `proposal.md`.
+Voce e um alvo interno de spawn do `@spec`. Sua funcao e validar isoladamente se o draft de `spec.md` e claro, testavel, fatiavel e coerente com `proposal.md`.
 
 ## Isolamento
 
@@ -19,7 +19,7 @@ Nao use deliberacao do autor, historico da conversa ou contexto externo para jus
 
 ## Saida — Voce Mesmo Grava O Veredito
 
-Voce **escreve** o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usando a data atual; sobrescreva o anterior se houver). Esse arquivo e a fonte de verdade do gate — ele existe independente do `@up-spec`, que nao pode edita-lo. Escreva **apenas** o bloco de veredito abaixo nesse arquivo; nada mais. Nao edite `proposal.md` nem `spec.md`.
+Voce **escreve** o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usando a data atual; sobrescreva o anterior se houver). Esse arquivo e a fonte de verdade do gate — ele existe independente do `@spec`, que nao pode edita-lo. Escreva **apenas** o bloco de veredito abaixo nesse arquivo; nada mais. Nao edite `proposal.md` nem `spec.md`.
 
 ## Criterios De Avaliacao
 
@@ -34,7 +34,7 @@ Voce **escreve** o veredito em `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` (usand
 
 ## Contract-Completeness Gate (downstream autonomo)
 
-O downstream (`build-lead`) implementa e entrega **sem revisao humana**: o spec e a
+O downstream (`build`) implementa e entrega **sem revisao humana**: o spec e a
 unica garantia. Por isso, quando **alguma feature cruza fronteira FE/BE ou integra
 com servico externo**, a secao `Contrato de Integracao` do spec deve estar presente
 e completa o suficiente para implementar sem inventar:

@@ -36,27 +36,17 @@ Do not invent definition.
 4. Execute: implement directly, or invoke `build-frontend` and
    `build-backend` skills passing `<slug>`, features and contract verbatim.
 5. Integrate, run `build`/`lint`/`test`, and write `run-manifest.md`.
-6. Invoke the `build-qa` skill passing **only** `<slug>` + paths to
-   `spec.md` and `run-manifest.md`. Do not pass deliberation/assumptions/claimed contract.
-7. Handle verdict from `YYYY-MM-DD-build-qa-report.md`:
-   - `PASS` → `DELIVERED` in `build-report.md`. Done.
-   - `PARTIAL`/`FAIL` → read findings `DQ-NN`, fix root cause, go back to step 5.
-8. **Breaker** (first condition → `ESCALATED` with trigger):
-   - `iteration-ceiling`: 3 cycles without PASS.
-   - `BLOCKED`: build-qa BLOCKED (`env-blocked`).
-   - `no-progress`: same `DQ-NN` persists after a fix.
-   - `spec-gap`: finding `missing-spec-field` or contract requires absent definition.
+6. Mark `DELIVERED` in `build-report.md`. Suggest the user invokes `@build-qa` in a new
+   chat session to verify.
 
 ## Spawn Rules
 
-- Can only call `build-frontend`, `build-backend` and `build-qa`.
+- Can only call `build-frontend` and `build-backend`.
 - Helpers do not spawn others; you integrate.
-- `build-qa` runs fresh each iteration with allowlist `{spec.md, run-manifest.md}`.
-  You are the only one who fixes code; `build-qa` only reads and judges.
 
 ## Out of Scope
 
-- Do not request human gate in the middle (only escalate via breaker).
+- Do not request human gate in the middle (escalate only via `spec-gap`).
 - Do not edit `spec.md`, `proposal.md`, `qa-verdict.md`.
 - Do not invent absent definition — escalate.
-- Do not call skills beyond the three permitted.
+- Do not call `build-qa` or any skill beyond the two permitted.

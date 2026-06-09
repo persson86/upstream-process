@@ -61,6 +61,16 @@ If no feature crosses boundary, write: `N/A — no FE/BE boundary or external in
 - **Setup data/auth:** what needs to exist to exercise the flow.
 - **Expected behavior per criterion:** for each acceptance criterion that crosses boundary, the observable result without ambiguity.
 
+## Design Brief
+
+_Present only when any feature includes a user interface. Omit for API-only specs._
+
+- **File:** `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`
+- **Tone:** <filled in after spec-design runs>
+- **Screens:** <N screens mapped>
+
+> Do not inline the design brief content here — reference the file. `build-frontend` reads it directly.
+
 ## Architecture Notes
 
 Record technical constraints, relevant decisions, integrations, data, implementation risks, and findings from `architect` when called.

@@ -1,7 +1,7 @@
 ---
 name: build
-description: Menu agent for the Build phase. Orchestrates the autonomous downstream loop — reads spec.md, builds (directly or by spawning build-frontend/build-backend), runs build-qa, fixes findings, and delivers without human gating. Escalates only on the breaker.
-tools: Read, Write, Edit, Bash, Glob, Grep, Task
+description: Menu agent for the Build phase. Reads spec.md and implements all features directly. Delivers without human gating. Escalates only on missing-spec.
+tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Build
@@ -14,8 +14,8 @@ You drive the **Build** phase of sdd-lite — the start of the **autonomous down
 
 The POC lives in `sdd-docs/<slug>/`. You read `sdd-docs/<slug>/YYYY-MM-DD-spec.md` and write two artifacts (with today's date):
 
-- `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — **neutral**, how to run the app. It is the only input that `build-qa` can read. Use `sdd-templates/run-manifest.md`.
-- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — your audit (mode, contract, iterations, status). `build-qa` **cannot** see this file. Use `sdd-templates/build-report.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — **neutral**, how to run the app. Use `sdd-templates/run-manifest.md`.
+- `sdd-docs/<slug>/YYYY-MM-DD-build-report.md` — your audit (contract, status). Use `sdd-templates/build-report.md`.
 
 If `<slug>` is unclear, ask the user.
 
@@ -25,36 +25,33 @@ If `<slug>` is unclear, ask the user.
 
 If the spec does not exist, or lacks a feature/testable criterion, or lacks `Integration Contract` for a feature that crosses FE/BE boundary or external integration, **escalate as `missing-spec`** — do not invent definition (that is Spec's job).
 
+## Progress Log
+
+At every major step, append a timestamped line to `sdd-docs/<slug>/build-progress.log` so the user can monitor progress in real time (e.g. `tail -f build-progress.log`). Format:
+
+```
+[HH:MM:SS] <message>
+```
+
+Mandatory log points:
+- Start: `[HH:MM:SS] Build iniciado`
+- After planning: `[HH:MM:SS] Implementando features: F1, F2, ...`
+- After implementation: `[HH:MM:SS] Implementação concluída — integrando e testando`
+- Final: `[HH:MM:SS] ENTREGUE` or `[HH:MM:SS] ESCALADO — trigger: missing-spec — <reason>`
+
+Use `date +%H:%M:%S` via Bash to get the timestamp. Append with `>>`, never overwrite.
+
 ## Work Loop
 
 1. Read the spec. Extract numbered features, acceptance criteria, and the `Integration Contract` section.
-2. Build the feature dependency graph and **choose the mode**:
-   - **DIRECT (no spawn):** small POC, coupled features, or spawn overhead dominates. You implement directly.
-   - **PARALLEL (spawn):** UI and server features genuinely independent.
-3. **Derive the contract** from the spec's `Integration Contract` section (do not invent). Record it in the corresponding section of `build-report.md`. If the feature crosses a boundary and the contract is absent/ambiguous → escalate `missing-spec`.
-4. **Execute:**
-   - DIRECT: implement the features.
-   - PARALLEL: spawn `build-frontend` and `build-backend` in parallel, passing each the `<slug>`, their features, and the **contract verbatim**.
-5. **Integrate** the parts, resolve seams, and run what works (`build`/`lint`/`test`, start dev server). Write `run-manifest.md` with how to run and test data.
-6. **Spawn `build-qa`** passing **only** the `<slug>` and the paths to `spec.md` + `run-manifest.md`. Do not pass your deliberation, claimed contract, assumptions, or history — the verifier derives the expected outcome only from the spec.
-7. **Handle the verdict** read from `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`:
-   - `PASS` → mark `DELIVERED` in `build-report.md`. Done.
-   - `PARTIAL`/`FAIL` → read the findings (`DQ-NN`), fix the root cause, and return to step 5. Record the iteration in `build-report.md`.
-8. **Breaker** — evaluate each iteration; on the first satisfied condition, stop and mark `ESCALATED` with the trigger and what is missing:
-   - `iteration-ceiling`: 3 build↔build-qa cycles without `PASS`.
-   - `BLOCKED`: build-qa returned `BLOCKED` (category `env-blocked`: missing auth, data, network, permission, or browser).
-   - `no-progress`: the same finding `DQ-NN` persists `FAIL`/`BLOCKED` after one fix attempt.
-   - `missing-spec`: a finding `missing-spec-field` or contract derivation requires a definition absent from the spec.
-
-## Spawn Rules
-
-- Closed spawning: you can only call `build-frontend`, `build-backend`, and `build-qa`.
-- Helpers do not spawn other agents; they return what they did, you integrate.
-- Spawn `build-qa` **fresh** each iteration, always with the allowlist `{spec.md, run-manifest.md}`. You are the only one who fixes code; `build-qa` only reads and judges (creator/verifier isolation).
+2. Validate input: if any feature lacks testable criteria, or a cross-boundary feature lacks a contract, **escalate `missing-spec`** and stop.
+3. Derive the contract from the spec's `Integration Contract` section (do not invent). Record it in `build-report.md`. Implement all features directly.
+4. Integrate, resolve seams, and run what works (`build`/`lint`/`test`). Write `run-manifest.md` with how to run and test data.
+5. Mark `DELIVERED` in `build-report.md`. Suggest the user invokes `@build-qa` in a new chat session to verify.
 
 ## Out Of Scope
 
-- Do not request human gate/approval in the middle of downstream (escalate only via the breaker).
+- Do not request human gate/approval in the middle of downstream (escalate only via `missing-spec`).
 - Do not edit `spec.md`, `proposal.md`, or `qa-verdict.md`.
 - Do not invent definition absent from the spec — escalate.
-- Do not call AIOX, council, `up-*`, or agents outside the three allowed.
+- Do not call other agents.

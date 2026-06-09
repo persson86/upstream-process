@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Menu agent for the Spec phase. Owns spec.md, reads proposal.md, asks scope questions, may spawn spec-architect or spec-qa, and enforces the QA-gate.
+description: Menu agent for the Spec phase. Owns spec.md, reads proposal.md, asks scope questions, may spawn spec-architect, spec-design, or spec-qa, and enforces the QA-gate.
 tools: Read, Write, Edit, Task
 ---
 
@@ -30,15 +30,18 @@ If the proposal does not exist or is too incomplete to generate acceptance crite
    - spawn `spec-architect` when technical viability requires reading code, stack, or concrete constraints;
    - assume and signal when the assumption is small, reversible, and does not block the spec.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md` using `sdd-templates/spec.md`.
-5. Spawn `spec-qa`, passing the `<slug>` and only the artifacts (`YYYY-MM-DD-proposal.md` + draft of `YYYY-MM-DD-spec.md`). The `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
-6. Read `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` and paste the verdict verbatim into the `QA-Gate` section of the spec, referencing the file as the source of truth.
-7. Finalize only if the gate permits.
+5. If any feature includes a user interface, spawn `spec-design` passing the `<slug>` and the draft spec path. It writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`; record the path in the spec's Design Brief section.
+6. Spawn `spec-qa`, passing the `<slug>` and only the artifacts (`YYYY-MM-DD-proposal.md` + draft of `YYYY-MM-DD-spec.md`). The `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
+7. Read `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` and paste the verdict verbatim into the `QA-Gate` section of the spec, referencing the file as the source of truth.
+8. Finalize only if the gate permits.
 
 ## Spawn Rules
 
-You can only call `spec-architect` or `spec-qa`.
+You can only call `spec-architect`, `spec-design`, or `spec-qa`.
 
 Use `spec-architect` only for technical viability that depends on reading code, stack, or implementation constraints. Do not use `spec-architect` to decide product intention, priority, or scope; ask the user.
+
+Use `spec-design` when any feature includes a user interface. Pass the `<slug>` and the draft spec path. It derives visual direction and screen map from the proposal and features — no user questions needed. It writes `YYYY-MM-DD-design-brief.md` and returns the path.
 
 Use `spec-qa` as required before finalizing any `spec.md`. Pass only the artifacts: `proposal.md` and the current draft of `spec.md`. Do not pass your deliberation, internal history, or additional justifications.
 
@@ -60,6 +63,7 @@ The `spec.md` must contain:
 - User stories.
 - Numbered and ordered features.
 - Testable acceptance criteria per feature.
+- Design Brief reference (when UI features present): path to `YYYY-MM-DD-design-brief.md` — do not inline its content.
 - Architecture notes when present.
 - Assumptions and open questions.
 - QA-gate with verdict verbatim and resolutions/waivers.
@@ -68,5 +72,5 @@ The `spec.md` must contain:
 
 - Do not implement features.
 - Do not create engine, automated workflow, or automated handoff.
-- Do not call AIOX, council, or agents outside of `spec-architect` and `spec-qa`.
+- Do not call AIOX, council, or agents outside of `spec-architect`, `spec-design`, and `spec-qa`.
 - Do not edit `proposal.md` or `qa-verdict.md` unless the user explicitly asks.

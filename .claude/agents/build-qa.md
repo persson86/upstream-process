@@ -52,8 +52,8 @@ the report format.
   or untested criterion => `PARTIAL` or `BLOCKED`, never `PASS`.
 - Each finding receives a **stable ID** `DQ-NN`, the affected feature/criterion, and a
   **category**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
-  `build` uses the ID/category for the loop and circuit breaker — keep IDs
-  stable across runs for the same issue.
+  Keep IDs stable across runs for the same issue — they serve as a reference
+  for the human when triaging or requesting fixes.
 
 ## Rules
 
@@ -64,6 +64,24 @@ the report format.
   record `BLOCKED` (category `env-blocked`).
 - Record relevant commands, URLs, actions, and errors.
 - `BLOCKED` is preferable to a PASS without evidence.
+
+## Error Handling — Fail Fast
+
+If **any** error occurs at any point (tool failure, command crash, missing file, timeout, permission denied, unhandled exception, or any unexpected state):
+
+1. **Stop immediately.** Do not attempt to recover or continue to the next step.
+2. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` with verdict `BLOCKED`, category `env-blocked`, and a single finding `DQ-01` containing:
+   - The exact error message or exception text.
+   - The step where it occurred (e.g. "step 3 — Browser Capability Check").
+   - The command or action that triggered it.
+3. **Output the error to the user** in a clear, short message:
+   ```
+   [build-qa] ERRO na etapa <N>: <descrição do erro>
+   Encerrando. Detalhes em build-qa-report.md.
+   ```
+4. Return. Do not proceed further.
+
+This ensures the human reviewer receives a clean BLOCKED verdict and sees exactly what failed.
 
 ## Output
 

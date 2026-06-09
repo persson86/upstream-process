@@ -32,6 +32,8 @@ When there is an explicit command, write `sdd-docs/<slug>/YYYY-MM-DD-proposal.md
 - Options considered and tradeoffs.
 - Minimum recommended proposal.
 - Open risks and assumptions.
+- Key screens and interaction moments: what does the user see and do in the core flow?
+- Visual and experiential context: tone, audience familiarity with similar tools.
 
 ## Out of Scope
 

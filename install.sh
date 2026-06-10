@@ -30,14 +30,21 @@ set -euo pipefail
 
 PKG="sdd-lite"   # subdirectory created in the target
 REF="${UP_REF:-main}"    # branch/tag from which to download in remote mode
-RAW="https://raw.githubusercontent.com/persson86/sdd-lite/$REF"
 VERSION=""               # filled after SRC is resolved
+TMP_ROOT=""
 
-remote_fetch() {
-  relpath="$1"
-  url="$RAW/$relpath"
+cleanup() {
+  if [ -n "$TMP_ROOT" ]; then
+    rm -rf "$TMP_ROOT"
+  fi
+}
+trap cleanup EXIT
+
+download_url() {
+  url="$1"
+  label="$2"
   attempt=1
-  max_attempts=3
+  max_attempts=5
   status=0
 
   while [ "$attempt" -le "$max_attempts" ]; do
@@ -48,13 +55,13 @@ remote_fetch() {
     fi
 
     if [ "$attempt" -lt "$max_attempts" ]; then
-      echo "warning: failed to download $relpath (attempt $attempt/$max_attempts); retrying..." >&2
+      echo "warning: failed to download $label (attempt $attempt/$max_attempts); retrying..." >&2
       sleep 1
     fi
     attempt=$((attempt + 1))
   done
 
-  echo "error: failed to download $relpath from $url" >&2
+  echo "error: failed to download $label from $url" >&2
   return "$status"
 }
 
@@ -72,7 +79,25 @@ if [ -n "$SRC" ] && [ -f "$SRC/PROCESS.md" ]; then
 else
   MODE="remote"
   command -v curl >/dev/null 2>&1 || { echo "error: curl is required in remote mode." >&2; exit 1; }
-  VERSION="$(remote_fetch "VERSION" 2>/dev/null || echo "unknown")"
+  command -v tar >/dev/null 2>&1 || { echo "error: tar is required in remote mode." >&2; exit 1; }
+  TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/sdd-lite-install.XXXXXX")"
+  ARCHIVE="$TMP_ROOT/sdd-lite.tar.gz"
+  ARCHIVE_URL="https://codeload.github.com/persson86/sdd-lite/tar.gz/$REF"
+  if ! download_url "$ARCHIVE_URL" "sdd-lite archive ($REF)" > "$ARCHIVE"; then
+    exit 1
+  fi
+  if ! tar -xzf "$ARCHIVE" -C "$TMP_ROOT"; then
+    echo "error: failed to extract sdd-lite archive." >&2
+    exit 1
+  fi
+  PACKAGE_DIRS=("$TMP_ROOT"/sdd-lite-*)
+  if [ ! -d "${PACKAGE_DIRS[0]}" ]; then
+    echo "error: extracted archive did not contain sdd-lite package files." >&2
+    exit 1
+  fi
+  SRC="${PACKAGE_DIRS[0]}"
+  MODE="local"
+  VERSION="$(cat "$SRC/VERSION" 2>/dev/null || echo "unknown")"
 fi
 VERSION="${VERSION// /}"   # strip whitespace
 

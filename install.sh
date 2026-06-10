@@ -33,6 +33,31 @@ REF="${UP_REF:-main}"    # branch/tag from which to download in remote mode
 RAW="https://raw.githubusercontent.com/persson86/sdd-lite/$REF"
 VERSION=""               # filled after SRC is resolved
 
+remote_fetch() {
+  relpath="$1"
+  url="$RAW/$relpath"
+  attempt=1
+  max_attempts=3
+  status=0
+
+  while [ "$attempt" -le "$max_attempts" ]; do
+    if curl -fsSL --connect-timeout 10 --max-time 30 "$url"; then
+      return 0
+    else
+      status=$?
+    fi
+
+    if [ "$attempt" -lt "$max_attempts" ]; then
+      echo "warning: failed to download $relpath (attempt $attempt/$max_attempts); retrying..." >&2
+      sleep 1
+    fi
+    attempt=$((attempt + 1))
+  done
+
+  echo "error: failed to download $relpath from $url" >&2
+  return "$status"
+}
+
 # SRC = directory of the script when run from a local clone; empty when
 # piped (curl | bash), since BASH_SOURCE is undefined under `set -u`.
 SRC=""
@@ -47,7 +72,7 @@ if [ -n "$SRC" ] && [ -f "$SRC/PROCESS.md" ]; then
 else
   MODE="remote"
   command -v curl >/dev/null 2>&1 || { echo "error: curl is required in remote mode." >&2; exit 1; }
-  VERSION="$(curl -fsSL "$RAW/VERSION" 2>/dev/null || echo "unknown")"
+  VERSION="$(remote_fetch "VERSION" 2>/dev/null || echo "unknown")"
 fi
 VERSION="${VERSION// /}"   # strip whitespace
 
@@ -56,7 +81,7 @@ fetch() {
   if [ "$MODE" = "local" ]; then
     cat "$SRC/$1"
   else
-    curl -fsSL "$RAW/$1"
+    remote_fetch "$1"
   fi
 }
 
@@ -118,6 +143,29 @@ rewrite() {
     -e "s#\`PROCESS\.md\`#\`$PKG/PROCESS.md\`#g"
 }
 
+install_file() {
+  relpath="$1"
+  dest="$2"
+  transform="${3:-raw}"
+  tmp="$(mktemp "$dest.tmp.XXXXXX")"
+
+  if [ "$transform" = "rewrite" ]; then
+    if ! fetch "$relpath" | rewrite > "$tmp"; then
+      rm -f "$tmp"
+      echo "error: failed to install $relpath" >&2
+      exit 1
+    fi
+  else
+    if ! fetch "$relpath" > "$tmp"; then
+      rm -f "$tmp"
+      echo "error: failed to install $relpath" >&2
+      exit 1
+    fi
+  fi
+
+  mv "$tmp" "$dest"
+}
+
 # --- installation --------------------------------------------------
 mkdir -p \
   "$TARGET/.claude/agents" \
@@ -128,23 +176,23 @@ for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
 done
 
 for a in "${AGENTS[@]}"; do
-  fetch ".claude/agents/$a.md" | rewrite > "$TARGET/.claude/agents/$a.md"
+  install_file ".claude/agents/$a.md" "$TARGET/.claude/agents/$a.md" rewrite
   echo "  + .claude/agents/$a.md"
 done
 
-fetch "PROCESS.md" | rewrite > "$TARGET/$PKG/PROCESS.md"
+install_file "PROCESS.md" "$TARGET/$PKG/PROCESS.md" rewrite
 echo "  + $PKG/PROCESS.md"
 
-fetch "sdd-templates/proposal.md"        > "$TARGET/$PKG/sdd-templates/proposal.md"
-fetch "sdd-templates/spec.md"            > "$TARGET/$PKG/sdd-templates/spec.md"
-fetch "sdd-templates/design-brief.md"    > "$TARGET/$PKG/sdd-templates/design-brief.md"
-fetch "sdd-templates/run-manifest.md"    > "$TARGET/$PKG/sdd-templates/run-manifest.md"
-fetch "sdd-templates/build-report.md"    > "$TARGET/$PKG/sdd-templates/build-report.md"
-fetch "sdd-templates/build-qa-report.md"  > "$TARGET/$PKG/sdd-templates/build-qa-report.md"
+install_file "sdd-templates/proposal.md" "$TARGET/$PKG/sdd-templates/proposal.md"
+install_file "sdd-templates/spec.md" "$TARGET/$PKG/sdd-templates/spec.md"
+install_file "sdd-templates/design-brief.md" "$TARGET/$PKG/sdd-templates/design-brief.md"
+install_file "sdd-templates/run-manifest.md" "$TARGET/$PKG/sdd-templates/run-manifest.md"
+install_file "sdd-templates/build-report.md" "$TARGET/$PKG/sdd-templates/build-report.md"
+install_file "sdd-templates/build-qa-report.md" "$TARGET/$PKG/sdd-templates/build-qa-report.md"
 echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-report,build-qa-report}.md"
 
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-  fetch ".codex/skills/$s/SKILL.md" | rewrite > "$TARGET/.codex/skills/$s/SKILL.md"
+  install_file ".codex/skills/$s/SKILL.md" "$TARGET/.codex/skills/$s/SKILL.md" rewrite
   echo "  + .codex/skills/$s/SKILL.md"
 done
 

@@ -5,7 +5,7 @@
 # Copies the SDD-lite framework into a target project:
 #   - <target>/.claude/agents/*.md         (upstream: discovery, spec, spec-architect, spec-design, spec-qa)
 #   - <target>/.claude/agents/build*.md    (downstream: build, build-qa)
-#   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-qa)
+#   - ~/.codex/skills/*/                   (Codex skills — global; Codex only loads from ~/.codex/skills/)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
 #   - <target>/sdd-lite/UI_BASELINE.md (UI/UX quality baseline + default UI tokens)
 #   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
@@ -146,6 +146,7 @@ if [ ! -d "$TARGET/.git" ]; then
 fi
 
 AGENTS=(discovery spec spec-architect spec-design spec-qa build build-qa)
+CODEX_SKILLS_DIR="$HOME/.codex/skills"
 
 # --- collision check ---------------------------------------------------
 if [ "$FORCE" -eq 0 ]; then
@@ -154,8 +155,7 @@ if [ "$FORCE" -eq 0 ]; then
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
   for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-    [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
-    [ -f "$TARGET/.codex/skills/$s/agents/openai.yaml" ] && collisions+=(".codex/skills/$s/agents/openai.yaml")
+    [ -f "$CODEX_SKILLS_DIR/$s/SKILL.md" ] && collisions+=("~/.codex/skills/$s/SKILL.md")
   done
   for f in PROCESS.md UI_BASELINE.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
@@ -206,7 +206,7 @@ mkdir -p \
   "$TARGET/$PKG/sdd-templates" \
   "$TARGET/sdd-docs"
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-  mkdir -p "$TARGET/.codex/skills/$s/agents"
+  mkdir -p "$CODEX_SKILLS_DIR/$s/agents"
 done
 
 for a in "${AGENTS[@]}"; do
@@ -229,9 +229,9 @@ install_file "sdd-templates/build-qa-report.md" "$TARGET/$PKG/sdd-templates/buil
 echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-report,build-qa-report}.md"
 
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-  install_file ".codex/skills/$s/SKILL.md" "$TARGET/.codex/skills/$s/SKILL.md" rewrite
-  install_file ".codex/skills/$s/agents/openai.yaml" "$TARGET/.codex/skills/$s/agents/openai.yaml"
-  echo "  + .codex/skills/$s/{SKILL.md,agents/openai.yaml}"
+  install_file ".codex/skills/$s/SKILL.md" "$CODEX_SKILLS_DIR/$s/SKILL.md" rewrite
+  install_file ".codex/skills/$s/agents/openai.yaml" "$CODEX_SKILLS_DIR/$s/agents/openai.yaml"
+  echo "  + ~/.codex/skills/$s/{SKILL.md,agents/openai.yaml}"
 done
 
 # --- cleanup of files removed from the framework ------------------------
@@ -239,15 +239,27 @@ done
 # all features directly). Remove them from targets updated from <= 0.6.x.
 for obsolete in \
   ".claude/agents/build-frontend.md" \
-  ".claude/agents/build-backend.md" \
-  ".codex/skills/build-frontend/SKILL.md" \
-  ".codex/skills/build-backend/SKILL.md"; do
+  ".claude/agents/build-backend.md"; do
   if [ -f "$TARGET/$obsolete" ]; then
     rm -f "$TARGET/$obsolete"
     echo "  - $obsolete  (obsolete, removed)"
   fi
 done
-rmdir "$TARGET/.codex/skills/build-frontend" "$TARGET/.codex/skills/build-backend" 2>/dev/null || true
+# remove obsolete project-level skill dirs (used before v0.9.1)
+for obsolete_skill in build-frontend build-backend build build-qa discovery spec spec-architect spec-design spec-qa; do
+  rm -f "$TARGET/.codex/skills/$obsolete_skill/SKILL.md" \
+        "$TARGET/.codex/skills/$obsolete_skill/agents/openai.yaml" 2>/dev/null || true
+  rmdir "$TARGET/.codex/skills/$obsolete_skill/agents" \
+        "$TARGET/.codex/skills/$obsolete_skill" 2>/dev/null || true
+done
+rmdir "$TARGET/.codex/skills" "$TARGET/.codex" 2>/dev/null || true
+# remove obsolete global skills from pre-v0.9.1 manual copy
+for obsolete_global in build-frontend build-backend; do
+  rm -f "$CODEX_SKILLS_DIR/$obsolete_global/SKILL.md" \
+        "$CODEX_SKILLS_DIR/$obsolete_global/agents/openai.yaml" 2>/dev/null || true
+  rmdir "$CODEX_SKILLS_DIR/$obsolete_global/agents" \
+        "$CODEX_SKILLS_DIR/$obsolete_global" 2>/dev/null || true
+done
 
 printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
 echo "  + $PKG/.version  ($VERSION)"
@@ -256,4 +268,5 @@ echo "  + sdd-docs/  (your outputs go here)"
 
 echo
 echo "sdd-lite v$VERSION installed in: $TARGET"
-echo "Start with:  @discovery"
+echo "Codex skills installed in: $CODEX_SKILLS_DIR"
+echo "Restart Codex to activate the skills, then start with:  @discovery"

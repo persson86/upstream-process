@@ -40,8 +40,9 @@ stop and state exactly what is missing.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md` using `sdd-templates/spec.md`.
 5. If any feature includes a user interface, invoke the `spec-design` skill passing
    the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes
-   `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`, and defines project-specific
-   UI tokens such as primary color; record the path and baseline reference in
+   `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`, and defines project UI tokens —
+   confirming the baseline's Default UI Tokens or overriding them per the
+   proposal's Visual Reference; record the path and baseline reference in
    the spec's Design Brief section.
 6. Invoke the `spec-qa` skill, passing the `<slug>` and only the artifacts
    (`YYYY-MM-DD-proposal.md` + draft `YYYY-MM-DD-spec.md`). The `spec-qa`

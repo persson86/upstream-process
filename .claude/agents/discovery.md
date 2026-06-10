@@ -35,8 +35,10 @@ When there is an explicit command, write `sdd-docs/<slug>/YYYY-MM-DD-proposal.md
 - Key screens and interaction moments: what does the user see and do in the core flow?
 - Visual and experiential context: tone, audience familiarity with similar tools.
 - Brand identity when UI is present: ask whether there is a logo, existing brand color,
-  or primary color preference. Record whatever the user provides — hex, color name,
-  reference product, or "no preference" — in the Visual Reference section of the proposal.
+  or primary color preference, mentioning that sdd-lite has a default theme
+  (`UI_BASELINE.md` Default UI Tokens) used when there is no preference. Record whatever
+  the user provides — hex, color name, reference product, or "use default theme" — in
+  the Visual Reference section of the proposal.
 
 ## Out of Scope
 

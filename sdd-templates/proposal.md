@@ -30,7 +30,7 @@ Explain the recommended direction, the smallest useful scope, and the expected o
 _Present when any feature includes a user interface. Omit for API-only proposals._
 
 - **Brand reference:** <logo URL/name, existing product, or "none">
-- **Primary color:** <hex or description, e.g. "#1A73E8 (Google Blue)"; or "derive from context">
+- **Primary color:** <hex or description; or "use default theme" (`UI_BASELINE.md` Default UI Tokens)>
 - **Tone / feel:** <minimal, bold, warm, data-dense, editorial, utilitarian>
 - **Notes:** <any additional brand constraints, dark/light preference, or "no preference">
 

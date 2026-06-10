@@ -27,9 +27,11 @@
 
 ## Project UI Tokens
 
-Project-specific values. These may differ by product, but must preserve the
-accessibility and usability rules in `sdd-lite/UI_BASELINE.md`.
+Start from the Default UI Tokens in `sdd-lite/UI_BASELINE.md`. State per token
+group whether the project confirms the default or overrides it. Overrides must
+preserve the accessibility and usability rules in `sdd-lite/UI_BASELINE.md`.
 
+- **Token source:** <baseline defaults | overridden per Visual Reference — list overrides>
 - **Primary:** <hex/color token and usage>
 - **Background:** <hex/color token>
 - **Surface:** <hex/color token>
@@ -97,6 +99,7 @@ accessibility and usability rules in `sdd-lite/UI_BASELINE.md`.
 ## Writing And Microcopy
 
 - **Language:** <product language and consistency rule>
+- **Tone calibration:** <key contexts and tone, per the Voice And Tone table in `sdd-lite/UI_BASELINE.md`>
 - **CTA style:** <verb/result pattern for primary actions>
 - **Error style:** <tone and next-step pattern>
 - **Empty-state style:** <what empty states should say and offer>

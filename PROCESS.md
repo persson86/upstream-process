@@ -16,10 +16,12 @@ The workflow has **two regimes**, with the dividing line at `spec.md`:
 Additional principles:
 
 - Self-contained project: no inheritance from other frameworks; anything useful from outside is copied in.
-- UI work uses a product-neutral `UI_BASELINE.md`: every project may define its
-  own visual identity, including primary color, while keeping accessibility,
-  state coverage, responsive behavior, usable writing, and restrained motion as
-  minimum requirements.
+- UI work uses `UI_BASELINE.md`: a quality baseline plus default UI tokens
+  (colors, typography, spacing, motion) that apply when the user states no visual
+  preference. During discovery/spec every project may override its visual
+  identity, including primary color, while keeping accessibility, state coverage,
+  responsive behavior, usable writing, and restrained motion as minimum
+  requirements.
 - Each POC lives in `sdd-docs/<slug>/` and contains `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-design-brief.md` (when UI features are present), `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`, and `YYYY-MM-DD-build-qa-report.md`.
 - `discovery` writes the proposal only when the user explicitly asks.
 - `spec` owns the `spec.md` artifact and decides, by gap, between asking the user, calling an isolated lens, or assuming and recording the assumption.
@@ -63,7 +65,7 @@ Operation of `@spec`:
    - call `spec-architect` when technical feasibility requires reading code, stack, or implementation constraints;
    - assume and signal when the assumption is small, reversible, and does not block the spec.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
-5. If any feature includes a user interface, call `spec-design` passing the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` without asking the user questions, and defines project-specific UI tokens such as primary color; the spec references both the design brief and baseline in its Design Brief section.
+5. If any feature includes a user interface, call `spec-design` passing the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` without asking the user questions, and defines project UI tokens — confirming the baseline's Default UI Tokens or overriding them per the proposal's Visual Reference; the spec references both the design brief and baseline in its Design Brief section.
 6. Call `spec-qa` passing only `YYYY-MM-DD-proposal.md` and the `YYYY-MM-DD-spec.md` draft. `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
 7. Read `YYYY-MM-DD-qa-verdict.md` and copy the verdict verbatim into the fixed QA-gate section of the spec.
 8. Finalize only if the gate permits.
@@ -201,7 +203,7 @@ Never mark browser test as complete if the browser was not actually exercised.
 1. Invoke `@discovery` with a small idea and define the `<slug>`.
 2. Confirm it converses first and only writes `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` when the user asks.
 3. Invoke `@spec`.
-4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features. If any feature includes a UI, confirm `spec-design` read `UI_BASELINE.md`, wrote `YYYY-MM-DD-design-brief.md`, defined project UI tokens such as primary color, and the spec references both files.
+4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features. If any feature includes a UI, confirm `spec-design` read `UI_BASELINE.md`, wrote `YYYY-MM-DD-design-brief.md`, defined project UI tokens (confirming the defaults or recording overrides), and the spec references both files.
 5. Confirm `spec-qa` wrote `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, the verdict is copied verbatim into the spec, and `FAIL` blocks finalization.
 6. Confirm that if a feature crosses the FE/BE boundary without `Integration Contract`, `spec-qa` returns `FAIL`.
 7. Invoke `@build` with the approved spec.

@@ -30,7 +30,7 @@ If the proposal does not exist or is too incomplete to generate acceptance crite
    - spawn `spec-architect` when technical viability requires reading code, stack, or concrete constraints;
    - assume and signal when the assumption is small, reversible, and does not block the spec.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md` using `sdd-templates/spec.md`.
-5. If any feature includes a user interface, spawn `spec-design` passing the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`, and defines project-specific UI tokens such as primary color; record the path and baseline reference in the spec's Design Brief section.
+5. If any feature includes a user interface, spawn `spec-design` passing the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`, and defines project UI tokens — confirming the baseline's Default UI Tokens or overriding them per the proposal's Visual Reference; record the path and baseline reference in the spec's Design Brief section.
 6. Spawn `spec-qa`, passing the `<slug>` and only the artifacts (`YYYY-MM-DD-proposal.md` + draft of `YYYY-MM-DD-spec.md`). The `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
 7. Read `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` and paste the verdict verbatim into the `QA-Gate` section of the spec, referencing the file as the source of truth.
 8. Finalize only if the gate permits.

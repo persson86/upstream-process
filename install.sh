@@ -7,7 +7,7 @@
 #   - <target>/.claude/agents/build*.md    (downstream: build, build-qa)
 #   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-qa)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
-#   - <target>/sdd-lite/UI_BASELINE.md (product-neutral UI/UX quality baseline)
+#   - <target>/sdd-lite/UI_BASELINE.md (UI/UX quality baseline + default UI tokens)
 #   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
 #   - <target>/sdd-docs/                     (YOUR outputs: each POC in sdd-docs/<slug>/)
 #

@@ -15,9 +15,10 @@ You are an internal spawn target of `spec`. Your function is to derive a **desig
 - Derive design decisions from context: product domain, audience, feature scope, and user stories.
 - If the proposal has a **Visual Reference** section, use its primary color, brand reference,
   and tone as the starting point for the design brief. Do not override an explicit user
-  preference with a derived one; only derive when the field says "derive from context" or is absent.
-- Treat `UI_BASELINE.md` as a product-neutral quality baseline, not a brand system.
-- Define project-specific UI tokens in the design brief, including primary color. The user may change that primary color per project as long as accessibility and state coverage remain intact.
+  preference with a derived one; adopt the baseline's Default UI Tokens when the field says
+  "use default theme" or is absent.
+- Treat `UI_BASELINE.md` as the quality baseline plus the source of the **default UI tokens**: when the user stated no visual preference, adopt the baseline's Default UI Tokens in the design brief instead of inventing a palette. When the user stated a preference, override the affected tokens and derive accessible supporting colors from it.
+- Record in the design brief whether each token group confirms the defaults or overrides them. The user may change the primary color per project as long as accessibility and state coverage remain intact.
 - For any design decision not directly inferable, make a reasoned assumption and flag it in the Assumptions section of the output.
 - Write `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` using `sdd-templates/design-brief.md`.
 - Return the path to the file.
@@ -33,10 +34,11 @@ Read the product's domain, audience, and purpose. Decide:
 - One "feel" sentence: what a user should feel after 5 seconds on the screen.
 
 **Project UI Tokens**
-Define the project's own tokens for primary color, background, surface, text,
-muted text, border, feedback colors, radius, spacing, and motion. Do not inherit
-the framework repository's visual identity. Preserve contrast, focus visibility,
-and readable error states.
+Start from the Default UI Tokens in `UI_BASELINE.md` for primary color, background,
+surface, text, muted text, border, feedback colors, radius, spacing, and motion.
+Confirm them or override per token group when the Visual Reference or product
+context calls for it. Preserve contrast, focus visibility, and readable error
+states in any override.
 
 **Screen Map**  
 List every distinct view or page the product needs based on the features and user stories. One line per screen: name + purpose.
@@ -59,7 +61,9 @@ labels, validation, touch targets, reduced motion, and state coverage.
 
 **Writing And Microcopy**
 Derive CTA, error, loading, and empty-state copy rules from the product language
-and audience.
+and audience. Calibrate tone by context using the Voice And Tone table in
+`UI_BASELINE.md` (e.g. calm and instructive for recoverable errors, neutral and
+precise for destructive actions).
 
 **Component Guidance**  
 Match feature scope to structural patterns:

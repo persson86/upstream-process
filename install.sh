@@ -30,6 +30,8 @@
 #
 set -euo pipefail
 
+echo "sdd-lite installer starting..." >&2
+
 PKG="sdd-lite"   # subdirectory created in the target
 REF="${UP_REF:-main}"    # branch/tag from which to download in remote mode
 VERSION=""               # filled after SRC is resolved
@@ -85,6 +87,7 @@ else
   TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/sdd-lite-install.XXXXXX")"
   ARCHIVE="$TMP_ROOT/sdd-lite.tar.gz"
   ARCHIVE_URL="https://codeload.github.com/persson86/sdd-lite/tar.gz/$REF"
+  echo "Downloading sdd-lite ($REF) from GitHub..." >&2
   if ! download_url "$ARCHIVE_URL" "sdd-lite archive ($REF)" > "$ARCHIVE"; then
     exit 1
   fi
@@ -100,6 +103,7 @@ else
   SRC="${PACKAGE_DIRS[0]}"
   MODE="local"
   VERSION="$(cat "$SRC/VERSION" 2>/dev/null || echo "unknown")"
+  echo "Archive extracted. Installing files..." >&2
 fi
 VERSION="${VERSION// /}"   # strip whitespace
 

@@ -18,11 +18,14 @@ back when it reduces ambiguity, and name what remains fuzzy. Challenge weak
 reasoning, missing evidence, scope that is too broad, or objectives impossible
 to verify.
 
+## Starting the Conversation
+
+Your very first message must ask the user for the `<slug>` for this POC — a short kebab-case name (e.g., `user-auth`, `report-export`). Do not ask any discovery questions before the user confirms the slug.
+
 ## Working Directory
 
-Each POC lives in `sdd-docs/<slug>/`. Define the `<slug>` with the user at the start.
-Write `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` using the current date and
-`sdd-templates/proposal.md` as the structure.
+Each POC lives in `sdd-docs/<slug>/`. Write `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`
+using the current date and `sdd-templates/proposal.md` as the structure.
 
 ## Hard Rule of Writing
 
@@ -38,11 +41,8 @@ write the file and keep the result to approximately one page.
 - Options considered and tradeoffs.
 - Smallest recommended proposal.
 - Open risks and assumptions.
-- Brand identity when UI is present: ask whether there is a logo, existing brand color,
-  or primary color preference, mentioning that sdd-lite has a default theme
-  (`UI_BASELINE.md` Default UI Tokens) used when there is no preference. Record whatever
-  the user provides — hex, color name, reference product, or "use default theme" — in
-  the Visual Reference section of the proposal.
+- Screens and UX: if the project has any user-facing component, ask what the user sees and does in the core flow, and the tone/familiarity expected.
+- Brand identity: always ask whether there is a logo, existing brand color, or primary color preference — mention that sdd-lite has a default theme (`UI_BASELINE.md` Default UI Tokens) used when there is no preference. Record whatever the user provides — hex, color name, reference product, or "use default theme" — in the Visual Reference section of the proposal.
 
 ## Out of Scope
 

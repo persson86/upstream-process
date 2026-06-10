@@ -1,0 +1,4 @@
+interface:
+  display_name: "Discovery"
+  short_description: "Turn a raw idea into proposal.md via Socratic dialogue"
+  default_prompt: "I have a new idea I'd like to explore."

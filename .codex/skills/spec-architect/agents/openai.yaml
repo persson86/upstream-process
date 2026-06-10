@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Architect"
+  short_description: "Technical feasibility review for the spec"
+  default_prompt: "Review the technical feasibility of this spec."

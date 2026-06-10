@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Design"
+  short_description: "Derive visual direction and screen map into design-brief.md"
+  default_prompt: "Create a design brief from this proposal and spec."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build"
+  short_description: "Implement all features from the approved spec.md"
+  default_prompt: "Build the approved spec."

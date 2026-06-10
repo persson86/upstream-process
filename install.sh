@@ -155,6 +155,7 @@ if [ "$FORCE" -eq 0 ]; then
   done
   for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
+    [ -f "$TARGET/.codex/skills/$s/agents/openai.yaml" ] && collisions+=(".codex/skills/$s/agents/openai.yaml")
   done
   for f in PROCESS.md UI_BASELINE.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
@@ -205,7 +206,7 @@ mkdir -p \
   "$TARGET/$PKG/sdd-templates" \
   "$TARGET/sdd-docs"
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-  mkdir -p "$TARGET/.codex/skills/$s"
+  mkdir -p "$TARGET/.codex/skills/$s/agents"
 done
 
 for a in "${AGENTS[@]}"; do
@@ -229,7 +230,8 @@ echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-repo
 
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
   install_file ".codex/skills/$s/SKILL.md" "$TARGET/.codex/skills/$s/SKILL.md" rewrite
-  echo "  + .codex/skills/$s/SKILL.md"
+  install_file ".codex/skills/$s/agents/openai.yaml" "$TARGET/.codex/skills/$s/agents/openai.yaml"
+  echo "  + .codex/skills/$s/{SKILL.md,agents/openai.yaml}"
 done
 
 # --- cleanup of files removed from the framework ------------------------

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build QA"
+  short_description: "Verify the build against spec.md and run-manifest.md"
+  default_prompt: "Run QA on the delivered build."

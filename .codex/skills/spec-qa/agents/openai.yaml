@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec QA"
+  short_description: "QA gate: review spec.md and write qa-verdict.md"
+  default_prompt: "Run the QA gate on this spec."

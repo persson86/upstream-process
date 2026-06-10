@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec"
+  short_description: "Transform proposal.md into an implementable spec.md"
+  default_prompt: "Turn my proposal into a spec."

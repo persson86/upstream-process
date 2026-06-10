@@ -16,6 +16,10 @@ The workflow has **two regimes**, with the dividing line at `spec.md`:
 Additional principles:
 
 - Self-contained project: no inheritance from other frameworks; anything useful from outside is copied in.
+- UI work uses a product-neutral `UI_BASELINE.md`: every project may define its
+  own visual identity, including primary color, while keeping accessibility,
+  state coverage, responsive behavior, usable writing, and restrained motion as
+  minimum requirements.
 - Each POC lives in `sdd-docs/<slug>/` and contains `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-design-brief.md` (when UI features are present), `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`, and `YYYY-MM-DD-build-qa-report.md`.
 - `discovery` writes the proposal only when the user explicitly asks.
 - `spec` owns the `spec.md` artifact and decides, by gap, between asking the user, calling an isolated lens, or assuming and recording the assumption.
@@ -59,7 +63,7 @@ Operation of `@spec`:
    - call `spec-architect` when technical feasibility requires reading code, stack, or implementation constraints;
    - assume and signal when the assumption is small, reversible, and does not block the spec.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
-5. If any feature includes a user interface, call `spec-design` passing the `<slug>` and the draft spec path. It writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` without asking the user questions; the spec references the file in its Design Brief section.
+5. If any feature includes a user interface, call `spec-design` passing the `<slug>` and the draft spec path. It reads `UI_BASELINE.md`, writes `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` without asking the user questions, and defines project-specific UI tokens such as primary color; the spec references both the design brief and baseline in its Design Brief section.
 6. Call `spec-qa` passing only `YYYY-MM-DD-proposal.md` and the `YYYY-MM-DD-spec.md` draft. `spec-qa` writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
 7. Read `YYYY-MM-DD-qa-verdict.md` and copy the verdict verbatim into the fixed QA-gate section of the spec.
 8. Finalize only if the gate permits.
@@ -69,7 +73,7 @@ Operation of `@spec`:
 - `@spec` can spawn only `spec-architect`, `spec-design`, and `spec-qa`.
 - `@build` spawns no agents; it implements all features directly.
 - `spec-architect` is optional and used only for technical feasibility depending on reading code, stack, or concrete constraints.
-- `spec-design` is used when any feature includes a user interface; it writes `design-brief.md` without asking the user questions.
+- `spec-design` is used when any feature includes a user interface; it reads `UI_BASELINE.md` and writes `design-brief.md` without asking the user questions.
 - `spec-qa` is mandatory before finalizing any `spec.md`.
 - `build-qa` is triggered by the user in a new session after `build` delivers; it runs fresh with the allowlist `{spec.md, run-manifest.md}`.
 - Helpers do not own `spec.md`. `spec-architect` returns findings for `@spec` to incorporate; `spec-design` and `spec-qa` write their own artifacts (`design-brief.md`, `qa-verdict.md`).
@@ -100,7 +104,8 @@ Objective: transform the approved `spec.md` into delivered implementation,
 Operation of `@build`:
 
 1. Read the spec. Extract numbered features, acceptance criteria, and the
-   `Integration Contract` section.
+   `Integration Contract` section. If the spec references a design brief, read
+   that brief and `UI_BASELINE.md`; together they guide UI work.
 2. Validate input: if any feature lacks testable criteria, or a feature crossing
    the FE/BE boundary or an external integration lacks a contract, escalate
    `missing-spec` and stop — do not invent definition (that is Spec's job).
@@ -113,6 +118,13 @@ Operation of `@build`:
 During the run, `@build` appends timestamped lines to
 `sdd-docs/<slug>/build-progress.log` so the user can monitor the autonomous
 phase in real time (e.g. `tail -f build-progress.log`).
+
+For UI features, `build` follows project-specific choices from the design brief
+(such as primary color, typography, density, layout, and component direction)
+while treating `UI_BASELINE.md` as the minimum bar for accessibility, state
+coverage, responsive behavior, writing quality, and motion. If they conflict,
+the baseline wins for accessibility and usability; the design brief wins for
+visual identity.
 
 `build` is the only entity that writes code and `build-report.md` (audit,
 not seen by build-qa). Creator/verifier isolation preserved.
@@ -127,12 +139,17 @@ new session after `build` delivers (creator/verifier isolation).
 Operation:
 
 1. Read `sdd-docs/<slug>/YYYY-MM-DD-spec.md` (expected) and
-   `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` (execution). Never `build-report.md`.
+   `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` (execution). If the spec
+   references UI, also read the referenced `design-brief.md` and `UI_BASELINE.md`
+   as expected UI behavior. Never read `build-report.md`.
 2. Extract **all** acceptance criteria from **all** features.
-3. Locate/start the app per run-manifest, without permanent changes.
-4. Run the Browser Capability Check (subsection below).
-5. Navigate as a real user and compare each criterion against observed behavior.
-6. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` with coverage table and
+3. For UI features, add observable checks from the design brief and baseline:
+   labels, focus, keyboard behavior, readable colors, responsive layout,
+   loading/error/empty/disabled states, text fit, and token consistency.
+4. Locate/start the app per run-manifest, without permanent changes.
+5. Run the Browser Capability Check (subsection below).
+6. Navigate as a real user and compare each criterion against observed behavior.
+7. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` with coverage table and
    findings `DQ-NN`.
 
 Rules:
@@ -170,6 +187,7 @@ Never mark browser test as complete if the browser was not actually exercised.
 
 ## Artifacts
 
+- UI baseline: framework file installed at `sdd-lite/UI_BASELINE.md` in target projects.
 - Directory for each POC: `sdd-docs/<slug>/` with `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-design-brief.md` (when UI features are present), `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`, and `build-progress.log`.
 - Build-QA report: `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 - Templates: `sdd-templates/proposal.md`, `sdd-templates/spec.md`, `sdd-templates/design-brief.md`, `sdd-templates/run-manifest.md`, `sdd-templates/build-report.md`, `sdd-templates/build-qa-report.md`.
@@ -183,10 +201,10 @@ Never mark browser test as complete if the browser was not actually exercised.
 1. Invoke `@discovery` with a small idea and define the `<slug>`.
 2. Confirm it converses first and only writes `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` when the user asks.
 3. Invoke `@spec`.
-4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features. If any feature includes a UI, confirm `spec-design` wrote `YYYY-MM-DD-design-brief.md` and the spec references it.
+4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features. If any feature includes a UI, confirm `spec-design` read `UI_BASELINE.md`, wrote `YYYY-MM-DD-design-brief.md`, defined project UI tokens such as primary color, and the spec references both files.
 5. Confirm `spec-qa` wrote `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, the verdict is copied verbatim into the spec, and `FAIL` blocks finalization.
 6. Confirm that if a feature crosses the FE/BE boundary without `Integration Contract`, `spec-qa` returns `FAIL`.
 7. Invoke `@build` with the approved spec.
-8. Confirm it implements all features directly without spawning agents, derives the contract from the spec, writes `run-manifest.md`, and marks `DELIVERED` in `build-report.md`.
+8. Confirm it implements all features directly without spawning agents, derives the contract from the spec, follows `design-brief.md` + `UI_BASELINE.md` for UI features, writes `run-manifest.md`, and marks `DELIVERED` in `build-report.md`.
 9. Confirm that a spec lacking testable criteria or an `Integration Contract` for a cross-boundary feature makes `@build` mark `ESCALATED` with trigger `missing-spec`.
-10. Invoke `@build-qa` in a new session; confirm it reads only `{spec.md, run-manifest.md}` and that `PASS` requires full coverage of all acceptance criteria.
+10. Invoke `@build-qa` in a new session; confirm it reads only `{spec.md, run-manifest.md}` plus `{design-brief.md, sdd-lite/UI_BASELINE.md}` when UI is referenced, and that `PASS` requires full coverage of all acceptance criteria and observable UI baseline checks.

@@ -42,7 +42,7 @@ Use `date +%H:%M:%S` to get the timestamp. Append with `>>`, never overwrite.
 
 ## Work Loop
 
-1. Read the spec. Extract numbered features, acceptance criteria, and the `Integration Contract` section. If the spec's Design Brief section references a `design-brief.md`, read it — it guides all UI work.
+1. Read the spec. Extract numbered features, acceptance criteria, and the `Integration Contract` section. If the spec's Design Brief section references a `design-brief.md`, read it and `UI_BASELINE.md` — together they guide all UI work.
 2. Validate input: if any feature lacks testable criteria, or a cross-boundary feature lacks a contract, **escalate `missing-spec`** and stop.
 3. Derive the contract from the spec's `Integration Contract` section (do not invent). Record it in `build-report.md`. Implement all features directly. Expose **exactly** the contract's routes, shapes, types, and error states — no unagreed surface.
 4. Integrate, resolve seams, and run what works (`build`/`lint`/`test`). Write `run-manifest.md` with how to run and test data.
@@ -50,7 +50,17 @@ Use `date +%H:%M:%S` to get the timestamp. Append with `>>`, never overwrite.
 
 ## Visual Quality
 
-When any feature includes a user interface, follow the direction in the `design-brief.md` referenced by the spec (tone, screen map, interaction patterns, component guidance). When the `frontend-design` skill is available in the environment, use it to guide the UI construction. When unavailable, follow its principles inline: distinctive typography, coherent aesthetic direction, purposeful motion, avoiding "AI slop" (Inter/Arial/generic purple gradient). Combine implementation complexity with aesthetic vision.
+When any feature includes a user interface, follow the direction in the
+`design-brief.md` referenced by the spec and the minimum rules in `UI_BASELINE.md`.
+The design brief owns project-specific choices such as primary color, typography,
+density, and component direction. The baseline owns accessibility, usable states,
+responsive behavior, writing quality, and restrained motion. If they conflict, the
+baseline wins for accessibility and usability; the design brief wins for visual
+identity. When the `frontend-design` skill is available in the environment, use it
+to guide the UI construction while preserving this contract. When unavailable,
+follow these principles inline: coherent typography, accessible color contrast,
+purposeful motion, complete interaction states, and a visual direction suited to
+the product rather than a generic template.
 
 ## Out Of Scope
 

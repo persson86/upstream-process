@@ -66,8 +66,10 @@ If no feature crosses boundary, write: `N/A — no FE/BE boundary or external in
 _Present only when any feature includes a user interface. Omit for API-only specs._
 
 - **File:** `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`
+- **UI Baseline:** `sdd-lite/UI_BASELINE.md`
 - **Tone:** <filled in after spec-design runs>
 - **Screens:** <N screens mapped>
+- **Primary color / visual identity:** <project-specific; may be changed per project>
 
 > Do not inline the design brief content here — reference the file. `build` reads it directly.
 

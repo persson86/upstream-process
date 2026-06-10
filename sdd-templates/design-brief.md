@@ -3,18 +3,43 @@
 ## Origin
 
 - Spec: `spec.md`
+- UI Baseline: `sdd-lite/UI_BASELINE.md`
 - Date:
 - Features covered:
+
+## Product Context
+
+- Audience:
+- Primary job:
+- Usage context:
 
 ## Visual Direction
 
 **Tone:** <minimal | bold | warm | data-dense | editorial | utilitarian>
 
-**Color approach:** <light/dark default, accent rationale, neutral palette>
+**Color approach:** <light/dark default, project primary color, accent rationale, neutral palette>
 
 **Typography style:** <precise/technical | readable/friendly | display-forward>
 
+**Density:** <compact | balanced | spacious>
+
 **Feel goal:** <One sentence: what the user should feel after 5 seconds on the screen.>
+
+## Project UI Tokens
+
+Project-specific values. These may differ by product, but must preserve the
+accessibility and usability rules in `sdd-lite/UI_BASELINE.md`.
+
+- **Primary:** <hex/color token and usage>
+- **Background:** <hex/color token>
+- **Surface:** <hex/color token>
+- **Text:** <hex/color token>
+- **Muted text:** <hex/color token>
+- **Border:** <hex/color token>
+- **Feedback:** success <token>, warning <token>, error <token>, info <token>
+- **Radius:** <small/medium/large scale>
+- **Spacing:** <spacing scale or rhythm>
+- **Motion:** <fast/normal/slow duration choices>
 
 ## Screen Map
 
@@ -46,6 +71,8 @@
 
 **Empty and loading states:** <pattern description>
 
+**Destructive actions:** <confirmation, copy, undo/recovery behavior>
+
 ## Component Guidance
 
 **Data display:** <table | cards | list — and why>
@@ -55,6 +82,24 @@
 **Actions:** <primary CTA placement, destructive confirmation approach>
 
 **Layout:** <single column | split panel | dashboard grid — and why>
+
+**Responsive behavior:** <mobile/tablet/desktop behavior and constraints>
+
+## Accessibility And UI Quality
+
+- **Contrast:** <how primary/text/surface choices satisfy contrast>
+- **Keyboard/focus:** <focus order, modal behavior, shortcuts if any>
+- **Labels and errors:** <field labels, required fields, validation copy>
+- **Touch targets:** <target sizing and mobile spacing>
+- **Reduced motion:** <how motion is reduced or removed>
+- **State coverage:** <default, hover, focus, loading, success, error, disabled, empty>
+
+## Writing And Microcopy
+
+- **Language:** <product language and consistency rule>
+- **CTA style:** <verb/result pattern for primary actions>
+- **Error style:** <tone and next-step pattern>
+- **Empty-state style:** <what empty states should say and offer>
 
 ## Assumptions
 

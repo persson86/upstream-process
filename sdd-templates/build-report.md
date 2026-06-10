@@ -27,6 +27,15 @@
 | --- | --- | --- |
 | F1 | <files> | <note> |
 
+## UI Implementation Notes
+
+_Present when UI features exist. Omit for API-only builds._
+
+- Design brief followed: `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`
+- UI baseline followed: `sdd-lite/UI_BASELINE.md`
+- Project primary color / tokens applied:
+- Accessibility and state coverage notes:
+
 ## Final Status
 
 - Status: DELIVERED | ESCALATED

@@ -7,14 +7,16 @@
 #   - <target>/.claude/agents/build*.md    (downstream: build, build-qa)
 #   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-qa)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
+#   - <target>/sdd-lite/UI_BASELINE.md (product-neutral UI/UX quality baseline)
 #   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
 #   - <target>/sdd-docs/                     (YOUR outputs: each POC in sdd-docs/<slug>/)
 #
 # Outputs live in sdd-docs/ at the root of the project (separated from the framework) and
 # resolve the same way standalone or installed, without rewrite. Only the path
-# of sdd-templates/ from the agents is rewritten to sdd-lite/sdd-templates/ (the
-# framework content lives under sdd-lite/ in the target). The rewrite is
-# idempotent: does not re-prefix paths that already have the prefix.
+# of sdd-templates/, PROCESS.md, and UI_BASELINE.md from the agents is rewritten
+# to the sdd-lite/ package prefix (the framework content lives under sdd-lite/
+# in the target). The rewrite is idempotent: does not re-prefix paths that
+# already have the prefix.
 #
 # Usage (local, from a clone):
 #   ./install.sh [TARGET_DIR] [--force]
@@ -106,7 +108,8 @@ fetch() {
   if [ "$MODE" = "local" ]; then
     cat "$SRC/$1"
   else
-    remote_fetch "$1"
+    echo "error: remote package was not resolved before fetching $1." >&2
+    exit 1
   fi
 }
 
@@ -149,7 +152,7 @@ if [ "$FORCE" -eq 0 ]; then
   for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
-  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
+  for f in PROCESS.md UI_BASELINE.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -159,13 +162,14 @@ if [ "$FORCE" -eq 0 ]; then
   fi
 fi
 
-# rewrites `sdd-templates/ (preceded by backtick or space) and `PROCESS.md`
-# (delimited by backticks) to the package prefix. Paths already prefixed
-# (preceded by /) do not match (idempotent).
+# rewrites `sdd-templates/ (preceded by backtick or space), `PROCESS.md`, and
+# `UI_BASELINE.md` (delimited by backticks) to the package prefix. Paths already
+# prefixed (preceded by /) do not match (idempotent).
 rewrite() {
   sed \
     -e "s#\([\` ]\)sdd-templates/#\1$PKG/sdd-templates/#g" \
-    -e "s#\`PROCESS\.md\`#\`$PKG/PROCESS.md\`#g"
+    -e "s#\`PROCESS\.md\`#\`$PKG/PROCESS.md\`#g" \
+    -e "s#\`UI_BASELINE\.md\`#\`$PKG/UI_BASELINE.md\`#g"
 }
 
 install_file() {
@@ -207,6 +211,9 @@ done
 
 install_file "PROCESS.md" "$TARGET/$PKG/PROCESS.md" rewrite
 echo "  + $PKG/PROCESS.md"
+
+install_file "UI_BASELINE.md" "$TARGET/$PKG/UI_BASELINE.md"
+echo "  + $PKG/UI_BASELINE.md"
 
 install_file "sdd-templates/proposal.md" "$TARGET/$PKG/sdd-templates/proposal.md"
 install_file "sdd-templates/spec.md" "$TARGET/$PKG/sdd-templates/spec.md"

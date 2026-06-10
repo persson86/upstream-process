@@ -17,6 +17,11 @@ You activate **4 agents** in sequence — helpers are spawned automatically when
 
 The `@spec` spawns helpers internally (`spec-architect`, `spec-design`, `spec-qa`) as needed — you don't need to invoke them.
 
+For UI work, sdd-lite includes a product-neutral [`UI_BASELINE.md`](UI_BASELINE.md).
+Each project can define its own visual identity in `design-brief.md`, including
+the primary color, while keeping accessibility, state coverage, responsive behavior,
+writing quality, and restrained motion as the minimum bar.
+
 Process details: [`PROCESS.md`](PROCESS.md).
 
 ## Installation

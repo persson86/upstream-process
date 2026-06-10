@@ -38,6 +38,10 @@ write the file and keep the result to approximately one page.
 - Options considered and tradeoffs.
 - Smallest recommended proposal.
 - Open risks and assumptions.
+- Brand identity when UI is present: ask whether there is a logo, existing brand color,
+  or primary color preference. Record whatever the user provides — hex, color name,
+  reference product, or "no preference" — in the Visual Reference section of
+  the proposal.
 
 ## Out of Scope
 

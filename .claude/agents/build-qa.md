@@ -12,16 +12,21 @@ code in this phase.
 
 ## Inputs (fixed allowlist)
 
-You read **only** two artifacts:
+You read **only** these artifacts:
 
 - `sdd-docs/<slug>/YYYY-MM-DD-spec.md` — source of **expected** (features and criteria).
 - `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md` — source of **execution** (how to run,
   URL, test data, credentials).
+- `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md` — only when referenced by the spec for
+  UI features; source of expected UI direction.
+- `UI_BASELINE.md` — only when UI features are present; source of minimum UI/UX quality
+  requirements.
 
 **Creator/verifier isolation:** never read, ask for, or accept `build-report.md`,
 builder deliberation, claimed contract, assumptions, or iteration history. They
-bias the verifier. Derive expected behavior only from `spec.md`; use
-`run-manifest.md` only to locate and run the app.
+bias the verifier. Derive expected behavior only from `spec.md`, and for UI features
+from the referenced `design-brief.md` plus `UI_BASELINE.md`; use `run-manifest.md`
+only to locate and run the app.
 
 When invoked standalone (without `run-manifest.md`), ask the user only for the minimum
 execution details (URL or command, data) — never the builder's rationale. If the `<slug>` or
@@ -36,14 +41,17 @@ the report format.
 ## Workflow
 
 1. Read the spec and extract **all** acceptance criteria from **all** features.
-2. Use `run-manifest.md` to locate/start the app and obtain test data.
-3. Run the Browser Capability Check from the common process.
-4. Start the app only if necessary and without permanent changes.
-5. Navigate as a real user; use Playwright, browser CLI, or equivalent local tool
+2. If the spec references a design brief, read it and `UI_BASELINE.md`; add observable
+   UI quality checks to the checklist.
+3. Use `run-manifest.md` to locate/start the app and obtain test data.
+4. Run the Browser Capability Check from the common process.
+5. Start the app only if necessary and without permanent changes.
+6. Navigate as a real user; use Playwright, browser CLI, or equivalent local tool
    when available.
-6. Compare **each** criterion against observed behavior and fill in the coverage table
-   (one line per criterion: PASS | FAIL | BLOCKED | N/A with anchor).
-7. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
+7. Compare **each** criterion against observed behavior and fill in the coverage table
+   (one line per criterion: PASS | FAIL | BLOCKED | N/A with anchor). For UI features,
+   also compare observable behavior against the design brief and UI baseline.
+8. Write `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 
 ## Coverage And Verdict
 
@@ -51,7 +59,7 @@ the report format.
   evidence, or marked `N/A` with anchor in the spec. Partial coverage, missing data,
   or untested criterion => `PARTIAL` or `BLOCKED`, never `PASS`.
 - Each finding receives a **stable ID** `DQ-NN`, the affected feature/criterion, and a
-  **category**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
+  **category**: `bug` | `ui-baseline` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
   Keep IDs stable across runs for the same issue — they serve as a reference
   for the human when triaging or requesting fixes.
 
@@ -59,6 +67,9 @@ the report format.
 
 - Do not edit code, `spec.md`, permanent fixtures, or real data.
 - Do not mark PASS by code inference when the flow requires browser.
+- For UI features, check observable baseline items when data allows: labels,
+  keyboard/focus behavior, contrast or readable color use, responsive layout,
+  loading/error/empty/disabled states, text overflow, and project token consistency.
 - If Playwright or browser is not configured, try to resolve via the
   bootstrap described in the common process; if it requires network, GUI, or permission,
   record `BLOCKED` (category `env-blocked`).

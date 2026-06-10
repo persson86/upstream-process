@@ -76,8 +76,8 @@ If **any** error occurs at any point (tool failure, command crash, missing file,
    - The command or action that triggered it.
 3. **Output the error to the user** in a clear, short message:
    ```
-   [build-qa] ERRO na etapa <N>: <descrição do erro>
-   Encerrando. Detalhes em build-qa-report.md.
+   [build-qa] ERROR at step <N>: <error description>
+   Stopping. Details in build-qa-report.md.
    ```
 4. Return. Do not proceed further.
 

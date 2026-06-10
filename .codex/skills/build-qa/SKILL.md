@@ -63,8 +63,8 @@ Capability Check) and use `sdd-templates/build-qa-report.md` as the report templ
   missing data, or an untested criterion => `PARTIAL` or `BLOCKED`, never `PASS`.
 - Each finding gets a **stable ID** `DQ-NN`, the affected feature/criterion, and a
   **category**: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
-  Keep IDs stable across runs for the same problem so `build` can detect
-  no-progress.
+  Keep IDs stable across runs for the same problem — they serve as references
+  for the human when triaging or requesting fixes.
 
 ## Output
 

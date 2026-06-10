@@ -1,6 +1,6 @@
 ---
 name: "spec"
-description: "Spec phase: owns spec.md, reads proposal.md, asks scope questions, runs spec-architect and spec-qa as companion skills, and enforces the QA-gate."
+description: "Spec phase: owns spec.md, reads proposal.md, asks scope questions, runs spec-architect, spec-design, and spec-qa as companion skills, and enforces the QA-gate."
 ---
 
 # Spec
@@ -38,12 +38,16 @@ stop and state exactly what is missing.
    - Assume and signal when the assumption is small, reversible, and does not
      block the spec.
 4. Draft `sdd-docs/<slug>/YYYY-MM-DD-spec.md` using `sdd-templates/spec.md`.
-5. Invoke the `spec-qa` skill, passing the `<slug>` and only the artifacts
+5. If any feature includes a user interface, invoke the `spec-design` skill passing
+   the `<slug>` and the draft spec path. It writes
+   `sdd-docs/<slug>/YYYY-MM-DD-design-brief.md`; record the path in the spec's
+   Design Brief section.
+6. Invoke the `spec-qa` skill, passing the `<slug>` and only the artifacts
    (`YYYY-MM-DD-proposal.md` + draft `YYYY-MM-DD-spec.md`). The `spec-qa`
    writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`.
-6. Read `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` and paste the verdict verbatim into the
+7. Read `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md` and paste the verdict verbatim into the
    `QA-Gate` section of the spec.
-7. Finalize only if the gate permits.
+8. Finalize only if the gate permits.
 
 ## QA-Gate
 
@@ -61,6 +65,7 @@ do not produce it or rewrite it. Copy it without editing into the `QA-Gate` sect
 - User stories.
 - Numbered and ordered features.
 - Testable acceptance criteria per feature.
+- Design Brief reference (when UI features present): path to `YYYY-MM-DD-design-brief.md` — do not inline its content.
 - Architecture notes when applicable.
 - Assumptions and open questions.
 - QA-gate with verbatim verdict and resolutions/waivers.
@@ -68,5 +73,5 @@ do not produce it or rewrite it. Copy it without editing into the `QA-Gate` sect
 ## Out of Scope
 
 - Do not implement features.
-- Do not call skills other than `spec-architect` and `spec-qa`.
+- Do not call skills other than `spec-architect`, `spec-design`, and `spec-qa`.
 - Do not edit `proposal.md` or `qa-verdict.md`.

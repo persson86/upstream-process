@@ -6,15 +6,16 @@
 
 ## How it works
 
-You activate **3 agents** — the rest of the flow is automatic:
+You activate **4 agents** in sequence — helpers are spawned automatically when needed:
 
 | Agent | Regime | What it does |
 |--------|--------|-----------|
 | `@discovery` | upstream (you drive) | Socratic dialogue; generates `proposal.md` at your command |
 | `@spec` | upstream (you drive) | Reads the proposal, closes gaps, runs QA-gate and emits `spec.md`. You approve. |
-| `@build` | downstream (autonomous) | Reads the spec, builds, validates via `build-qa` in loop and delivers `DELIVERED` without human gate |
+| `@build` | downstream (autonomous) | Reads the spec and implements all features directly; delivers `DELIVERED` without human gate, escalating only on `missing-spec` |
+| `@build-qa` | downstream (you trigger) | In a new session after delivery: verifies the implementation against the spec with browser evidence and writes `build-qa-report.md` |
 
-The `@build` spawns helpers internally (`build-frontend`, `build-backend`, `build-qa`) as needed — you don't need to invoke them.
+The `@spec` spawns helpers internally (`spec-architect`, `spec-design`, `spec-qa`) as needed — you don't need to invoke them.
 
 Process details: [`PROCESS.md`](PROCESS.md).
 

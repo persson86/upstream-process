@@ -9,7 +9,6 @@
 
 - Spec: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`
 - Date:
-- Build mode: DIRECT | PARALLEL
 
 ## How to Run
 

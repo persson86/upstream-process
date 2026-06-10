@@ -1,7 +1,7 @@
 # Build Report: <short title>
 
 > Audit artifact of the `build` in autonomous downstream. Records what
-> was built, the build<->build-qa loop, and final status. **NOT** an input to
+> was built and the final status. **NOT** an input to
 > `build-qa` (which sees only `spec.md` + `run-manifest.md`) — creator/verifier
 > isolation.
 
@@ -10,7 +10,6 @@
 - Spec: `sdd-docs/<slug>/YYYY-MM-DD-spec.md`
 - Run manifest: `sdd-docs/<slug>/YYYY-MM-DD-run-manifest.md`
 - Date:
-- Build mode: DIRECT | PARALLEL
 
 ## Derived Contract From Spec
 
@@ -28,16 +27,10 @@
 | --- | --- | --- |
 | F1 | <files> | <note> |
 
-## Iteration History
-
-| Iteration | Change applied | build-qa verdict | Findings resolved (IDs) |
-| --- | --- | --- | --- |
-| 1 | <initial build> | PASS \| PARTIAL \| FAIL \| BLOCKED | <DQ-NN, ...> |
-
 ## Final Status
 
 - Status: DELIVERED | ESCALATED
-- If ESCALATED, trigger: iteration-ceiling | BLOCKED | no-progress | spec-gap
+- If ESCALATED, trigger: missing-spec
 - Reason / what is needed to unblock:
 
 ## Pending Items and Assumptions

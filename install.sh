@@ -7,7 +7,7 @@
 #   - <target>/.claude/agents/build*.md    (downstream: build, build-frontend, build-backend, build-qa)
 #   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-frontend, build-backend, build-qa)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
-#   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, run-manifest.md, build-report.md, build-qa-report.md)
+#   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
 #   - <target>/sdd-docs/                     (YOUR outputs: each POC in sdd-docs/<slug>/)
 #
 # Outputs live in sdd-docs/ at the root of the project (separated from the framework) and
@@ -99,7 +99,7 @@ if [ "$FORCE" -eq 0 ]; then
   for s in discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
-  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
+  for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
   done
   if [ "${#collisions[@]}" -gt 0 ]; then
@@ -137,10 +137,11 @@ echo "  + $PKG/PROCESS.md"
 
 fetch "sdd-templates/proposal.md"        > "$TARGET/$PKG/sdd-templates/proposal.md"
 fetch "sdd-templates/spec.md"            > "$TARGET/$PKG/sdd-templates/spec.md"
+fetch "sdd-templates/design-brief.md"    > "$TARGET/$PKG/sdd-templates/design-brief.md"
 fetch "sdd-templates/run-manifest.md"    > "$TARGET/$PKG/sdd-templates/run-manifest.md"
 fetch "sdd-templates/build-report.md"    > "$TARGET/$PKG/sdd-templates/build-report.md"
 fetch "sdd-templates/build-qa-report.md"  > "$TARGET/$PKG/sdd-templates/build-qa-report.md"
-echo "  + $PKG/sdd-templates/{proposal,spec,run-manifest,build-report,build-qa-report}.md"
+echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-report,build-qa-report}.md"
 
 for s in discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa; do
   fetch ".codex/skills/$s/SKILL.md" | rewrite > "$TARGET/.codex/skills/$s/SKILL.md"

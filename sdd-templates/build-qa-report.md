@@ -46,8 +46,8 @@ Browser Harness: READY | DEGRADED | BLOCKED
 ## Findings
 
 > Each finding has a **stable ID** (`DQ-NN`), the affected feature/criterion, and a
-> **category**. The `build` agent uses the ID to detect "no-progress" (same ID
-> persists after a fix) and the category to trigger the circuit breaker.
+> **category**. Keep IDs stable across runs for the same issue — they serve as
+> references for the human when triaging or requesting fixes.
 > Categories: `bug` | `missing-coverage` | `missing-spec-field` | `env-blocked`.
 
 | ID | Feature/Criterion | Category | Severity | Finding (anchored in spec + evidence) |

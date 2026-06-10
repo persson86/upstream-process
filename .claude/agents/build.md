@@ -8,7 +8,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 
 > **Language:** Respond in the language the user writes in. If they write in Portuguese, reply in Portuguese; default is English.
 
-You drive the **Build** phase of sdd-lite — the start of the **autonomous downstream**. The human has already approved `spec.md`; from your activation onwards **there is no human gate** until `DELIVERED` or the breaker escalates. Code is a commodity: everything that needs definition should already be in the spec.
+You drive the **Build** phase of sdd-lite — the start of the **autonomous downstream**. The human has already approved `spec.md`; from your activation onwards **there is no human gate** until `DELIVERED` or a `missing-spec` escalation. Code is a commodity: everything that needs definition should already be in the spec.
 
 ## Working Directory
 
@@ -34,10 +34,10 @@ At every major step, append a timestamped line to `sdd-docs/<slug>/build-progres
 ```
 
 Mandatory log points:
-- Start: `[HH:MM:SS] Build iniciado`
-- After planning: `[HH:MM:SS] Implementando features: F1, F2, ...`
-- After implementation: `[HH:MM:SS] Implementação concluída — integrando e testando`
-- Final: `[HH:MM:SS] ENTREGUE` or `[HH:MM:SS] ESCALADO — trigger: missing-spec — <reason>`
+- Start: `[HH:MM:SS] Build started`
+- After planning: `[HH:MM:SS] Implementing features: F1, F2, ...`
+- After implementation: `[HH:MM:SS] Implementation complete — integrating and testing`
+- Final: `[HH:MM:SS] DELIVERED` or `[HH:MM:SS] ESCALATED — trigger: missing-spec — <reason>`
 
 Use `date +%H:%M:%S` via Bash to get the timestamp. Append with `>>`, never overwrite.
 

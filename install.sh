@@ -269,4 +269,4 @@ echo "  + sdd-docs/  (your outputs go here)"
 echo
 echo "sdd-lite v$VERSION installed in: $TARGET"
 echo "Codex skills installed in: $CODEX_SKILLS_DIR"
-echo "Restart Codex to activate the skills, then start with:  @discovery"
+echo "Restart Codex to activate the skills, then start with:  \$discovery"

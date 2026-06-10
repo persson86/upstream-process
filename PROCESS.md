@@ -11,7 +11,7 @@ The workflow has **two regimes**, with the dividing line at `spec.md`:
 - **Downstream (Build, Build-QA): autonomous** from the approved spec. The human
   triggers `build` once; it implements all features directly and delivers without
   human gate, escalating only on `missing-spec`. After delivery, the human triggers
-  `@build-qa` in a new session to verify — no engine/state machine anywhere.
+  `build-qa` in a new session to verify — no engine/state machine anywhere.
 
 Additional principles:
 
@@ -25,18 +25,18 @@ Additional principles:
 - Each POC lives in `sdd-docs/<slug>/` and contains `YYYY-MM-DD-proposal.md`, `YYYY-MM-DD-spec.md`, `YYYY-MM-DD-qa-verdict.md`, `YYYY-MM-DD-design-brief.md` (when UI features are present), `YYYY-MM-DD-run-manifest.md`, `YYYY-MM-DD-build-report.md`, and `YYYY-MM-DD-build-qa-report.md`.
 - `discovery` writes the proposal only when the user explicitly asks.
 - `spec` owns the `spec.md` artifact and decides, by gap, between asking the user, calling an isolated lens, or assuming and recording the assumption.
-- Spawns are closed: `@spec` only calls `spec-architect`, `spec-design`, or `spec-qa`; `@build` spawns no agents — it implements directly.
-- **The `spec-qa` gate is load-bearing.** Because the downstream delivers without human review, the spec is the only guarantee: `spec-qa` returns `FAIL` if a feature crosses the FE/BE boundary and the `Integration Contract` is absent/ambiguous. QA is a gate, not optional advice; `spec-qa` writes `qa-verdict.md` (source of truth) and `@spec` copies it verbatim, without editing.
+- Spawns are closed: `spec` only calls `spec-architect`, `spec-design`, or `spec-qa`; `build` spawns no agents — it implements directly.
+- **The `spec-qa` gate is load-bearing.** Because the downstream delivers without human review, the spec is the only guarantee: `spec-qa` returns `FAIL` if a feature crosses the FE/BE boundary and the `Integration Contract` is absent/ambiguous. QA is a gate, not optional advice; `spec-qa` writes `qa-verdict.md` (source of truth) and `spec` copies it verbatim, without editing.
 - **Creator/verifier isolation in downstream:** `build` constructs and fixes; `build-qa` only reads `spec.md` + `run-manifest.md` (never `build-report.md`) and judges. PASS requires full coverage of criteria.
 
 ## Phases
 
 | Phase | Regime | Agent | Input | Output | Human Gate |
 | --- | --- | --- | --- | --- | --- |
-| 1. Discovery | upstream | `@discovery` | Idea, context, and user answers | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | User explicitly asks to generate |
-| 2. Spec | upstream | `@spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | User approves spec and QA gate is not in `FAIL` |
-| 3. Build | downstream | `@build` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` approved | `run-manifest.md` + `build-report.md` (`DELIVERED`/`ESCALATED`) | Trigger only; no gate until `DELIVERED` or `missing-spec` escalation |
-| 4. Build-QA | downstream | `@build-qa` (user-triggered after `build` delivers) | `spec.md` + `run-manifest.md` | `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` | User triggers in a new session and triages findings |
+| 1. Discovery | upstream | `$discovery` | Idea, context, and user answers | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | User explicitly asks to generate |
+| 2. Spec | upstream | `$spec` | `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` | User approves spec and QA gate is not in `FAIL` |
+| 3. Build | downstream | `$build` | `sdd-docs/<slug>/YYYY-MM-DD-spec.md` approved | `run-manifest.md` + `build-report.md` (`DELIVERED`/`ESCALATED`) | Trigger only; no gate until `DELIVERED` or `missing-spec` escalation |
+| 4. Build-QA | downstream | `$build-qa` (user-triggered after `build` delivers) | `spec.md` + `run-manifest.md` | `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md` | User triggers in a new session and triages findings |
 
 ## Phase 1: Discovery
 
@@ -56,7 +56,7 @@ The `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` should fit approximately on one pag
 
 Objective: transform `sdd-docs/<slug>/proposal.md` into an implementable `sdd-docs/<slug>/spec.md`, with JTBD, user stories, numbered features, and testable acceptance criteria.
 
-Operation of `@spec`:
+Operation of `spec`:
 
 1. Read `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`.
 2. Perform a gap scan on intent, priority, scope, technical feasibility, risks, and testability.
@@ -72,13 +72,13 @@ Operation of `@spec`:
 
 ## Spawn Rules
 
-- `@spec` can spawn only `spec-architect`, `spec-design`, and `spec-qa`.
-- `@build` spawns no agents; it implements all features directly.
+- `spec` can spawn only `spec-architect`, `spec-design`, and `spec-qa`.
+- `build` spawns no agents; it implements all features directly.
 - `spec-architect` is optional and used only for technical feasibility depending on reading code, stack, or concrete constraints.
 - `spec-design` is used when any feature includes a user interface; it reads `UI_BASELINE.md` and writes `design-brief.md` without asking the user questions.
 - `spec-qa` is mandatory before finalizing any `spec.md`.
 - `build-qa` is triggered by the user in a new session after `build` delivers; it runs fresh with the allowlist `{spec.md, run-manifest.md}`.
-- Helpers do not own `spec.md`. `spec-architect` returns findings for `@spec` to incorporate; `spec-design` and `spec-qa` write their own artifacts (`design-brief.md`, `qa-verdict.md`).
+- Helpers do not own `spec.md`. `spec-architect` returns findings for `spec` to incorporate; `spec-design` and `spec-qa` write their own artifacts (`design-brief.md`, `qa-verdict.md`).
 
 ## QA-Gate
 
@@ -87,23 +87,23 @@ Operation of `@spec`:
 - `sdd-docs/<slug>/YYYY-MM-DD-proposal.md`;
 - current draft of `sdd-docs/<slug>/YYYY-MM-DD-spec.md`.
 
-It does not receive `@spec`'s deliberation, internal history, or additional justifications. **`spec-qa` itself writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — this file exists independently of `@spec`, which cannot edit it.
+It does not receive `spec`'s deliberation, internal history, or additional justifications. **`spec-qa` itself writes the verdict in `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`** — this file exists independently of `spec`, which cannot edit it.
 
 Verdicts:
 
 - `PASS`: the `spec.md` can be finalized.
 - `CONCERNS`: default path is to resolve findings (re-run `spec-qa` until `PASS`); waiver is an exception and requires explicit user request, recorded in the `spec.md`.
-- `FAIL`: blocks finalization. `@spec` must review the draft and run a new QA gate (`spec-qa` rewrites `qa-verdict.md`).
+- `FAIL`: blocks finalization. `spec` must review the draft and run a new QA gate (`spec-qa` rewrites `qa-verdict.md`).
 
-`@spec` cannot edit, summarize, or discard the verdict. It must copy it verbatim from `qa-verdict.md` into the `QA-Gate` section of `spec.md`. Beyond the verdicts above, `spec-qa` returns `FAIL` when a feature crosses the FE/BE boundary or external integration and the `Integration Contract` in the spec is absent, incomplete, or ambiguous (contract-completeness gate) — the gap is resolved in the Spec, not downstream.
+`spec` cannot edit, summarize, or discard the verdict. It must copy it verbatim from `qa-verdict.md` into the `QA-Gate` section of `spec.md`. Beyond the verdicts above, `spec-qa` returns `FAIL` when a feature crosses the FE/BE boundary or external integration and the `Integration Contract` in the spec is absent, incomplete, or ambiguous (contract-completeness gate) — the gap is resolved in the Spec, not downstream.
 
 ## Phase 3: Build
 
 Objective: transform the approved `spec.md` into delivered implementation,
-**autonomously**. The human triggers `@build` once; no human gate until
+**autonomously**. The human triggers `build` once; no human gate until
 `DELIVERED` or a `missing-spec` escalation.
 
-Operation of `@build`:
+Operation of `build`:
 
 1. Read the spec. Extract numbered features, acceptance criteria, and the
    `Integration Contract` section. If the spec references a design brief, read
@@ -114,10 +114,10 @@ Operation of `@build`:
 3. Derive the contract from the `Integration Contract` section of the spec (do not
    invent) and record it in `build-report.md`. Implement all features directly.
 4. Integrate, run `build`/`lint`/`test`, and write `run-manifest.md` (neutral: how to run).
-5. Mark `DELIVERED` in `build-report.md` and suggest the user invokes `@build-qa`
+5. Mark `DELIVERED` in `build-report.md` and suggest the user invokes `build-qa`
    in a new session to verify.
 
-During the run, `@build` appends timestamped lines to
+During the run, `build` appends timestamped lines to
 `sdd-docs/<slug>/build-progress.log` so the user can monitor the autonomous
 phase in real time (e.g. `tail -f build-progress.log`).
 
@@ -194,19 +194,19 @@ Never mark browser test as complete if the browser was not actually exercised.
 - Build-QA report: `sdd-docs/<slug>/YYYY-MM-DD-build-qa-report.md`.
 - Templates: `sdd-templates/proposal.md`, `sdd-templates/spec.md`, `sdd-templates/design-brief.md`, `sdd-templates/run-manifest.md`, `sdd-templates/build-report.md`, `sdd-templates/build-qa-report.md`.
 - Menu agents: `.claude/agents/discovery.md`, `.claude/agents/spec.md`, `.claude/agents/build.md`.
-- Internal spawn targets of `@spec`: `.claude/agents/spec-architect.md`, `.claude/agents/spec-design.md`, `.claude/agents/spec-qa.md`.
-- Post-implementation QA: `.claude/agents/build-qa.md` and Codex skill `.codex/skills/build-qa/SKILL.md`.
-- Codex skills equivalent for each agent in `.codex/skills/<name>/SKILL.md`.
+- Internal spawn targets of `spec`: `.claude/agents/spec-architect.md`, `.claude/agents/spec-design.md`, `.claude/agents/spec-qa.md`.
+- Post-implementation QA: `.claude/agents/build-qa.md` and Codex skill `~/.codex/skills/build-qa/SKILL.md`.
+- Codex skills equivalent for each agent in `~/.codex/skills/<name>/SKILL.md`.
 
 ## Validation Dry-Run
 
-1. Invoke `@discovery` with a small idea and define the `<slug>`.
+1. Invoke `$discovery` with a small idea and define the `<slug>`.
 2. Confirm it converses first and only writes `sdd-docs/<slug>/YYYY-MM-DD-proposal.md` when the user asks.
-3. Invoke `@spec`.
+3. Invoke `$spec`.
 4. Confirm it asks the user on scope/intent gaps, does not spawn unnecessarily, runs `spec-qa`, and generates `sdd-docs/<slug>/YYYY-MM-DD-spec.md` with numbered features. If any feature includes a UI, confirm `spec-design` read `UI_BASELINE.md`, wrote `YYYY-MM-DD-design-brief.md`, defined project UI tokens (confirming the defaults or recording overrides), and the spec references both files.
 5. Confirm `spec-qa` wrote `sdd-docs/<slug>/YYYY-MM-DD-qa-verdict.md`, the verdict is copied verbatim into the spec, and `FAIL` blocks finalization.
 6. Confirm that if a feature crosses the FE/BE boundary without `Integration Contract`, `spec-qa` returns `FAIL`.
-7. Invoke `@build` with the approved spec.
+7. Invoke `$build` with the approved spec.
 8. Confirm it implements all features directly without spawning agents, derives the contract from the spec, follows `design-brief.md` + `UI_BASELINE.md` for UI features, writes `run-manifest.md`, and marks `DELIVERED` in `build-report.md`.
-9. Confirm that a spec lacking testable criteria or an `Integration Contract` for a cross-boundary feature makes `@build` mark `ESCALATED` with trigger `missing-spec`.
-10. Invoke `@build-qa` in a new session; confirm it reads only `{spec.md, run-manifest.md}` plus `{design-brief.md, sdd-lite/UI_BASELINE.md}` when UI is referenced, and that `PASS` requires full coverage of all acceptance criteria and observable UI baseline checks.
+9. Confirm that a spec lacking testable criteria or an `Integration Contract` for a cross-boundary feature makes `build` mark `ESCALATED` with trigger `missing-spec`.
+10. Invoke `$build-qa` in a new session; confirm it reads only `{spec.md, run-manifest.md}` plus `{design-brief.md, sdd-lite/UI_BASELINE.md}` when UI is referenced, and that `PASS` requires full coverage of all acceptance criteria and observable UI baseline checks.

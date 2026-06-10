@@ -6,21 +6,23 @@
 
 ## How it works
 
-You activate **4 agents** in sequence — helpers are spawned automatically when needed:
+You activate **4 phases** in sequence. In Codex, trigger a phase by naming the
+skill, for example `$discovery` or "use the discovery skill"; helpers are spawned
+automatically when needed:
 
-| Agent | Regime | What it does |
+| Skill | Regime | What it does |
 |--------|--------|-----------|
-| `@discovery` | upstream (you drive) | Socratic dialogue; generates `proposal.md` at your command |
-| `@spec` | upstream (you drive) | Reads the proposal, closes gaps, runs QA-gate and emits `spec.md`. You approve. |
-| `@build` | downstream (autonomous) | Reads the spec and implements all features directly; delivers `DELIVERED` without human gate, escalating only on `missing-spec` |
-| `@build-qa` | downstream (you trigger) | In a new session after delivery: verifies the implementation against the spec with browser evidence and writes `build-qa-report.md` |
+| `$discovery` | upstream (you drive) | Socratic dialogue; generates `proposal.md` at your command |
+| `$spec` | upstream (you drive) | Reads the proposal, closes gaps, runs QA-gate and emits `spec.md`. You approve. |
+| `$build` | downstream (autonomous) | Reads the spec and implements all features directly; delivers `DELIVERED` without human gate, escalating only on `missing-spec` |
+| `$build-qa` | downstream (you trigger) | In a new session after delivery: verifies the implementation against the spec with browser evidence and writes `build-qa-report.md` |
 
-The `@spec` spawns helpers internally (`spec-architect`, `spec-design`, `spec-qa`) as needed — you don't need to invoke them.
+The `spec` skill spawns helpers internally (`spec-architect`, `spec-design`, `spec-qa`) as needed — you don't need to invoke them.
 
 For UI work, sdd-lite includes [`UI_BASELINE.md`](UI_BASELINE.md): a UI/UX quality
 baseline (accessibility, interaction states, voice and tone, writing, layout, and
 motion patterns) plus a default theme — UI tokens for colors, typography, spacing,
-radius, elevation, and motion used when no visual preference is stated. `@discovery`
+radius, elevation, and motion used when no visual preference is stated. `discovery`
 asks for brand preference when the product has a UI; each project can override its
 visual identity in `design-brief.md`, including the primary color, while keeping
 accessibility, state coverage, responsive behavior, writing quality, and restrained

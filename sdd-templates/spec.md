@@ -69,7 +69,7 @@ _Present only when any feature includes a user interface. Omit for API-only spec
 - **Tone:** <filled in after spec-design runs>
 - **Screens:** <N screens mapped>
 
-> Do not inline the design brief content here — reference the file. `build-frontend` reads it directly.
+> Do not inline the design brief content here — reference the file. `build` reads it directly.
 
 ## Architecture Notes
 

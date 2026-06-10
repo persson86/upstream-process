@@ -4,8 +4,8 @@
 #
 # Copies the SDD-lite framework into a target project:
 #   - <target>/.claude/agents/*.md         (upstream: discovery, spec, spec-architect, spec-design, spec-qa)
-#   - <target>/.claude/agents/build*.md    (downstream: build, build-frontend, build-backend, build-qa)
-#   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-frontend, build-backend, build-qa)
+#   - <target>/.claude/agents/build*.md    (downstream: build, build-qa)
+#   - <target>/.codex/skills/*/            (Codex skills: discovery, spec, spec-architect, spec-design, spec-qa, build, build-qa)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
 #   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
 #   - <target>/sdd-docs/                     (YOUR outputs: each POC in sdd-docs/<slug>/)
@@ -88,7 +88,7 @@ if [ ! -d "$TARGET/.git" ]; then
   echo "warning: $TARGET does not appear to be a git repo (no .git)."
 fi
 
-AGENTS=(discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa)
+AGENTS=(discovery spec spec-architect spec-design spec-qa build build-qa)
 
 # --- collision check ---------------------------------------------------
 if [ "$FORCE" -eq 0 ]; then
@@ -96,7 +96,7 @@ if [ "$FORCE" -eq 0 ]; then
   for a in "${AGENTS[@]}"; do
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
-  for s in discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa; do
+  for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
     [ -f "$TARGET/.codex/skills/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
   for f in PROCESS.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
@@ -123,7 +123,7 @@ mkdir -p \
   "$TARGET/.claude/agents" \
   "$TARGET/$PKG/sdd-templates" \
   "$TARGET/sdd-docs"
-for s in discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa; do
+for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
   mkdir -p "$TARGET/.codex/skills/$s"
 done
 
@@ -143,10 +143,25 @@ fetch "sdd-templates/build-report.md"    > "$TARGET/$PKG/sdd-templates/build-rep
 fetch "sdd-templates/build-qa-report.md"  > "$TARGET/$PKG/sdd-templates/build-qa-report.md"
 echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-report,build-qa-report}.md"
 
-for s in discovery spec spec-architect spec-design spec-qa build build-frontend build-backend build-qa; do
+for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
   fetch ".codex/skills/$s/SKILL.md" | rewrite > "$TARGET/.codex/skills/$s/SKILL.md"
   echo "  + .codex/skills/$s/SKILL.md"
 done
+
+# --- cleanup of files removed from the framework ------------------------
+# build-frontend/build-backend were removed in v0.7.0 (build implements
+# all features directly). Remove them from targets updated from <= 0.6.x.
+for obsolete in \
+  ".claude/agents/build-frontend.md" \
+  ".claude/agents/build-backend.md" \
+  ".codex/skills/build-frontend/SKILL.md" \
+  ".codex/skills/build-backend/SKILL.md"; do
+  if [ -f "$TARGET/$obsolete" ]; then
+    rm -f "$TARGET/$obsolete"
+    echo "  - $obsolete  (obsolete, removed)"
+  fi
+done
+rmdir "$TARGET/.codex/skills/build-frontend" "$TARGET/.codex/skills/build-backend" 2>/dev/null || true
 
 printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
 echo "  + $PKG/.version  ($VERSION)"

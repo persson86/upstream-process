@@ -5,7 +5,7 @@
 # Copies the SDD-lite framework into a target project:
 #   - <target>/.claude/agents/*.md         (upstream: discovery, spec, spec-architect, spec-design, spec-qa)
 #   - <target>/.claude/agents/build*.md    (downstream: build, build-qa)
-#   - ~/.codex/skills/*/                   (Codex skills — global; Codex only loads from ~/.codex/skills/)
+#   - <target>/.codex/skills/*/            (Codex skills — project-local; Codex loads repo-scope skills from <project>/.codex/skills/)
 #   - <target>/sdd-lite/PROCESS.md (the backbone of the process, includes the build-qa runbook)
 #   - <target>/sdd-lite/UI_BASELINE.md (UI/UX quality baseline + default UI tokens)
 #   - <target>/sdd-lite/sdd-templates/ (proposal.md, spec.md, design-brief.md, run-manifest.md, build-report.md, build-qa-report.md)
@@ -146,7 +146,7 @@ if [ ! -d "$TARGET/.git" ]; then
 fi
 
 AGENTS=(discovery spec spec-architect spec-design spec-qa build build-qa)
-CODEX_SKILLS_DIR="$HOME/.codex/skills"
+CODEX_SKILLS_DIR="$TARGET/.codex/skills"
 
 # --- collision check ---------------------------------------------------
 if [ "$FORCE" -eq 0 ]; then
@@ -155,7 +155,7 @@ if [ "$FORCE" -eq 0 ]; then
     [ -f "$TARGET/.claude/agents/$a.md" ] && collisions+=(".claude/agents/$a.md")
   done
   for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
-    [ -f "$CODEX_SKILLS_DIR/$s/SKILL.md" ] && collisions+=("~/.codex/skills/$s/SKILL.md")
+    [ -f "$CODEX_SKILLS_DIR/$s/SKILL.md" ] && collisions+=(".codex/skills/$s/SKILL.md")
   done
   for f in PROCESS.md UI_BASELINE.md sdd-templates/proposal.md sdd-templates/spec.md sdd-templates/design-brief.md sdd-templates/run-manifest.md sdd-templates/build-report.md sdd-templates/build-qa-report.md .version; do
     [ -f "$TARGET/$PKG/$f" ] && collisions+=("$PKG/$f")
@@ -231,7 +231,7 @@ echo "  + $PKG/sdd-templates/{proposal,spec,design-brief,run-manifest,build-repo
 for s in discovery spec spec-architect spec-design spec-qa build build-qa; do
   install_file ".codex/skills/$s/SKILL.md" "$CODEX_SKILLS_DIR/$s/SKILL.md" rewrite
   install_file ".codex/skills/$s/agents/openai.yaml" "$CODEX_SKILLS_DIR/$s/agents/openai.yaml"
-  echo "  + ~/.codex/skills/$s/{SKILL.md,agents/openai.yaml}"
+  echo "  + .codex/skills/$s/{SKILL.md,agents/openai.yaml}"
 done
 
 # --- cleanup of files removed from the framework ------------------------
@@ -245,21 +245,19 @@ for obsolete in \
     echo "  - $obsolete  (obsolete, removed)"
   fi
 done
-# remove obsolete project-level skill dirs (used before v0.9.1)
-for obsolete_skill in build-frontend build-backend build build-qa discovery spec spec-architect spec-design spec-qa; do
-  rm -f "$TARGET/.codex/skills/$obsolete_skill/SKILL.md" \
-        "$TARGET/.codex/skills/$obsolete_skill/agents/openai.yaml" 2>/dev/null || true
-  rmdir "$TARGET/.codex/skills/$obsolete_skill/agents" \
-        "$TARGET/.codex/skills/$obsolete_skill" 2>/dev/null || true
-done
-rmdir "$TARGET/.codex/skills" "$TARGET/.codex" 2>/dev/null || true
-# remove obsolete global skills from pre-v0.9.1 manual copy
-for obsolete_global in build-frontend build-backend; do
-  rm -f "$CODEX_SKILLS_DIR/$obsolete_global/SKILL.md" \
-        "$CODEX_SKILLS_DIR/$obsolete_global/agents/openai.yaml" 2>/dev/null || true
-  rmdir "$CODEX_SKILLS_DIR/$obsolete_global/agents" \
-        "$CODEX_SKILLS_DIR/$obsolete_global" 2>/dev/null || true
-done
+# --- migrate away from the old global install (v0.10.0) -----------------
+# sdd-lite skills used to be installed globally in ~/.codex/skills/. They now
+# live per-project in <target>/.codex/skills/. Remove only the sdd-lite-named
+# skill dirs from the global location; leave everything else (e.g. playwright).
+GLOBAL_SKILLS="$HOME/.codex/skills"
+if [ "$GLOBAL_SKILLS" != "$CODEX_SKILLS_DIR" ]; then
+  for old_global in discovery spec spec-architect spec-design spec-qa build build-qa build-frontend build-backend; do
+    if [ -d "$GLOBAL_SKILLS/$old_global" ]; then
+      rm -rf "$GLOBAL_SKILLS/$old_global"
+      echo "  - ~/.codex/skills/$old_global  (migrated to project-local)"
+    fi
+  done
+fi
 
 printf '%s\n' "$VERSION" > "$TARGET/$PKG/.version"
 echo "  + $PKG/.version  ($VERSION)"
@@ -268,5 +266,5 @@ echo "  + sdd-docs/  (your outputs go here)"
 
 echo
 echo "sdd-lite v$VERSION installed in: $TARGET"
-echo "Codex skills installed in: $CODEX_SKILLS_DIR"
+echo "Codex skills installed in: $CODEX_SKILLS_DIR  (project-local)"
 echo "Restart Codex to activate the skills, then start with:  \$discovery"

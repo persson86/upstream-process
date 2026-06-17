@@ -195,8 +195,8 @@ Never mark browser test as complete if the browser was not actually exercised.
 - Templates: `sdd-templates/proposal.md`, `sdd-templates/spec.md`, `sdd-templates/design-brief.md`, `sdd-templates/run-manifest.md`, `sdd-templates/build-report.md`, `sdd-templates/build-qa-report.md`.
 - Menu agents: `.claude/agents/discovery.md`, `.claude/agents/spec.md`, `.claude/agents/build.md`.
 - Internal spawn targets of `spec`: `.claude/agents/spec-architect.md`, `.claude/agents/spec-design.md`, `.claude/agents/spec-qa.md`.
-- Post-implementation QA: `.claude/agents/build-qa.md` and Codex skill `~/.codex/skills/build-qa/SKILL.md`.
-- Codex skills equivalent for each agent in `~/.codex/skills/<name>/SKILL.md`.
+- Post-implementation QA: `.claude/agents/build-qa.md` and Codex skill `.codex/skills/build-qa/SKILL.md`.
+- Codex skills equivalent for each agent in `.codex/skills/<name>/SKILL.md`.
 
 ## Validation Dry-Run
 

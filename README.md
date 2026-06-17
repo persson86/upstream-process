@@ -43,3 +43,8 @@ curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/persson86/sdd-lite/main/install.sh | bash -s -- . --update
 ```
+
+The install is fully self-contained: every file lives inside the target project
+(`.claude/agents/`, `sdd-lite/`, `.codex/skills/`, `sdd-docs/`). Nothing is written to
+your home directory, so installs in different projects are independent. Codex loads the
+project-local skills from `<project>/.codex/skills/` (repo scope).
